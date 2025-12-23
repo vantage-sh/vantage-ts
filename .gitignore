@@ -1,0 +1,4 @@
+dist
+node_modules
+clientAutogen.ts
+swaggerSchema.d.ts

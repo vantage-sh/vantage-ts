@@ -1,0 +1,38 @@
+{
+    "name": "@vantage-sh/vantage-client",
+    "version": "2.0.0",
+    "description": "The Vantage Client SDK for TypeScript and JavaScript applications.",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vantage",
+        "sdk",
+        "client",
+        "typescript",
+        "javascript",
+        "api"
+    ],
+    "author": "Vantage",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Vantage-sh/vantage-ts.git"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.3",
+        "openapi-typescript": "^7.10.1",
+        "tsup": "^8.5.1",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3"
+    },
+    "scripts": {
+        "build:generate": "tsx ./generate.ts",
+        "build:ts": "tsup",
+        "build": "npm run build:generate && npm run build:ts",
+        "type-check": "npm run build:generate && tsc --noEmit"
+    }
+}
