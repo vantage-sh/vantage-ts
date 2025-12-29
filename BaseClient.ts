@@ -192,7 +192,7 @@ function handleGetBodyParams(url: URL, body: any) {
 export class VantageApiError extends Error {
     public readonly errors: string[] | null;
 
-    constructor(public readonly status: number, public readonly statusText: string, private body: string) {
+    constructor(public readonly status: number, public readonly statusText: string, public readonly body: string) {
         let e: string[] | null = null;
         try {
             const parsed = JSON.parse(body);
