@@ -1,4 +1,5 @@
 import openapiGen, { astToString } from "openapi-typescript";
+import ts from "typescript";
 import { writeFileSync } from "fs";
 
 interface PathParam {
@@ -188,7 +189,22 @@ async function main() {
         }
     );
 
-    const dts = await openapiGen(schema);
+    const dts = await openapiGen(schema, {
+        // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
+        // This makes the generated TS types nicer to use (and matches runtime behavior).
+        transformProperty: (property, schemaObject) => {
+            if (schemaObject && schemaObject.default !== undefined) {
+                return ts.factory.updatePropertySignature(
+                    property,
+                    property.modifiers,
+                    property.name,
+                    ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+                    property.type
+                );
+            }
+            return property;
+        },
+    });
     writeFileSync("swaggerSchema.d.ts", astToString(dts), { encoding: "utf-8" });
     console.log("Generated swaggerSchema.d.ts");
 
