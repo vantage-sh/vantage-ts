@@ -13,7 +13,7 @@ type UnBracket<S extends string> = S extends `${infer X}{${string}}${infer Z}`
     : S;
 
 type PathsRedefined = {
-    [K in keyof paths as UnBracket<K>]: [paths[K], K];
+    [K in keyof paths as `/v2${UnBracket<K>}`]: [paths[K], K];
 };
 
 /** Defines a union of paths supported by the client. */
@@ -130,7 +130,7 @@ type MultipartPathInfo<T> = T extends Multipart[keyof Multipart] ? {
 } : never;
 
 type MultipartEdgeCases = {
-    [P in Path as MultipartPathInfo<PathsRedefined[P][0]> extends never ? never : StringifyType<PathsRedefined[P][1]>]: MultipartPathInfo<PathsRedefined[P][0]>;
+    [P in Path as MultipartPathInfo<PathsRedefined[P][0]> extends never ? never : `/v2${StringifyType<PathsRedefined[P][1]>}`]: MultipartPathInfo<PathsRedefined[P][0]>;
 }
 
 /**
@@ -138,13 +138,13 @@ type MultipartEdgeCases = {
  * Note that you will get a type error to this object if you do not.
  */
 const multipartEdgeCases: MultipartEdgeCases = {
-    "/exchange_rates/csv": {
+    "/v2/exchange_rates/csv": {
         POST: true,
     },
-    "/business_metrics/{}/values.csv": {
+    "/v2/business_metrics/{}/values.csv": {
         PUT: true,
     },
-    "/integrations/{}/costs.csv": {
+    "/v2/integrations/{}/costs.csv": {
         POST: true,
     },
 };
@@ -234,11 +234,11 @@ export class BaseClient {
     /**
      * Initializes a new instance of the client.
      * @param bearerToken The bearer token for authentication.
-     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh/v2".
+     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh".
      */
     constructor(
         private readonly bearerToken: string,
-        public readonly baseUrl: string = "https://api.vantage.sh/v2",
+        public readonly baseUrl: string = "https://api.vantage.sh",
     ) {}
 
     /** Sends a request to the API. */
@@ -250,11 +250,7 @@ export class BaseClient {
         method: RequestMethod,
         body: RequestBodyForPathAndMethod<RequestPath, RequestMethod>,
     ): Promise<ResponseBodyForPathAndMethod<RequestPath, RequestMethod>> {
-        const url = new URL(this.baseUrl);
-        if (url.pathname.endsWith("/")) {
-            url.pathname = url.pathname.slice(0, -1);
-        }
-        url.pathname += path;
+        const url = new URL(path, this.baseUrl);
 
         const headers: Record<string, string> = {
             "Authorization": `Bearer ${this.bearerToken}`,

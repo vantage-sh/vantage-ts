@@ -36,7 +36,7 @@ function toPascalCase(str: string): string {
 function extractPathParams(path: string): PathParam[] {
     const params: PathParam[] = [];
     const regex = /\{([^}]+)\}/g;
-    let match;
+    let match: RegExpExecArray | null = null;
 
     while ((match = regex.exec(path)) !== null) {
         params.push({
@@ -155,6 +155,7 @@ function generateMethod(methodName: string, endpoint: EndpointInfo): string {
     for (const param of endpoint.pathParams) {
         pathTemplate = pathTemplate.replace(`{${param.name}}`, `\${pathEncode(${param.camelName})}`);
     }
+    pathTemplate = `/v2${pathTemplate}`;
 
     // Generate JSDoc comment
     const jsDoc = formatJsDoc(endpoint.summary, endpoint.description, endpoint.deprecated);
@@ -265,9 +266,12 @@ import {
     for (const endpoint of endpoints) {
         const typeBaseName = toPascalCase(endpoint.operationId);
 
-        const typePath = endpoint.path.includes("${NoSlashString}")
-            ? `\`${endpoint.path}\``
-            : `"${endpoint.path}"`;
+        let typePath = `/v2${endpoint.path}`;
+        if (typePath.includes("${NoSlashString}")) {
+            typePath = `\`${typePath}\``;
+        } else {
+            typePath = `"${typePath}"`;
+        }
         
         // Only generate request type if there are body or query params
         const needsBody = endpoint.hasBody || endpoint.hasQuery;
