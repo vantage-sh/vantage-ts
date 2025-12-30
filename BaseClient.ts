@@ -183,7 +183,7 @@ function isMultipartMethod(method: string, path: string): boolean {
 function handleGetBodyParams(url: URL, body: any) {
     if (body) {
         for (const [key, value] of Object.entries(body)) {
-            url.searchParams.append(key, `${value}`);
+            url.searchParams.append(key, Array.isArray(value) ? value.map(String).join(",") : String(value));
         }
     }
 }
