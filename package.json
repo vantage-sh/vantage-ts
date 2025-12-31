@@ -27,12 +27,14 @@
         "openapi-typescript": "^7.10.1",
         "tsup": "^8.5.1",
         "tsx": "^4.21.0",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
     },
     "scripts": {
         "build:generate": "tsx ./generate.ts",
         "build:ts": "tsup",
         "build": "npm run build:generate && npm run build:ts",
-        "type-check": "npm run build:generate && tsc --noEmit"
+        "type-check": "npm run build:generate && tsc --noEmit",
+        "test": "npm run build:generate && vitest"
     }
 }

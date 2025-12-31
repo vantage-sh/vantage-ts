@@ -128,11 +128,9 @@ function getMethodNameFromOperationId(operationId: string, resource: string): st
 
 function generateMethod(methodName: string, endpoint: EndpointInfo): string {
     let requestType: string;
-    let responseType: string;
 
     const typeBaseName = toPascalCase(endpoint.operationId);
     requestType = `${typeBaseName}Request`;
-    responseType = `${typeBaseName}Response`;
 
     // Build parameters
     const params: string[] = [];
@@ -161,7 +159,7 @@ function generateMethod(methodName: string, endpoint: EndpointInfo): string {
     const jsDoc = formatJsDoc(endpoint.summary, endpoint.description, endpoint.deprecated);
 
     let output = jsDoc;
-    output += `    ${methodName}(${params.join(", ")}): Promise<${responseType}> {\n`;
+    output += `    ${methodName}(${params.join(", ")}) {\n`;
     output += `        return this.client.request(\n`;
     output += `            \`${pathTemplate}\`,\n`;
     output += `            "${endpoint.method}",\n`;
@@ -313,13 +311,28 @@ import {
 
     // Generate the client class
     output += `/** Vantage API Client with typed methods */\n`;
-    output += `export class APIV2Client extends BaseClient {\n`;
+    output += `export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<NeverThrow> {\n`;
+
+    // Generate the constructor
+    output += `    /**\n`;
+    output += `     * Initializes a new instance of the APIV2Client.\n`;
+    output += `     * @param bearerToken The bearer token for authentication.\n`;
+    output += `     * @param neverThrow Whether to never throw exceptions on API errors and instead return an array with [value, error].\n`;
+    output += `     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh".\n`;
+    output += `     */\n`;
+    output += `    constructor(\n`;
+    output += `        bearerToken: string,\n`;
+    output += `        neverThrow: NeverThrow = false as NeverThrow,\n`;
+    output += `        baseUrl: string = "https://api.vantage.sh",\n`;
+    output += `    ) {\n`;
+    output += `        super(bearerToken, neverThrow, baseUrl);\n`;
+    output += `    }\n\n`;
 
     // Generate private fields for each resource
     for (const resource of resourceGroups.keys()) {
         const fieldName = sanitizeIdentifier(toCamelCase(resource));
         const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
-        output += `    private _${fieldName}?: ${className};\n`;
+        output += `    private _${fieldName}?: ${className}<NeverThrow>;\n`;
     }
 
     output += `\n`;
@@ -329,7 +342,7 @@ import {
         const fieldName = sanitizeIdentifier(toCamelCase(resource));
         const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
 
-        output += `    get ${fieldName}(): ${className} {\n`;
+        output += `    get ${fieldName}(): ${className}<NeverThrow> {\n`;
         output += `        if (!this._${fieldName}) {\n`;
         output += `            this._${fieldName} = new ${className}(this);\n`;
         output += `        }\n`;
@@ -343,8 +356,8 @@ import {
     for (const [resource, resourceEndpoints] of resourceGroups) {
         const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
 
-        output += `class ${className} {\n`;
-        output += `    constructor(private client: BaseClient) {}\n\n`;
+        output += `class ${className}<NeverThrow extends boolean> {\n`;
+        output += `    constructor(private client: BaseClient<NeverThrow>) {}\n\n`;
 
         // Categorize endpoints
         const listEndpoint = resourceEndpoints.find(e => {

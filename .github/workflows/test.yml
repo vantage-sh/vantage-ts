@@ -16,6 +16,22 @@ jobs:
             - name: Run TypeScript Check
               run: npm run type-check
 
+    vitest:
+        name: Vitest
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22"
+            - name: Install Dependencies
+              run: npm install
+            - name: Run Vitest
+              run: npm run test
+              env:
+                  VANTAGE_API_TOKEN: ${{ secrets.VANTAGE_API_TOKEN }}
+
     dry-build:
         name: Dry Build
         runs-on: ubuntu-22.04

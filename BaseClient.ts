@@ -192,15 +192,20 @@ function handleGetBodyParams(url: URL, body: any) {
 export class VantageApiError extends Error {
     public readonly errors: string[] | null;
 
-    constructor(public readonly status: number, public readonly statusText: string, public readonly body: string) {
+    constructor(public readonly status: number | null, public readonly statusText: string | null, public readonly body: string) {
         let e: string[] | null = null;
-        try {
-            const parsed = JSON.parse(body);
-            if (Array.isArray(parsed.errors)) {
-                e = parsed.errors;
-            }
-        } catch {}
-        super(`Vantage API Error: ${status} ${statusText}` + (e ? ` - ${e}` : ""));
+        if (status !== null) {
+            try {
+                const parsed = JSON.parse(body);
+                if (Array.isArray(parsed.errors)) {
+                    e = parsed.errors;
+                }
+            } catch {}
+        }
+        const text = status === null ?
+            `Vantage API Error: ${body}` :
+            `Vantage API Error: ${status} ${statusText}` + (e ? ` - ${e.join(", ")}` : "");
+        super(text);
         this.errors = e;
     }
 }
@@ -209,36 +214,62 @@ async function execute(
     url: URL,
     method: string,
     headers: Record<string, string>,
-    body?: any,
+    body: any,
+    neverThrow: boolean,
 ): Promise<any> {
-    const res = await fetch(url.toString(), {
-        method,
-        headers,
-        body,
-    });
-    if (!res.ok) {
-        throw new VantageApiError(res.status, res.statusText, await res.text());
+    let res: Response;
+    try {
+        res = await fetch(url.toString(), {
+            method,
+            headers,
+            body,
+        });
+    } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        const err = new VantageApiError(null, null, message);
+        if (neverThrow) {
+            return [null, err] as NeverThrowResult<any>;
+        }
+        throw err;
     }
+
+    if (!res.ok) {
+        const err = new VantageApiError(res.status, res.statusText, await res.text());
+        if (neverThrow) {
+            return [null, err] as NeverThrowResult<any>;
+        }
+        throw err;
+    }
+
     if (res.status === 204) {
         return;
     }
-    const text = await res.text();
-    if (!text) {
-        return;
+
+    try {
+        const text = await res.text();
+        let value: any;
+        if (text) {
+            value = JSON.parse(text);
+        }
+        return neverThrow ? [value, null] as NeverThrowResult<any> : value;
+    } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        const err = new VantageApiError(res.status, res.statusText, message);
+        if (neverThrow) {
+            return [null, err] as NeverThrowResult<any>;
+        }
+        throw err;
     }
-    return JSON.parse(text);
 }
 
+type NeverThrowResult<T> = [null, VantageApiError] | [T, null];
+
 /** Defines the base client for all API requests. */
-export class BaseClient {
-    /**
-     * Initializes a new instance of the client.
-     * @param bearerToken The bearer token for authentication.
-     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh".
-     */
+export class BaseClient<NeverThrow extends boolean> {
     constructor(
         private readonly bearerToken: string,
-        public readonly baseUrl: string = "https://api.vantage.sh",
+        private readonly neverThrow: NeverThrow,
+        public readonly baseUrl: string,
     ) {}
 
     /** Sends a request to the API. */
@@ -249,7 +280,11 @@ export class BaseClient {
         path: RequestPath,
         method: RequestMethod,
         body: RequestBodyForPathAndMethod<RequestPath, RequestMethod>,
-    ): Promise<ResponseBodyForPathAndMethod<RequestPath, RequestMethod>> {
+    ): Promise<
+        NeverThrow extends true
+            ? NeverThrowResult<ResponseBodyForPathAndMethod<RequestPath, RequestMethod>>
+            : ResponseBodyForPathAndMethod<RequestPath, RequestMethod>
+    > {
         const url = new URL(path, this.baseUrl);
 
         const headers: Record<string, string> = {
@@ -258,7 +293,7 @@ export class BaseClient {
         if (method === "GET") {
             // Set query parameters for GET requests
             handleGetBodyParams(url, body);
-            return execute(url, method, headers);
+            return execute(url, method, headers, undefined, this.neverThrow);
         }
 
         // Figure out if this route is a multipart route
@@ -271,9 +306,9 @@ export class BaseClient {
                 formData.append(key, value);
             }
             headers["Content-Type"] = "multipart/form-data";
-            return execute(url, method, headers, formData);
+            return execute(url, method, headers, formData, this.neverThrow);
         }
         headers["Content-Type"] = "application/json";
-        return execute(url, method, headers, JSON.stringify(body));
+        return execute(url, method, headers, JSON.stringify(body), this.neverThrow);
     }
 }
