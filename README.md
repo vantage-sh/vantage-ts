@@ -122,7 +122,7 @@ function displayReport(report: GetCostReportResponse) {
 
 ## Error Handling
 
-API errors are thrown as `VantageApiError` with structured error information:
+By default, API errors are thrown as `VantageApiError` with structured error information:
 
 ```typescript
 import { VantageApiError } from "@vantage-sh/vantage-client";
@@ -136,6 +136,43 @@ try {
     console.log(error.errors);     // ["Resource not found"] or null
   }
 }
+```
+
+### Never Throw Mode
+
+For Go-style error handling without try/catch, enable never throw mode by passing `true` as the second argument to the client constructor:
+
+```typescript
+import { APIV2Client, VantageApiError } from "@vantage-sh/vantage-client";
+
+const client = new APIV2Client("your-api-token", true);
+
+// All methods return [result, null] on success or [null, error] on failure
+const [report, error] = await client.costReports.get("rprt_abc123");
+
+if (error) {
+  console.log(error.status);  // 404
+  console.log(error.errors);  // ["Resource not found"]
+  return;
+}
+
+// TypeScript knows report is defined here
+console.log(report.title);
+```
+
+This pattern works with all client methods, including the low-level `request` method:
+
+```typescript
+const client = new APIV2Client("your-api-token", true);
+
+const [folders, error] = await client.request("/folders", "GET", { page: 1 });
+
+if (error) {
+  // Handle error
+  return;
+}
+
+// Use folders safely
 ```
 
 ## Utilities
