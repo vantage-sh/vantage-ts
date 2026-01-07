@@ -27,6 +27,7 @@ jobs:
                   node-version: "22"
             - name: Install Dependencies
               run: npm install
+            - run: npm run build
             - name: Run Vitest
               run: npm run test
               env:
