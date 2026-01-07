@@ -34,7 +34,7 @@
         "build:generate": "tsx ./generate.ts",
         "build:ts": "tsup",
         "build": "npm run build:generate && npm run build:ts",
-        "type-check": "npm run build:generate && tsc --noEmit",
-        "test": "npm run build:generate && vitest"
+        "type-check": "npm run build && tsc --noEmit",
+        "test": "npm run build && vitest"
     }
 }
