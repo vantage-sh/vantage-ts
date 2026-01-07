@@ -88,7 +88,11 @@ type ExtendsGoodResponseCode<Code extends number, Output> = {
 type PatchLinks<T> = T extends { links?: any }
     ? Omit<T, "links"> & {
         links?: {
+            self?: string | null;
+            first?: string | null;
+            last?: string | null;
             next?: string | null;
+            prev?: string | null;
         };
     }
     : T;
@@ -100,6 +104,9 @@ type PathAndMethodSpecificPatches = {
             total_cost: {
                 amount: string;
                 currency: string;
+            };
+            total_usage: {
+                [usageUnit: string]: string;
             };
         };
     };
