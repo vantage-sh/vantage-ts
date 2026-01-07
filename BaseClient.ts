@@ -280,6 +280,9 @@ async function execute(
     }
 
     if (res.status === 204) {
+        if (neverThrow) {
+            return [undefined, null] as NeverThrowResult<any>;
+        }
         return;
     }
 
