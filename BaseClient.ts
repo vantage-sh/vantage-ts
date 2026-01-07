@@ -93,12 +93,43 @@ type PatchLinks<T> = T extends { links?: any }
     }
     : T;
 
+/** Patches for specifiic endpoints go here. This is useful for when the OpenAPI spec is not specific enough for our liking. */
+type PathAndMethodSpecificPatches = {
+    "/v2/costs": {
+        "GET": {
+            total_cost: {
+                amount: string;
+                currency: string;
+            };
+        };
+    };
+};
+
+type LookupTableType = {
+    [P in Path]: Partial<{
+        [M in SupportedMethods<P>]: any;
+    }>;
+};
+
+type ExecutePatch<Patch, Response> = keyof Patch extends never ? Response : (Omit<Response, keyof Patch> & Patch);
+
+type DoPathSpecificPatches<
+    P extends Path,
+    M extends SupportedMethods<P>,
+    Response,
+    LookupTable extends Partial<LookupTableType>,
+> =
+    LookupTable[P] extends never
+        ? Response
+        // @ts-expect-error: I'm not sure why this is a error case, but we can ignore it. If the path isn't there, the above check will error.
+        : ExecutePatch<LookupTable[P][M], Response>;
+
 /** Defines the response body type for a given path and method. */
 export type ResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
 > = PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203 | 204, infer R>
-    ? PatchLinks<R>
+    ? PatchLinks<DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>>
     : void;
 
 /** We need to make this a string rather than a TS type so we can use it at runtime. */
