@@ -85,22 +85,58 @@ type ExtendsGoodResponseCode<Code extends number, Output> = {
     };
 }[Code];
 
+type Links =  {
+    self?: string | null;
+    first?: string | null;
+    last?: string | null;
+    next?: string | null;
+    prev?: string | null;
+};
+
 type PatchLinks<T> = T extends { links?: any }
-    ? Omit<T, "links"> & {
-        links?: {
-            self?: string | null;
-            first?: string | null;
-            last?: string | null;
-            next?: string | null;
-            prev?: string | null;
-        };
-    }
+    ? Omit<T, "links"> & { links?: Links  }
     : T;
+
+type InternalResponseBodyForPathAndMethod<
+    P extends Path,
+    M extends SupportedMethods<P>,
+> = PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203 | 204, infer R>
+    ? PatchLinks<R>
+    : void;
+
+type PatchedAuditLog = Omit<
+    InternalResponseBodyForPathAndMethod<`/v2/audit_logs/${NoSlashString}`, "GET">,
+    "changed_values" | "unchanged_values"
+> & {
+    changed_values?: Record<string, any>;
+    unchanged_values?: Record<string, any>;
+};
+
+type PatchedAuditLogs = Omit<
+    InternalResponseBodyForPathAndMethod<`/v2/audit_logs`, "GET">,
+    "audit_logs"
+> & {
+    audit_logs?: PatchedAuditLog[];
+};
+
+type PatchedCostAlertEvent = Omit<
+    InternalResponseBodyForPathAndMethod<`/v2/cost_alerts/${NoSlashString}/events/${NoSlashString}`, "GET">,
+    "metadata"
+> & {
+    metadata?: Record<string, any>;
+};
+
+type CostsPatch = Omit<
+    InternalResponseBodyForPathAndMethod<`/v2/integrations/${NoSlashString}/costs/${NoSlashString}`, "DELETE">,
+    "usage"
+> & {
+    usage?: Record<string, any>;
+};
 
 /** Patches for specifiic endpoints go here. This is useful for when the OpenAPI spec is not specific enough for our liking. */
 type PathAndMethodSpecificPatches = {
     "/v2/costs": {
-        "GET": {
+        GET: {
             total_cost: {
                 amount: string;
                 currency: string;
@@ -108,7 +144,31 @@ type PathAndMethodSpecificPatches = {
             total_usage: {
                 [usageUnit: string]: string;
             };
+            costs: CostsPatch[];
         };
+    };
+    "/v2/audit_logs": {
+        GET: PatchedAuditLogs;
+    };
+} & {
+    [_ in `/v2/audit_logs/${NoSlashString}`]: {
+        GET: PatchedAuditLog;
+    };
+} & {
+    [_ in `/v2/cost_alerts/${NoSlashString}/events`]: {
+        GET: {
+            cost_alert_events: PatchedCostAlertEvent[];
+        };
+    };
+} & {
+    [_ in `/v2/cost_alerts/${NoSlashString}/events/${NoSlashString}`]: {
+        GET: {
+            metadata: Record<string, any>;
+        };
+    };
+} & {
+    [_ in `/v2/integrations/${NoSlashString}/costs/${NoSlashString}`]: {
+        DELETE: CostsPatch;
     };
 };
 
