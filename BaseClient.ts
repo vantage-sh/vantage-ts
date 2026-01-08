@@ -46,32 +46,38 @@ type Methods<P extends MethodsPossiblyUndefined> = {
 export type SupportedMethods<P extends Path> = Methods<PathsRedefined[P][0]>;
 
 type Query<
-    T extends {
-        parameters?: {
-            query?: any;
-        };
-    } | undefined,
-> = T["parameters"]["query"] extends never | undefined ? {} : T["parameters"]["query"];
+    T extends
+        | {
+              parameters?: {
+                  query?: any;
+              };
+          }
+        | undefined,
+> = T["parameters"]["query"] extends never | undefined
+    ? {}
+    : T["parameters"]["query"];
 
 type ReqBody<
-    T extends {
-        requestBody?: {
-            content: any;
-        };
-    } | undefined,
+    T extends
+        | {
+              requestBody?: {
+                  content: any;
+              };
+          }
+        | undefined,
 > = T extends { requestBody: { content: { "application/json": infer R } } }
     ? R
     : T extends { requestBody: { content: { "multipart/form-data": infer R } } }
-        ? R
-        : {};
+      ? R
+      : {};
 
 /** Defines the request body type for a given path and method. */
 export type RequestBodyForPathAndMethod<
     P extends Path,
-    M extends SupportedMethods<P>
-> = M extends "GET" ?
-    Query<PathsRedefined[P][0][MethodsInverted[M]]> | undefined :
-    ReqBody<PathsRedefined[P][0][MethodsInverted[M]]>;
+    M extends SupportedMethods<P>,
+> = M extends "GET"
+    ? Query<PathsRedefined[P][0][MethodsInverted[M]]> | undefined
+    : ReqBody<PathsRedefined[P][0][MethodsInverted[M]]>;
 
 type ExtendsGoodResponseCode<Code extends number, Output> = {
     [C in Code]: {
@@ -85,7 +91,7 @@ type ExtendsGoodResponseCode<Code extends number, Output> = {
     };
 }[Code];
 
-type Links =  {
+type Links = {
     self?: string | null;
     first?: string | null;
     last?: string | null;
@@ -100,12 +106,19 @@ type PatchLinks<T> = T extends { links?: any }
 type InternalResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
-> = PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203 | 204, infer R>
-    ? R
-    : void;
+> =
+    PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<
+        200 | 201 | 202 | 203 | 204,
+        infer R
+    >
+        ? R
+        : void;
 
 type PatchedAuditLog = Omit<
-    InternalResponseBodyForPathAndMethod<`/v2/audit_logs/${NoSlashString}`, "GET">,
+    InternalResponseBodyForPathAndMethod<
+        `/v2/audit_logs/${NoSlashString}`,
+        "GET"
+    >,
     "changed_values" | "unchanged_values"
 > & {
     changed_values?: Record<string, any>;
@@ -113,21 +126,30 @@ type PatchedAuditLog = Omit<
 };
 
 type PatchedCostAlertEvent = Omit<
-    InternalResponseBodyForPathAndMethod<`/v2/cost_alerts/${NoSlashString}/events/${NoSlashString}`, "GET">,
+    InternalResponseBodyForPathAndMethod<
+        `/v2/cost_alerts/${NoSlashString}/events/${NoSlashString}`,
+        "GET"
+    >,
     "metadata"
 > & {
     metadata?: Record<string, any>;
 };
 
 type CostsPatch = Omit<
-    InternalResponseBodyForPathAndMethod<`/v2/integrations/${NoSlashString}/costs/${NoSlashString}`, "DELETE">,
+    InternalResponseBodyForPathAndMethod<
+        `/v2/integrations/${NoSlashString}/costs/${NoSlashString}`,
+        "DELETE"
+    >,
     "usage"
 > & {
     usage?: Record<string, any>;
 };
 
 type PricePatch = Omit<
-    InternalResponseBodyForPathAndMethod<`/v2/products/${NoSlashString}/prices/${NoSlashString}`, "GET">,
+    InternalResponseBodyForPathAndMethod<
+        `/v2/products/${NoSlashString}/prices/${NoSlashString}`,
+        "GET"
+    >,
     "details"
 > & {
     details?: Record<string, any>;
@@ -192,31 +214,39 @@ type LookupTableType = {
     }>;
 };
 
-type ExecutePatch<Patch, Response> = keyof Patch extends never ? Response : (Omit<Response, keyof Patch> & Patch);
+type ExecutePatch<Patch, Response> = keyof Patch extends never
+    ? Response
+    : Omit<Response, keyof Patch> & Patch;
 
 type DoPathSpecificPatches<
     P extends Path,
     M extends SupportedMethods<P>,
     Response,
     LookupTable extends Partial<LookupTableType>,
-> =
-    LookupTable[P] extends never
-        ? Response
-        // @ts-expect-error: I'm not sure why this is a error case, but we can ignore it. If the path isn't there, the above check will error.
-        : ExecutePatch<LookupTable[P][M], Response>;
+> = LookupTable[P] extends never
+    ? Response
+    : // @ts-expect-error: I'm not sure why this is a error case, but we can ignore it. If the path isn't there, the above check will error.
+      ExecutePatch<LookupTable[P][M], Response>;
 
 /** Defines the response body type for a given path and method. */
 export type ResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
-> = PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203 | 204, infer R>
-    ? PatchLinks<DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>>
-    : void;
+> =
+    PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<
+        200 | 201 | 202 | 203 | 204,
+        infer R
+    >
+        ? PatchLinks<
+              DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
+          >
+        : void;
 
 /** We need to make this a string rather than a TS type so we can use it at runtime. */
-type StringifyType<T extends string> = T extends `${infer A}{${string}}${infer B}`
-    ? `${StringifyType<A>}{}${StringifyType<B>}`
-    : T;
+type StringifyType<T extends string> =
+    T extends `${infer A}{${string}}${infer B}`
+        ? `${StringifyType<A>}{}${StringifyType<B>}`
+        : T;
 
 type Multipart = {
     [key in "post" | "put" | "patch" | "delete"]: {
@@ -230,20 +260,22 @@ type Multipart = {
     };
 };
 
-type MultipartPathInfo<T> = T extends Multipart[keyof Multipart] ? {
-    // This won't be blank, figure out what cases we extend
-    [
-        MultipartMethodStructureName in keyof Multipart
-        as
-            T extends Multipart[MultipartMethodStructureName]
-                ? MethodsCased[MultipartMethodStructureName]
-                : never
-    ]: true;
-} : never;
+type MultipartPathInfo<T> = T extends Multipart[keyof Multipart]
+    ? {
+          // This won't be blank, figure out what cases we extend
+          [MultipartMethodStructureName in keyof Multipart as T extends Multipart[MultipartMethodStructureName]
+              ? MethodsCased[MultipartMethodStructureName]
+              : never]: true;
+      }
+    : never;
 
 type MultipartEdgeCases = {
-    [P in Path as MultipartPathInfo<PathsRedefined[P][0]> extends never ? never : `/v2${StringifyType<PathsRedefined[P][1]>}`]: MultipartPathInfo<PathsRedefined[P][0]>;
-}
+    [P in Path as MultipartPathInfo<PathsRedefined[P][0]> extends never
+        ? never
+        : `/v2${StringifyType<PathsRedefined[P][1]>}`]: MultipartPathInfo<
+        PathsRedefined[P][0]
+    >;
+};
 
 /**
  * You need to add new edgecase routes here! If a route uses multipart/form-data, you will need to add it here.
@@ -264,7 +296,7 @@ const multipartEdgeCases: MultipartEdgeCases = {
 const regexes: { [key: string]: RegExp[] } = {};
 
 function escapeRegex(s: string): string {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 
 for (const [path, methods] of Object.entries(multipartEdgeCases)) {
@@ -295,7 +327,12 @@ function isMultipartMethod(method: string, path: string): boolean {
 function handleGetBodyParams(url: URL, body: any) {
     if (body) {
         for (const [key, value] of Object.entries(body)) {
-            url.searchParams.append(key, Array.isArray(value) ? value.map(String).join(",") : String(value));
+            url.searchParams.append(
+                key,
+                Array.isArray(value)
+                    ? value.map(String).join(",")
+                    : String(value),
+            );
         }
     }
 }
@@ -304,7 +341,11 @@ function handleGetBodyParams(url: URL, body: any) {
 export class VantageApiError extends Error {
     public readonly errors: string[] | null;
 
-    constructor(public readonly status: number | null, public readonly statusText: string | null, public readonly body: string) {
+    constructor(
+        public readonly status: number | null,
+        public readonly statusText: string | null,
+        public readonly body: string,
+    ) {
         let e: string[] | null = null;
         if (status !== null) {
             try {
@@ -314,9 +355,11 @@ export class VantageApiError extends Error {
                 }
             } catch {}
         }
-        const text = status === null ?
-            `Vantage API Error: ${body}` :
-            `Vantage API Error: ${status} ${statusText}` + (e ? ` - ${e.join(", ")}` : "");
+        const text =
+            status === null
+                ? `Vantage API Error: ${body}`
+                : `Vantage API Error: ${status} ${statusText}` +
+                  (e ? ` - ${e.join(", ")}` : "");
         super(text);
         this.errors = e;
     }
@@ -346,7 +389,11 @@ async function execute(
     }
 
     if (!res.ok) {
-        const err = new VantageApiError(res.status, res.statusText, await res.text());
+        const err = new VantageApiError(
+            res.status,
+            res.statusText,
+            await res.text(),
+        );
         if (neverThrow) {
             return [null, err] as NeverThrowResult<any>;
         }
@@ -366,7 +413,7 @@ async function execute(
         if (text) {
             value = JSON.parse(text);
         }
-        return neverThrow ? [value, null] as NeverThrowResult<any> : value;
+        return neverThrow ? ([value, null] as NeverThrowResult<any>) : value;
     } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
         const err = new VantageApiError(res.status, res.statusText, message);
@@ -390,20 +437,22 @@ export class BaseClient<NeverThrow extends boolean> {
     /** Sends a request to the API. */
     async request<
         RequestPath extends Path,
-        RequestMethod extends SupportedMethods<RequestPath>
+        RequestMethod extends SupportedMethods<RequestPath>,
     >(
         path: RequestPath,
         method: RequestMethod,
         body: RequestBodyForPathAndMethod<RequestPath, RequestMethod>,
     ): Promise<
         NeverThrow extends true
-            ? NeverThrowResult<ResponseBodyForPathAndMethod<RequestPath, RequestMethod>>
+            ? NeverThrowResult<
+                  ResponseBodyForPathAndMethod<RequestPath, RequestMethod>
+              >
             : ResponseBodyForPathAndMethod<RequestPath, RequestMethod>
     > {
         const url = new URL(path, this.baseUrl);
 
         const headers: Record<string, string> = {
-            "Authorization": `Bearer ${this.bearerToken}`,
+            Authorization: `Bearer ${this.bearerToken}`,
         };
         if (method === "GET") {
             // Set query parameters for GET requests
@@ -417,13 +466,21 @@ export class BaseClient<NeverThrow extends boolean> {
         if (isMultipart) {
             // Handle multipart/form-data request
             const formData = new FormData();
-            for (const [key, value] of Object.entries(body as Record<string, any>)) {
+            for (const [key, value] of Object.entries(
+                body as Record<string, any>,
+            )) {
                 formData.append(key, value);
             }
             headers["Content-Type"] = "multipart/form-data";
             return execute(url, method, headers, formData, this.neverThrow);
         }
         headers["Content-Type"] = "application/json";
-        return execute(url, method, headers, JSON.stringify(body), this.neverThrow);
+        return execute(
+            url,
+            method,
+            headers,
+            JSON.stringify(body),
+            this.neverThrow,
+        );
     }
 }
