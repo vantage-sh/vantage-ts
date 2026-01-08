@@ -1,4 +1,4 @@
-import { APIV2Client, VantageApiError } from "./dist";
+import { APIV2Client, VantageAPIError } from "./dist";
 import { expect, test, describe } from "vitest";
 
 const token = process.env.VANTAGE_API_TOKEN;
@@ -78,7 +78,7 @@ describe("API throws", () => {
         const [response, error] = await client.me.get();
         expect(response).toBeNull();
         expect(error).not.toBeNull();
-        expect(error).toBeInstanceOf(VantageApiError);
+        expect(error).toBeInstanceOf(VantageAPIError);
         expect(error.status).toBe(401);
     });
 
@@ -91,7 +91,7 @@ describe("API throws", () => {
             caughtError = e;
         }
         expect(caughtError).not.toBeNull();
-        expect(caughtError).toBeInstanceOf(VantageApiError);
+        expect(caughtError).toBeInstanceOf(VantageAPIError);
         expect(caughtError.status).toBe(401);
     });
 });
