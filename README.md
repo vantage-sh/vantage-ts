@@ -122,15 +122,15 @@ function displayReport(report: GetCostReportResponse) {
 
 ## Error Handling
 
-By default, API errors are thrown as `VantageApiError` with structured error information:
+By default, API errors are thrown as `VantageAPIError` with structured error information:
 
 ```typescript
-import { VantageApiError } from "@vantage-sh/vantage-client";
+import { VantageAPIError } from "@vantage-sh/vantage-client";
 
 try {
   await client.costReports.get("invalid_token");
 } catch (error) {
-  if (error instanceof VantageApiError) {
+  if (error instanceof VantageAPIError) {
     console.log(error.status);     // 404
     console.log(error.statusText); // "Not Found"
     console.log(error.errors);     // ["Resource not found"] or null
@@ -143,7 +143,7 @@ try {
 For Go-style error handling without try/catch, enable never throw mode by passing `true` as the second argument to the client constructor:
 
 ```typescript
-import { APIV2Client, VantageApiError } from "@vantage-sh/vantage-client";
+import { APIV2Client, VantageAPIError } from "@vantage-sh/vantage-client";
 
 const client = new APIV2Client("your-api-token", true);
 

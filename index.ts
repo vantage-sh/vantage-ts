@@ -5,6 +5,6 @@ export {
     type SupportedMethods,
     type NoSlashString,
     pathEncode,
-    VantageApiError,
+    VantageAPIError,
 } from "./BaseClient";
 export * from "./clientAutogen";

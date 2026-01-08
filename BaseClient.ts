@@ -338,7 +338,7 @@ function handleGetBodyParams(url: URL, body: any) {
 }
 
 /** Defines a vantage API failure */
-export class VantageApiError extends Error {
+export class VantageAPIError extends Error {
     public readonly errors: string[] | null;
 
     constructor(
@@ -381,7 +381,7 @@ async function execute(
         });
     } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
-        const err = new VantageApiError(null, null, message);
+        const err = new VantageAPIError(null, null, message);
         if (neverThrow) {
             return [null, err] as NeverThrowResult<any>;
         }
@@ -389,7 +389,7 @@ async function execute(
     }
 
     if (!res.ok) {
-        const err = new VantageApiError(
+        const err = new VantageAPIError(
             res.status,
             res.statusText,
             await res.text(),
@@ -416,7 +416,7 @@ async function execute(
         return neverThrow ? ([value, null] as NeverThrowResult<any>) : value;
     } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
-        const err = new VantageApiError(res.status, res.statusText, message);
+        const err = new VantageAPIError(res.status, res.statusText, message);
         if (neverThrow) {
             return [null, err] as NeverThrowResult<any>;
         }
@@ -424,7 +424,7 @@ async function execute(
     }
 }
 
-type NeverThrowResult<T> = [null, VantageApiError] | [T, null];
+type NeverThrowResult<T> = [null, VantageAPIError] | [T, null];
 
 /** Defines the base client for all API requests. */
 export class BaseClient<NeverThrow extends boolean> {
