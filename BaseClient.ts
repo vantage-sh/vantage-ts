@@ -94,14 +94,14 @@ type Links =  {
 };
 
 type PatchLinks<T> = T extends { links?: any }
-    ? Omit<T, "links"> & { links?: Links  }
+    ? Omit<T, "links"> & { links?: Links }
     : T;
 
 type InternalResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
 > = PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203 | 204, infer R>
-    ? PatchLinks<R>
+    ? R
     : void;
 
 type PatchedAuditLog = Omit<
@@ -110,13 +110,6 @@ type PatchedAuditLog = Omit<
 > & {
     changed_values?: Record<string, any>;
     unchanged_values?: Record<string, any>;
-};
-
-type PatchedAuditLogs = Omit<
-    InternalResponseBodyForPathAndMethod<`/v2/audit_logs`, "GET">,
-    "audit_logs"
-> & {
-    audit_logs?: PatchedAuditLog[];
 };
 
 type PatchedCostAlertEvent = Omit<
@@ -131,6 +124,13 @@ type CostsPatch = Omit<
     "usage"
 > & {
     usage?: Record<string, any>;
+};
+
+type PricePatch = Omit<
+    InternalResponseBodyForPathAndMethod<`/v2/products/${NoSlashString}/prices/${NoSlashString}`, "GET">,
+    "details"
+> & {
+    details?: Record<string, any>;
 };
 
 /** Patches for specifiic endpoints go here. This is useful for when the OpenAPI spec is not specific enough for our liking. */
@@ -148,7 +148,9 @@ type PathAndMethodSpecificPatches = {
         };
     };
     "/v2/audit_logs": {
-        GET: PatchedAuditLogs;
+        GET: {
+            audit_logs?: PatchedAuditLog[];
+        };
     };
 } & {
     [_ in `/v2/audit_logs/${NoSlashString}`]: {
@@ -169,6 +171,18 @@ type PathAndMethodSpecificPatches = {
 } & {
     [_ in `/v2/integrations/${NoSlashString}/costs/${NoSlashString}`]: {
         DELETE: CostsPatch;
+    };
+} & {
+    [_ in `/v2/products/${NoSlashString}/prices/${NoSlashString}`]: {
+        GET: {
+            details?: Record<string, any>;
+        };
+    };
+} & {
+    [_ in `/v2/products/${NoSlashString}/prices`]: {
+        GET: {
+            prices: PricePatch[];
+        };
     };
 };
 
