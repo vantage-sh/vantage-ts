@@ -89,7 +89,7 @@ The `Path` type is a union of all valid API paths. TypeScript will error on inva
 await client.request("/cost_reports", "GET", { page: 1 });
 
 // ✗ TypeScript error: invalid path
-await client.request("/not_a_real_endpoint", "GET", undefined);
+await client.request("/not_a_real_endpoint", "GET", {});
 ```
 
 #### Method Type Safety
@@ -101,7 +101,7 @@ The `SupportedMethods<P>` type ensures only valid HTTP methods for each path:
 await client.request("/cost_reports", "GET", { page: 1 });
 
 // ✗ TypeScript error: DELETE not supported on /cost_reports
-await client.request("/cost_reports", "DELETE", undefined);
+await client.request("/cost_reports", "DELETE", {});
 ```
 
 #### Request/Response Types

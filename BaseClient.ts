@@ -76,7 +76,7 @@ export type RequestBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
 > = M extends "GET"
-    ? Query<PathsRedefined[P][0][MethodsInverted[M]]> | undefined
+    ? Query<PathsRedefined[P][0][MethodsInverted[M]]>
     : ReqBody<PathsRedefined[P][0][MethodsInverted[M]]>;
 
 type ExtendsGoodResponseCode<Code extends number, Output> = {
