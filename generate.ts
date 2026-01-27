@@ -192,16 +192,35 @@ async function main() {
         // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
         // This makes the generated TS types nicer to use (and matches runtime behavior).
         transformProperty: (property, schemaObject) => {
-            if (schemaObject && schemaObject.default !== undefined) {
-                return ts.factory.updatePropertySignature(
-                    property,
-                    property.modifiers,
-                    property.name,
-                    ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-                    property.type
+            let updatedProperty = property;
+            
+            // Handle x-nullable: add null union type
+            if (schemaObject && (schemaObject as any)["x-nullable"] === true && property.type) {
+                const unionType = ts.factory.createUnionTypeNode([
+                    property.type,
+                    ts.factory.createLiteralTypeNode(ts.factory.createNull())
+                ]);
+                updatedProperty = ts.factory.updatePropertySignature(
+                    updatedProperty,
+                    updatedProperty.modifiers,
+                    updatedProperty.name,
+                    updatedProperty.questionToken,
+                    unionType
                 );
             }
-            return property;
+            
+            // Handle default: make property optional
+            if (schemaObject && schemaObject.default !== undefined) {
+                updatedProperty = ts.factory.updatePropertySignature(
+                    updatedProperty,
+                    updatedProperty.modifiers,
+                    updatedProperty.name,
+                    ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+                    updatedProperty.type
+                );
+            }
+            
+            return updatedProperty;
         },
     });
     writeFileSync("swaggerSchema.d.ts", astToString(dts), { encoding: "utf-8" });
