@@ -223,7 +223,12 @@ async function main() {
             return updatedProperty;
         },
     });
-    writeFileSync("swaggerSchema.d.ts", astToString(dts), { encoding: "utf-8" });
+    
+    // Convert AST to string and replace Record<string, never> with Record<string, any>
+    let schemaOutput = astToString(dts);
+    schemaOutput = schemaOutput.replace(/Record<string, never>/g, "Record<string, any>");
+
+    writeFileSync("swaggerSchema.d.ts", schemaOutput, { encoding: "utf-8" });
     console.log("Generated swaggerSchema.d.ts");
 
     const paths = schema.paths as Record<string, any>;
