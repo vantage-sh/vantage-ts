@@ -45,6 +45,7 @@ jobs:
               run: npm run test e2e.test.ts
               env:
                   VANTAGE_API_TOKEN: ${{ secrets.VANTAGE_API_TOKEN }}
+                  VANTAGE_WORKSPACE_TOKEN: ${{ secrets.VANTAGE_WORKSPACE_TOKEN }}
 
     dry-build:
         name: Dry Build

@@ -6,25 +6,31 @@ if (!token) {
     throw new Error("VANTAGE_API_TOKEN environment variable is not set.");
 }
 
-let workspaceToken: string;
+const workspaceToken = process.env.VANTAGE_WORKSPACE_TOKEN;
+if (!workspaceToken) {
+    throw new Error("VANTAGE_WORKSPACE_TOKEN environment variable is not set.");
+}
 
-test("POST request with parameters (create workspace)", async () => {
+let folderToken: string;
+
+test("POST request with parameters (create folder)", async () => {
     const client = new APIV2Client(token);
-    const workspace = await client.workspaces.create({
-        name: "E2E Test Workspace",
+    const folder = await client.folders.create({
+        title: "E2E Test Folder",
+        workspace_token: workspaceToken,
     });
-    workspaceToken = workspace.token;
-    expect(workspace.name).toBe("E2E Test Workspace");
+    folderToken = folder.token;
+    expect(folder.title).toBe("E2E Test Folder");
 });
 
-describe("GET requests for workspace", () => {
+describe("GET requests for folder", () => {
     test("never throw off", async () => {
-        if (!workspaceToken) {
-            throw new Error("Workspace token is not set from previous test.");
+        if (!folderToken) {
+            throw new Error("Folder token is not set from previous test.");
         }
         const client = new APIV2Client(token);
-        const workspace = await client.workspaces.get(workspaceToken);
-        expect(workspace.token).toBe(workspaceToken);
+        const folder = await client.folders.get(folderToken);
+        expect(folder.title).toBe("E2E Test Folder");
     });
 
     test("never throw on", async () => {
@@ -32,43 +38,43 @@ describe("GET requests for workspace", () => {
             throw new Error("Workspace token is not set from previous test.");
         }
         const client = new APIV2Client(token, true);
-        const [workspace, error] = await client.workspaces.get(workspaceToken);
+        const [folder, error] = await client.folders.get(folderToken);
         expect(error).toBeNull();
-        expect(workspace.token).toBe(workspaceToken);
+        expect(folder.title).toBe("E2E Test Folder");
     });
 });
 
-describe("PUT requests for workspace", () => {
+describe("PUT requests for folder", () => {
     test("never throw off", async () => {
-        if (!workspaceToken) {
-            throw new Error("Workspace token is not set from previous test.");
+        if (!folderToken) {
+            throw new Error("Folder token is not set from previous test.");
         }
         const client = new APIV2Client(token);
-        const updated = await client.workspaces.update(workspaceToken, {
-            name: "Updated E2E Test Workspace",
+        const updated = await client.folders.update(folderToken, {
+            title: "Updated E2E Test Folder",
         });
-        expect(updated.name).toBe("Updated E2E Test Workspace");
+        expect(updated.title).toBe("Updated E2E Test Folder");
     });
     
     test("never throw on", async () => {
-        if (!workspaceToken) {
-            throw new Error("Workspace token is not set from previous test.");
+        if (!folderToken) {
+            throw new Error("Folder token is not set from previous test.");
         }
         const client = new APIV2Client(token, true);
-        const [updated, error] = await client.workspaces.update(workspaceToken, {
-            name: "Updated E2E Test Workspace Again",
+        const [updated, error] = await client.folders.update(folderToken, {
+            title: "Updated E2E Test Folder Again",
         });
         expect(error).toBeNull();
-        expect(updated.name).toBe("Updated E2E Test Workspace Again");
+        expect(updated.title).toBe("Updated E2E Test Folder Again");
     });
 });
 
-test("DELETE request (delete workspace)", async () => {
-    if (!workspaceToken) {
-        throw new Error("Workspace token is not set from previous test.");
+test("DELETE request (delete folder)", async () => {
+    if (!folderToken) {
+        throw new Error("Folder token is not set from previous test.");
     }
     const client = new APIV2Client(token);
-    await client.workspaces.delete(workspaceToken);
+    await client.folders.delete(folderToken);
 });
 
 
