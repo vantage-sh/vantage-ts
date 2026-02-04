@@ -18,7 +18,7 @@
     ],
     "author": "Vantage",
     "license": "MIT",
-    "repository": "https://github.com/Vantage-sh/vantage-ts",
+    "repository": "https://github.com/Vantage-sh/vantage-ts.git",
     "devDependencies": {
         "@types/node": "^25.0.3",
         "openapi-typescript": "^7.10.1",
