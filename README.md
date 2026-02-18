@@ -237,3 +237,14 @@ The SDK exports several utility types for advanced use:
 | `RequestBodyForPathAndMethod<P, M>` | Request body type for a path/method |
 | `ResponseBodyForPathAndMethod<P, M>` | Response body type for a path/method |
 | `NoSlashString` | Branded type for safely encoded path segments |
+
+## Publishing
+
+After building locally and confirming the changes in the Vantage API are reflected in the types in this
+repository, bump the `version` in `package.json` and open a PR. CI will take care of publishing the new
+version with the updates.
+
+Semantic Considerations:
+* `patch` - Bug fixes
+* `minor` - New APIs or additions to existing APIs
+* `major` - Breaking changes
