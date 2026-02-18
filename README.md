@@ -244,6 +244,8 @@ After building locally and confirming the changes in the Vantage API are reflect
 repository, bump the `version` in `package.json` and open a PR. CI will take care of publishing the new
 version with the updates.
 
+**NOTE:** For now, you also need to create a tag after the CI tests pass. This will change in the future.
+
 Semantic Considerations:
 * `patch` - Bug fixes
 * `minor` - New APIs or additions to existing APIs
