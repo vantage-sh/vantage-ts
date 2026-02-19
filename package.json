@@ -31,9 +31,8 @@
         "vitest": "^4.0.16"
     },
     "scripts": {
-        "build:generate": "tsx ./generate.ts",
-        "build:ts": "tsup",
-        "build": "npm run build:generate && npm run build:ts",
+        "generate": "tsx ./generate.ts",
+        "build": "tsup",
         "type-check": "npm run build && tsc --noEmit",
         "test": "npm run build && vitest"
     }
