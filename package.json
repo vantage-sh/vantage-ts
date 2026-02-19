@@ -33,7 +33,7 @@
     "scripts": {
         "generate": "tsx ./generate.ts",
         "build": "tsup",
-        "type-check": "tsc --noEmit",
-        "test": "vitest"
+        "type-check": "npm run build && tsc --noEmit",
+        "test": "npm run build && vitest"
     }
 }
