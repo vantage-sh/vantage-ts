@@ -59,3 +59,22 @@ jobs:
             - name: Install Dependencies
               run: npm install
             - run: npm run build
+
+    compare-to-api:
+        name: Compare to API
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22"
+            - name: Install Dependencies
+              run: npm install
+            - name: Diff the generated types with the API
+              run: |
+                mv clientAutogen.ts clientAutogen.ts.old
+                mv swaggerSchema.d.ts swaggerSchema.d.ts.old
+                npm run generate
+                diff clientAutogen.ts clientAutogen.ts.old
+                diff swaggerSchema.d.ts swaggerSchema.d.ts.old

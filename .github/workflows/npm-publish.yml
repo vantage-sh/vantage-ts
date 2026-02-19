@@ -2,12 +2,12 @@ name: Publish Package
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 permissions:
   id-token: write # Required for OIDC
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -20,9 +20,26 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
-      # Ensure npm 11.5.1 or later is installed
       - name: Update npm
         run: npm install -g npm@latest
+
       - run: npm ci
-      - run: npm run build
-      - run: npm publish
+
+      - name: Get the version and create a tag/publish if it doesn't exist
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          if git tag -l "v$VERSION" | grep -q .; then
+            echo "Tag v$VERSION already exists"
+          else
+            echo "Tag v$VERSION does not exist"
+
+            # Build the package and publish it
+            npm run build
+            npm publish
+
+            # Push the tag to the remote repository
+            git tag "v$VERSION"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git push origin "v$VERSION"
+          fi
