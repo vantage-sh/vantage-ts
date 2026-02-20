@@ -128,7 +128,7 @@ export type ResponseBodyForPathAndMethod<
     M extends SupportedMethods<P>,
 > =
     PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<
-        200 | 201 | 202 | 203 | 204,
+        200 | 201 | 202 | 203,
         infer R
     >
         ? DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
