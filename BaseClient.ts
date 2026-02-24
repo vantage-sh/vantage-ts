@@ -1,4 +1,5 @@
 import type { paths } from "./swaggerSchema";
+import type { LocationHeaderPathMethods } from "./clientAutogen";
 
 /** A string that is guaranteed to not contain slashes. Can be generated with {@link pathEncode} */
 export type NoSlashString = string & { readonly __noSlash: unique symbol };
@@ -127,12 +128,11 @@ export type ResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
 > =
-    PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<
-        200 | 201 | 202 | 203,
-        infer R
-    >
-        ? DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
-        : void;
+    `${M} ${P}` extends keyof LocationHeaderPathMethods
+        ? LocationHeaderPathMethods[`${M} ${P}`]
+        : PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203, infer R>
+            ? DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
+            : void;
 
 /** We need to make this a string rather than a TS type so we can use it at runtime. */
 type StringifyType<T extends string> =
@@ -263,6 +263,7 @@ async function execute(
     headers: Record<string, string>,
     body: any,
     neverThrow: boolean,
+    returnLocation: boolean,
 ): Promise<any> {
     let res: Response;
     try {
@@ -290,6 +291,11 @@ async function execute(
             return [null, err] as NeverThrowResult<any>;
         }
         throw err;
+    }
+
+    if (returnLocation) {
+        const location = res.headers.get("Location");
+        return neverThrow ? ([location, null] as NeverThrowResult<string>) : location;
     }
 
     if (res.status === 204) {
@@ -320,6 +326,9 @@ type NeverThrowResult<T> = [null, VantageAPIError] | [T, null];
 
 /** Defines the base client for all API requests. */
 export class BaseClient<NeverThrow extends boolean> {
+    /** Overridden by the generated client with the set of routes that respond via Location header. */
+    protected locationHeaderRoutes: ReadonlySet<string> = new Set();
+
     constructor(
         private readonly bearerToken: string,
         private readonly neverThrow: NeverThrow,
@@ -336,9 +345,7 @@ export class BaseClient<NeverThrow extends boolean> {
         body: RequestBodyForPathAndMethod<RequestPath, RequestMethod>,
     ): Promise<
         NeverThrow extends true
-            ? NeverThrowResult<
-                  ResponseBodyForPathAndMethod<RequestPath, RequestMethod>
-              >
+            ? NeverThrowResult<ResponseBodyForPathAndMethod<RequestPath, RequestMethod>>
             : ResponseBodyForPathAndMethod<RequestPath, RequestMethod>
     > {
         const url = new URL(path, this.baseUrl);
@@ -346,10 +353,11 @@ export class BaseClient<NeverThrow extends boolean> {
         const headers: Record<string, string> = {
             Authorization: `Bearer ${this.bearerToken}`,
         };
+        const returnLocation = this.locationHeaderRoutes.has(`${method} ${path}`);
         if (method === "GET") {
             // Set query parameters for GET requests
             handleGetBodyParams(url, body);
-            return execute(url, method, headers, undefined, this.neverThrow);
+            return execute(url, method, headers, undefined, this.neverThrow, returnLocation);
         }
 
         // Figure out if this route is a multipart route
@@ -364,7 +372,7 @@ export class BaseClient<NeverThrow extends boolean> {
                 formData.append(key, value);
             }
             headers["Content-Type"] = "multipart/form-data";
-            return execute(url, method, headers, formData, this.neverThrow);
+            return execute(url, method, headers, formData, this.neverThrow, returnLocation);
         }
         headers["Content-Type"] = "application/json";
         return execute(
@@ -373,6 +381,7 @@ export class BaseClient<NeverThrow extends boolean> {
             headers,
             JSON.stringify(body),
             this.neverThrow,
+            returnLocation,
         );
     }
 }

@@ -9,6 +9,12 @@ import {
     type ResponseBodyForPathAndMethod,
 } from "./BaseClient";
 
+export interface LocationHeaderPathMethods {
+    "POST /v2/costs/data_exports": string;
+    "POST /v2/kubernetes_efficiency_reports/data_exports": string;
+    "POST /v2/unit_costs/data_exports": string;
+}
+
 // Request/Response types for each endpoint
 /**
  * Return all Access Grants that the current API token has access to.
@@ -1211,6 +1217,8 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     ) {
         super(bearerToken, neverThrow, baseUrl);
     }
+
+    protected override locationHeaderRoutes: ReadonlySet<string> = new Set(["POST /v2/costs/data_exports", "POST /v2/kubernetes_efficiency_reports/data_exports", "POST /v2/unit_costs/data_exports"]);
 
     private _accessGrants?: AccessGrantsApi<NeverThrow>;
     private _anomalyAlerts?: AnomalyAlertsApi<NeverThrow>;

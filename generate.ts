@@ -2,6 +2,17 @@ import openapiGen, { astToString } from "openapi-typescript";
 import ts from "typescript";
 import { writeFileSync } from "fs";
 
+// Maps a substring found in a response description to a handler name and the
+// TypeScript return type to use. Checked against every response description
+// during endpoint parsing; the first match wins.
+const RESPONSE_HANDLERS: Array<{ phrase: string; handler: string; returnType: string }> = [
+    {
+        phrase: "will be available at the location specified in the Location header",
+        handler: "location",
+        returnType: "string",
+    },
+];
+
 interface PathParam {
     name: string;
     camelName: string;
@@ -19,6 +30,8 @@ interface EndpointInfo {
     summary?: string;
     description?: string;
     deprecated?: boolean;
+    responseHandler?: string;
+    responseHandlerReturnType?: string;
 }
 
 function toCamelCase(str: string): string {
@@ -250,6 +263,21 @@ async function main() {
             const hasBody = !!details.requestBody;
             const isBodyOptional = !hasBody || !details.requestBody.required;
 
+            // Detect response handler edgecases by scanning response descriptions
+            let responseHandler: string | undefined;
+            let responseHandlerReturnType: string | undefined;
+            for (const respDesc of Object.values((details.responses ?? {}) as Record<string, any>)) {
+                const text = (respDesc as any).description ?? "";
+                for (const { phrase, handler, returnType } of RESPONSE_HANDLERS) {
+                    if (text.includes(phrase)) {
+                        responseHandler = handler;
+                        responseHandlerReturnType = returnType;
+                        break;
+                    }
+                }
+                if (responseHandler) break;
+            }
+
             endpoints.push({
                 path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
                 originalPath: path,
@@ -262,9 +290,14 @@ async function main() {
                 summary: details.summary,
                 description: details.description,
                 deprecated: details.deprecated,
+                responseHandler,
+                responseHandlerReturnType,
             });
         }
     }
+
+    // Collect endpoints that have a response handler edgecase
+    const edgecaseEndpoints = endpoints.filter(e => e.responseHandler !== undefined);
 
     // Generate output
     let output = `// Auto-generated Vantage API Client
@@ -279,6 +312,15 @@ import {
 } from "./BaseClient";
 
 `;
+
+    // Always emit the interface so BaseClient.ts can import it unconditionally.
+    // Entries are added for every route whose response comes via Location header.
+    output += `export interface LocationHeaderPathMethods {\n`;
+    for (const ep of edgecaseEndpoints) {
+        output += `    "${ep.method} /v2${ep.originalPath}": ${ep.responseHandlerReturnType};\n`;
+    }
+    output += `}\n\n`;
+
 
     // Generate type exports for each endpoint
     // Note: Template literal types with multiple ${string} segments don't work well in generic type parameters
@@ -351,6 +393,14 @@ import {
     output += `    ) {\n`;
     output += `        super(bearerToken, neverThrow, baseUrl);\n`;
     output += `    }\n\n`;
+
+    // Override the location header routes set with the generated list
+    if (edgecaseEndpoints.length > 0) {
+        const routeEntries = edgecaseEndpoints
+            .map(ep => `"${ep.method} /v2${ep.originalPath}"`)
+            .join(", ");
+        output += `    protected override locationHeaderRoutes: ReadonlySet<string> = new Set([${routeEntries}]);\n\n`;
+    }
 
     // Generate private fields for each resource
     for (const resource of resourceGroups.keys()) {
