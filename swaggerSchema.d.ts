@@ -1421,7 +1421,11 @@ export interface paths {
          * @description Configure SSO for a Managed Account.
          */
         post: operations["createSsoConnectionForManagedAccount"];
-        delete?: never;
+        /**
+         * Delete SSO connection for managed account
+         * @description Delete SSO connection for a Managed Account.
+         */
+        delete: operations["deleteSsoConnectionForManagedAccount"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4043,7 +4047,7 @@ export interface components {
              * @default vntg
              * @enum {string}
              */
-            schema?: "vntg" | "focus";
+            schema?: "vntg" | "focus" | "comparison";
         };
         /** @description Costs model */
         Costs: {
@@ -4740,6 +4744,14 @@ export interface components {
              */
             file_type: "pdf" | "csv";
         };
+        /** @description DownloadInvoice model */
+        DownloadInvoice: {
+            /**
+             * @description The URL to download the invoice file.
+             * @example https://example.com/invoice.pdf
+             */
+            download_url: string;
+        };
         /** @description SendInvoice model */
         SendInvoice: {
             recipients: string[];
@@ -4914,6 +4926,13 @@ export interface components {
             email_domain?: string | null;
             /** @description Token of the MSP billing profile used for this managed account (MSP invoicing accounts only) */
             msp_billing_profile_token?: string | null;
+            /**
+             * Format: int32
+             * @description Number of days until payment is due after invoice date (MSP invoicing accounts only)
+             */
+            payment_terms_days?: number | null;
+            /** @description Whether to include managed account's own integrations in invoice cost calculations (MSP invoicing accounts only) */
+            include_managed_account_integrations?: boolean | null;
             billing_information_attributes?: components["schemas"]["BillingInformation"];
             business_information_attributes?: components["schemas"]["BusinessInformation"];
         };
@@ -4944,6 +4963,13 @@ export interface components {
             email_domain?: string;
             /** @description Token of the MSP billing profile to use for this managed account (MSP invoicing accounts only). */
             msp_billing_profile_token?: string;
+            /**
+             * Format: int32
+             * @description Number of days until payment is due after invoice date (MSP invoicing accounts only). Defaults to 10.
+             */
+            payment_terms_days?: number;
+            /** @description Whether to include managed account's own integrations in invoice cost calculations (MSP invoicing accounts only). Defaults to false. */
+            include_managed_account_integrations?: boolean;
             /** @description Billing address and contact information (MSP invoicing accounts only) */
             billing_information_attributes?: {
                 /** Format: int32 */
@@ -6296,6 +6322,19 @@ export interface components {
                     end_date?: string;
                 }[];
             }[];
+        };
+        /** @description AsyncVirtualTagConfigUpdate model */
+        AsyncVirtualTagConfigUpdate: {
+            /**
+             * @description The request ID of the async virtual tag config update.
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            request_id: string;
+            /**
+             * @description The status path of the async virtual tag config update.
+             * @example /v2/virtual_tag_configs/async/550e8400-e29b-41d4-a716-446655440000
+             */
+            status_url: string;
         };
         /** @description Workspaces model */
         Workspaces: {
@@ -11314,7 +11353,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DownloadInvoice"];
+                };
             };
             /** @description NotFound */
             404: {
@@ -12035,6 +12076,45 @@ export interface operations {
         };
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagedAccount"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteSsoConnectionForManagedAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                managed_account_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -15888,7 +15968,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["AsyncVirtualTagConfigUpdate"];
+                };
             };
             /** @description BadRequest */
             400: {

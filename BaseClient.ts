@@ -1,5 +1,5 @@
 import type { paths } from "./swaggerSchema";
-import type { LocationHeaderPathMethods } from "./clientAutogen";
+import type { PathResponseEdgecases } from "./clientAutogen";
 
 /** A string that is guaranteed to not contain slashes. Can be generated with {@link pathEncode} */
 export type NoSlashString = string & { readonly __noSlash: unique symbol };
@@ -128,8 +128,8 @@ export type ResponseBodyForPathAndMethod<
     P extends Path,
     M extends SupportedMethods<P>,
 > =
-    `${M} ${P}` extends keyof LocationHeaderPathMethods
-        ? LocationHeaderPathMethods[`${M} ${P}`]
+    `${M} ${P}` extends keyof PathResponseEdgecases
+        ? PathResponseEdgecases[`${M} ${P}` & keyof PathResponseEdgecases]
         : PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203, infer R>
             ? DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
             : void;
@@ -263,7 +263,7 @@ async function execute(
     headers: Record<string, string>,
     body: any,
     neverThrow: boolean,
-    returnLocation: boolean,
+    edgecase?: string,
 ): Promise<any> {
     let res: Response;
     try {
@@ -281,6 +281,20 @@ async function execute(
         throw err;
     }
 
+    // Boolean-status routes: 404 → false, 2xx → true, else throw.
+    // Must run before the generic !res.ok check since 404 is a valid outcome here.
+    if (edgecase === "boolean") {
+        if (res.status === 404) {
+            return neverThrow ? ([false, null] as NeverThrowResult<boolean>) : false;
+        }
+        if (!res.ok) {
+            const err = new VantageAPIError(res.status, res.statusText, await res.text());
+            if (neverThrow) return [null, err] as NeverThrowResult<any>;
+            throw err;
+        }
+        return neverThrow ? ([true, null] as NeverThrowResult<boolean>) : true;
+    }
+
     if (!res.ok) {
         const err = new VantageAPIError(
             res.status,
@@ -293,7 +307,7 @@ async function execute(
         throw err;
     }
 
-    if (returnLocation) {
+    if (edgecase === "location") {
         const location = res.headers.get("Location");
         return neverThrow ? ([location, null] as NeverThrowResult<string>) : location;
     }
@@ -326,8 +340,8 @@ type NeverThrowResult<T> = [null, VantageAPIError] | [T, null];
 
 /** Defines the base client for all API requests. */
 export class BaseClient<NeverThrow extends boolean> {
-    /** Overridden by the generated client with the set of routes that respond via Location header. */
-    protected locationHeaderRoutes: ReadonlySet<string> = new Set();
+    /** Overridden by the generated client. Maps a route key prefix ("METHOD /path/prefix") to its edgecase handler name. */
+    protected routeEdgecases: ReadonlyMap<string, string> = new Map();
 
     constructor(
         private readonly bearerToken: string,
@@ -353,11 +367,19 @@ export class BaseClient<NeverThrow extends boolean> {
         const headers: Record<string, string> = {
             Authorization: `Bearer ${this.bearerToken}`,
         };
-        const returnLocation = this.locationHeaderRoutes.has(`${method} ${path}`);
+        const routeKey = `${method} ${path}`;
+        let edgecase: string | undefined;
+        for (const [pattern, handler] of this.routeEdgecases) {
+            if (routeKey.startsWith(pattern)) {
+                edgecase = handler;
+                break;
+            }
+        }
+
         if (method === "GET") {
             // Set query parameters for GET requests
             handleGetBodyParams(url, body);
-            return execute(url, method, headers, undefined, this.neverThrow, returnLocation);
+            return execute(url, method, headers, undefined, this.neverThrow, edgecase);
         }
 
         // Figure out if this route is a multipart route
@@ -372,7 +394,7 @@ export class BaseClient<NeverThrow extends boolean> {
                 formData.append(key, value);
             }
             headers["Content-Type"] = "multipart/form-data";
-            return execute(url, method, headers, formData, this.neverThrow, returnLocation);
+            return execute(url, method, headers, formData, this.neverThrow, edgecase);
         }
         headers["Content-Type"] = "application/json";
         return execute(
@@ -381,7 +403,7 @@ export class BaseClient<NeverThrow extends boolean> {
             headers,
             JSON.stringify(body),
             this.neverThrow,
-            returnLocation,
+            edgecase,
         );
     }
 }

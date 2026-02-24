@@ -9,10 +9,11 @@ import {
     type ResponseBodyForPathAndMethod,
 } from "./BaseClient";
 
-export interface LocationHeaderPathMethods {
+export interface PathResponseEdgecases {
     "POST /v2/costs/data_exports": string;
     "POST /v2/kubernetes_efficiency_reports/data_exports": string;
     "POST /v2/unit_costs/data_exports": string;
+    [key: `GET /v2/virtual_tag_configs/async/${NoSlashString}`]: boolean;
 }
 
 // Request/Response types for each endpoint
@@ -725,6 +726,10 @@ export type CreateSsoConnectionForManagedAccountRequest = RequestBodyForPathAndM
  */
 export type CreateSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "POST">;
 /**
+ * Response type for Delete SSO connection for managed account
+ */
+export type DeleteSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "DELETE">;
+/**
  * Response type for Get authenticated user info
  */
 export type GetMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "GET">;
@@ -1218,7 +1223,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
         super(bearerToken, neverThrow, baseUrl);
     }
 
-    protected override locationHeaderRoutes: ReadonlySet<string> = new Set(["POST /v2/costs/data_exports", "POST /v2/kubernetes_efficiency_reports/data_exports", "POST /v2/unit_costs/data_exports"]);
+    protected override routeEdgecases: ReadonlyMap<string, string> = new Map([["POST /v2/costs/data_exports", "location"], ["POST /v2/kubernetes_efficiency_reports/data_exports", "location"], ["POST /v2/unit_costs/data_exports", "location"], ["GET /v2/virtual_tag_configs/async/", "boolean"]]);
 
     private _accessGrants?: AccessGrantsApi<NeverThrow>;
     private _anomalyAlerts?: AnomalyAlertsApi<NeverThrow>;
@@ -2854,6 +2859,17 @@ class ManagedAccountsApi<NeverThrow extends boolean> {
             `/v2/managed_accounts/${pathEncode(managedAccountToken)}/sso_connection`,
             "POST",
             body,
+        );
+    }
+
+/**
+ * Delete SSO connection for a Managed Account.
+ */
+    deleteSsoConnectionForManagedAccount(managedAccountToken: string) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/sso_connection`,
+            "DELETE",
+            {},
         );
     }
 
