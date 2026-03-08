@@ -9,6 +9,13 @@ import {
     type ResponseBodyForPathAndMethod,
 } from "./BaseClient";
 
+export interface PathResponseEdgecases {
+    "POST /v2/costs/data_exports": string;
+    "POST /v2/kubernetes_efficiency_reports/data_exports": string;
+    "POST /v2/unit_costs/data_exports": string;
+    [key: `GET /v2/virtual_tag_configs/async/${NoSlashString}`]: boolean;
+}
+
 // Request/Response types for each endpoint
 /**
  * Return all Access Grants that the current API token has access to.
@@ -719,9 +726,21 @@ export type CreateSsoConnectionForManagedAccountRequest = RequestBodyForPathAndM
  */
 export type CreateSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "POST">;
 /**
+ * Response type for Delete SSO connection for managed account
+ */
+export type DeleteSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "DELETE">;
+/**
  * Response type for Get authenticated user info
  */
 export type GetMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "GET">;
+/**
+ * Update the authenticated User.
+ */
+export type UpdateMeRequest = RequestBodyForPathAndMethod<"/v2/me", "PUT">;
+/**
+ * Response type for Update authenticated user
+ */
+export type UpdateMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "PUT">;
 /**
  * List CostProviders available to query in a given Workspace.
  */
@@ -1123,6 +1142,14 @@ export type GetUsersResponse = ResponseBodyForPathAndMethod<"/v2/users", "GET">;
  */
 export type GetUserResponse = ResponseBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "GET">;
 /**
+ * Update a specific User.
+ */
+export type UpdateUserRequest = RequestBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update a user
+ */
+export type UpdateUserResponse = ResponseBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "PUT">;
+/**
  * Response type for Get all virtual tag configs
  */
 export type GetVirtualTagConfigsResponse = ResponseBodyForPathAndMethod<"/v2/virtual_tag_configs", "GET">;
@@ -1211,6 +1238,8 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     ) {
         super(bearerToken, neverThrow, baseUrl);
     }
+
+    protected override routeEdgecases: ReadonlyMap<string, string> = new Map([["POST /v2/costs/data_exports", "location"], ["POST /v2/kubernetes_efficiency_reports/data_exports", "location"], ["POST /v2/unit_costs/data_exports", "location"], ["GET /v2/virtual_tag_configs/async/", "boolean"]]);
 
     private _accessGrants?: AccessGrantsApi<NeverThrow>;
     private _anomalyAlerts?: AnomalyAlertsApi<NeverThrow>;
@@ -2849,6 +2878,17 @@ class ManagedAccountsApi<NeverThrow extends boolean> {
         );
     }
 
+/**
+ * Delete SSO connection for a Managed Account.
+ */
+    deleteSsoConnectionForManagedAccount(managedAccountToken: string) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/sso_connection`,
+            "DELETE",
+            {},
+        );
+    }
+
 }
 
 class MeApi<NeverThrow extends boolean> {
@@ -3580,6 +3620,17 @@ class UsersApi<NeverThrow extends boolean> {
             `/v2/users/${pathEncode(userToken)}`,
             "GET",
             {},
+        );
+    }
+
+/**
+ * Update a specific User.
+ */
+    update(userToken: string, body: UpdateUserRequest) {
+        return this.client.request(
+            `/v2/users/${pathEncode(userToken)}`,
+            "PUT",
+            body,
         );
     }
 

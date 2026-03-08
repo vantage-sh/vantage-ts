@@ -2,6 +2,23 @@ import openapiGen, { astToString } from "openapi-typescript";
 import ts from "typescript";
 import { writeFileSync } from "fs";
 
+// Maps a substring found in a response description to a handler name and the
+// TypeScript return type to use. Checked against every response description
+// during endpoint parsing; the first match wins.
+const RESPONSE_HANDLERS: Array<{ phrase: string; handler: string; returnType: string }> = [
+    {
+        phrase: "will be available at the location specified in the Location header",
+        handler: "location",
+        returnType: "string",
+    },
+];
+
+// Endpoints that return boolean based on HTTP status: 404 → false, 2xx → true, else throw.
+// Each entry is [method, openapi_path_template].
+const BOOLEAN_STATUS_ROUTES: Array<[method: string, path: string]> = [
+    ["GET", "/virtual_tag_configs/async/{request_id}"],
+];
+
 interface PathParam {
     name: string;
     camelName: string;
@@ -19,6 +36,9 @@ interface EndpointInfo {
     summary?: string;
     description?: string;
     deprecated?: boolean;
+    responseHandler?: string;
+    responseHandlerReturnType?: string;
+    booleanStatus?: boolean;
 }
 
 function toCamelCase(str: string): string {
@@ -250,6 +270,25 @@ async function main() {
             const hasBody = !!details.requestBody;
             const isBodyOptional = !hasBody || !details.requestBody.required;
 
+            // Detect response handler edgecases by scanning response descriptions
+            let responseHandler: string | undefined;
+            let responseHandlerReturnType: string | undefined;
+            for (const respDesc of Object.values((details.responses ?? {}) as Record<string, any>)) {
+                const text = (respDesc as any).description ?? "";
+                for (const { phrase, handler, returnType } of RESPONSE_HANDLERS) {
+                    if (text.includes(phrase)) {
+                        responseHandler = handler;
+                        responseHandlerReturnType = returnType;
+                        break;
+                    }
+                }
+                if (responseHandler) break;
+            }
+
+            const booleanStatus = BOOLEAN_STATUS_ROUTES.some(
+                ([m, p]) => m.toUpperCase() === method.toUpperCase() && p === path
+            );
+
             endpoints.push({
                 path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
                 originalPath: path,
@@ -262,9 +301,15 @@ async function main() {
                 summary: details.summary,
                 description: details.description,
                 deprecated: details.deprecated,
+                responseHandler,
+                responseHandlerReturnType,
+                booleanStatus,
             });
         }
     }
+
+    // Collect endpoints that have a response handler edgecase
+    const edgecaseEndpoints = endpoints.filter(e => e.responseHandler !== undefined || e.booleanStatus);
 
     // Generate output
     let output = `// Auto-generated Vantage API Client
@@ -279,6 +324,21 @@ import {
 } from "./BaseClient";
 
 `;
+
+    // Always emit the interface so BaseClient.ts can import it unconditionally.
+    // Entries are added for every route whose response comes via Location header.
+    output += `export interface PathResponseEdgecases {\n`;
+    for (const ep of edgecaseEndpoints) {
+        if (ep.booleanStatus) {
+            // Use a template literal index signature to match the path prefix at type level
+            const prefix = ep.originalPath.split("{")[0];
+            output += `    [key: \`${ep.method} /v2${prefix}\${NoSlashString}\`]: boolean;\n`;
+        } else {
+            output += `    "${ep.method} /v2${ep.originalPath}": ${ep.responseHandlerReturnType};\n`;
+        }
+    }
+    output += `}\n\n`;
+
 
     // Generate type exports for each endpoint
     // Note: Template literal types with multiple ${string} segments don't work well in generic type parameters
@@ -351,6 +411,18 @@ import {
     output += `    ) {\n`;
     output += `        super(bearerToken, neverThrow, baseUrl);\n`;
     output += `    }\n\n`;
+
+    // Override the location header routes set with the generated list
+    if (edgecaseEndpoints.length > 0) {
+        const mapEntries = edgecaseEndpoints.map(ep => {
+            if (ep.booleanStatus) {
+                const prefix = ep.originalPath.split("{")[0];
+                return `["${ep.method} /v2${prefix}", "boolean"]`;
+            }
+            return `["${ep.method} /v2${ep.originalPath}", "location"]`;
+        }).join(", ");
+        output += `    protected override routeEdgecases: ReadonlyMap<string, string> = new Map([${mapEntries}]);\n\n`;
+    }
 
     // Generate private fields for each resource
     for (const resource of resourceGroups.keys()) {
