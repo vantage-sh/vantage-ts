@@ -734,6 +734,14 @@ export type DeleteSsoConnectionForManagedAccountResponse = ResponseBodyForPathAn
  */
 export type GetMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "GET">;
 /**
+ * Update the authenticated User.
+ */
+export type UpdateMeRequest = RequestBodyForPathAndMethod<"/v2/me", "PUT">;
+/**
+ * Response type for Update authenticated user
+ */
+export type UpdateMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "PUT">;
+/**
  * List CostProviders available to query in a given Workspace.
  */
 export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_providers", "GET">;
@@ -1133,6 +1141,14 @@ export type GetUsersResponse = ResponseBodyForPathAndMethod<"/v2/users", "GET">;
  * Response type for Get user by token
  */
 export type GetUserResponse = ResponseBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "GET">;
+/**
+ * Update a specific User.
+ */
+export type UpdateUserRequest = RequestBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update a user
+ */
+export type UpdateUserResponse = ResponseBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "PUT">;
 /**
  * Response type for Get all virtual tag configs
  */
@@ -3604,6 +3620,17 @@ class UsersApi<NeverThrow extends boolean> {
             `/v2/users/${pathEncode(userToken)}`,
             "GET",
             {},
+        );
+    }
+
+/**
+ * Update a specific User.
+ */
+    update(userToken: string, body: UpdateUserRequest) {
+        return this.client.request(
+            `/v2/users/${pathEncode(userToken)}`,
+            "PUT",
+            body,
         );
     }
 

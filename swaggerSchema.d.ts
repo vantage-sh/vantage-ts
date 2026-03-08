@@ -1443,7 +1443,11 @@ export interface paths {
          * @description Get information about the authenticated BearerToken.
          */
         get: operations["getMe"];
-        put?: never;
+        /**
+         * Update authenticated user
+         * @description Update the authenticated User.
+         */
+        put: operations["updateMe"];
         post?: never;
         delete?: never;
         options?: never;
@@ -2275,7 +2279,11 @@ export interface paths {
          * @description Return a specific User.
          */
         get: operations["getUser"];
-        put?: never;
+        /**
+         * Update a user
+         * @description Update a specific User.
+         */
+        put: operations["updateUser"];
         post?: never;
         delete?: never;
         options?: never;
@@ -3128,7 +3136,7 @@ export interface components {
              */
             created_at: string;
             /** @description The token for the Workspace the ResourceReport is a part of. */
-            workspace_token: string;
+            workspace_token: string | null;
             /** @description The token for the User who created this BudgetAlert. */
             user_token?: string | null;
             /** @description The Users that receive the alert. */
@@ -3976,21 +3984,21 @@ export interface components {
             /** @description Report settings. */
             settings?: {
                 /** @description Report will include credits. */
-                include_credits?: boolean;
+                include_credits?: boolean | null;
                 /** @description Report will include refunds. */
-                include_refunds?: boolean;
+                include_refunds?: boolean | null;
                 /** @description Report will include discounts. */
-                include_discounts?: boolean;
+                include_discounts?: boolean | null;
                 /** @description Report will include tax. */
-                include_tax?: boolean;
+                include_tax?: boolean | null;
                 /** @description Report will amortize. */
-                amortize?: boolean;
+                amortize?: boolean | null;
                 /** @description Report will show unallocated costs. */
-                unallocated?: boolean;
+                unallocated?: boolean | null;
                 /** @description Report will aggregate by cost or usage. */
-                aggregate_by?: string;
+                aggregate_by?: string | null;
                 /** @description Report will show previous period costs or usage comparison. */
-                show_previous_period?: boolean;
+                show_previous_period?: boolean | null;
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -5031,6 +5039,8 @@ export interface components {
         /** @description Me model */
         Me: {
             default_workspace_token: string | null;
+            /** @description The token of the default Dashboard for the User. */
+            default_dashboard_token?: string | null;
             workspaces: components["schemas"]["Workspace"][];
             bearer_token: components["schemas"]["BearerToken"];
         };
@@ -5067,6 +5077,11 @@ export interface components {
             created_at: string;
             /** @description The scopes applied to the BearerToken used to authenticate this request. */
             scope: string[];
+        };
+        /** @description Update the authenticated User. */
+        updateMe: {
+            /** @description The token of a Dashboard to set as the User default. Send null to clear. */
+            default_dashboard_token?: string;
         };
         /** @description CostProviders model */
         CostProviders: {
@@ -5798,15 +5813,15 @@ export interface components {
             /** @description Report settings configurable on top-level Segments. */
             report_settings?: {
                 /** @description Reports created under this Segment will include credits. */
-                include_credits?: boolean;
+                include_credits?: boolean | null;
                 /** @description Reports created under this Segment will include refunds. */
-                include_refunds?: boolean;
+                include_refunds?: boolean | null;
                 /** @description Reports created under this Segment will include discounts. */
-                include_discounts?: boolean;
+                include_discounts?: boolean | null;
                 /** @description Reports created under this Segment will include tax. */
-                include_tax?: boolean;
+                include_tax?: boolean | null;
                 /** @description Reports created under this Segment will amortize. */
-                amortize?: boolean;
+                amortize?: boolean | null;
             };
             /** @description The token of the Workspace to add the Segment to. Ignored if 'segment_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
@@ -5834,15 +5849,15 @@ export interface components {
             /** @description Report settings configurable on top-level Segments. */
             report_settings?: {
                 /** @description Reports created under this Segment will include credits. */
-                include_credits?: boolean;
+                include_credits?: boolean | null;
                 /** @description Reports created under this Segment will include refunds. */
-                include_refunds?: boolean;
+                include_refunds?: boolean | null;
                 /** @description Reports created under this Segment will include discounts. */
-                include_discounts?: boolean;
+                include_discounts?: boolean | null;
                 /** @description Reports created under this Segment will include tax. */
-                include_tax?: boolean;
+                include_tax?: boolean | null;
                 /** @description Reports created under this Segment will amortize. */
-                amortize?: boolean;
+                amortize?: boolean | null;
             };
             /** @description The filter query language to apply to the Segment. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
@@ -5910,6 +5925,11 @@ export interface components {
             user_emails: string[];
             /** @description The tokens for Users that belong to the Team */
             user_tokens: string[];
+            /**
+             * @description The token of the default Dashboard for the Team.
+             * @example dshbrd_abcd1234
+             */
+            default_dashboard_token: string | null;
         };
         /** @description Create a new Team. */
         createTeam: {
@@ -5928,6 +5948,8 @@ export interface components {
              * @enum {string}
              */
             role?: "owner" | "editor" | "viewer";
+            /** @description The token of a Dashboard to set as the Team default. Send null to clear. */
+            default_dashboard_token?: string | null;
         };
         /** @description Update a Team. */
         updateTeam: {
@@ -5946,6 +5968,8 @@ export interface components {
              * @enum {string}
              */
             role?: "owner" | "editor" | "viewer";
+            /** @description The token of a Dashboard to set as the Team default. Send null to clear. */
+            default_dashboard_token?: string | null;
         };
         /** @description TeamMembers model */
         TeamMembers: {
@@ -6065,10 +6089,20 @@ export interface components {
              */
             role: string;
             /**
+             * @description The token of the default Dashboard for the User.
+             * @example dshbrd_abcdef123456
+             */
+            default_dashboard_token?: string | null;
+            /**
              * @description The last time the User logged in.
              * @example 2024-01-01T00:00:00Z
              */
             last_seen_at?: string | null;
+        };
+        /** @description Update a specific User. */
+        updateUser: {
+            /** @description The token of a Dashboard to set as the User default. Send null to clear. */
+            default_dashboard_token?: string;
         };
         /** @description VirtualTagConfigs model */
         VirtualTagConfigs: {
@@ -6095,7 +6129,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2025-08-01
+             * @example 2025-09-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -6277,6 +6311,19 @@ export interface components {
                 }[];
             }[];
         };
+        /** @description AsyncVirtualTagConfigUpdate model */
+        AsyncVirtualTagConfigUpdate: {
+            /**
+             * @description The request ID of the async virtual tag config update.
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            request_id: string;
+            /**
+             * @description The status path of the async virtual tag config update.
+             * @example /v2/virtual_tag_configs/async/550e8400-e29b-41d4-a716-446655440000
+             */
+            status_url: string;
+        };
         /** @description Asynchronously updates an existing VirtualTagConfig. */
         updateAsyncVirtualTagConfig: {
             /** @description The key of the VirtualTagConfig. */
@@ -6322,19 +6369,6 @@ export interface components {
                     end_date?: string;
                 }[];
             }[];
-        };
-        /** @description AsyncVirtualTagConfigUpdate model */
-        AsyncVirtualTagConfigUpdate: {
-            /**
-             * @description The request ID of the async virtual tag config update.
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            request_id: string;
-            /**
-             * @description The status path of the async virtual tag config update.
-             * @example /v2/virtual_tag_configs/async/550e8400-e29b-41d4-a716-446655440000
-             */
-            status_url: string;
         };
         /** @description Workspaces model */
         Workspaces: {
@@ -12162,6 +12196,38 @@ export interface operations {
             };
         };
     };
+    updateMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateMe"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getCostProviders: {
         parameters: {
             query?: {
@@ -14850,7 +14916,8 @@ export interface operations {
                      *           ],
                      *           "user_tokens": [
                      *             "usr_c59398553e838116"
-                     *           ]
+                     *           ],
+                     *           "default_dashboard_token": null
                      *         }
                      *       ]
                      *     }
@@ -14888,7 +14955,8 @@ export interface operations {
                      *       ],
                      *       "user_tokens": [
                      *         "usr_a00e614b5843c234"
-                     *       ]
+                     *       ],
+                     *       "default_dashboard_token": null
                      *     }
                      */
                     "application/json": components["schemas"]["Team"];
@@ -14958,7 +15026,8 @@ export interface operations {
                      *       ],
                      *       "user_tokens": [
                      *         "usr_7c309915e847cfc6"
-                     *       ]
+                     *       ],
+                     *       "default_dashboard_token": null
                      *     }
                      */
                     "application/json": components["schemas"]["Team"];
@@ -15005,7 +15074,8 @@ export interface operations {
                      *       ],
                      *       "user_tokens": [
                      *         "usr_d268561e520c7aac"
-                     *       ]
+                     *       ],
+                     *       "default_dashboard_token": null
                      *     }
                      */
                     "application/json": components["schemas"]["Team"];
@@ -15544,6 +15614,49 @@ export interface operations {
             };
         };
     };
+    updateUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateUser"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getVirtualTagConfigs: {
         parameters: {
             query?: never;
@@ -15797,6 +15910,15 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["VirtualTagConfig"];
+                };
+            };
+            /** @description Request accepted for processing */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AsyncVirtualTagConfigUpdate"];
                 };
             };
             /** @description BadRequest */
