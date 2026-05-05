@@ -6,313 +6,309 @@ import { writeFileSync } from "fs";
 // TypeScript return type to use. Checked against every response description
 // during endpoint parsing; the first match wins.
 const RESPONSE_HANDLERS: Array<{ phrase: string; handler: string; returnType: string }> = [
-    {
-        phrase: "will be available at the location specified in the Location header",
-        handler: "location",
-        returnType: "string",
-    },
+  {
+    phrase: "will be available at the location specified in the Location header",
+    handler: "location",
+    returnType: "string",
+  },
 ];
 
 // Endpoints that return boolean based on HTTP status: 404 → false, 2xx → true, else throw.
 // Each entry is [method, openapi_path_template].
 const BOOLEAN_STATUS_ROUTES: Array<[method: string, path: string]> = [
-    ["GET", "/virtual_tag_configs/async/{request_id}"],
+  ["GET", "/virtual_tag_configs/async/{request_id}"],
 ];
 
 interface PathParam {
-    name: string;
-    camelName: string;
+  name: string;
+  camelName: string;
 }
 
 interface EndpointInfo {
-    path: string;
-    originalPath: string;
-    method: string;
-    operationId: string;
-    pathParams: PathParam[];
-    hasQuery: boolean;
-    hasBody: boolean;
-    isBodyOptional: boolean;
-    summary?: string;
-    description?: string;
-    deprecated?: boolean;
-    responseHandler?: string;
-    responseHandlerReturnType?: string;
-    booleanStatus?: boolean;
+  path: string;
+  originalPath: string;
+  method: string;
+  operationId: string;
+  pathParams: PathParam[];
+  hasQuery: boolean;
+  hasBody: boolean;
+  isBodyOptional: boolean;
+  summary?: string;
+  description?: string;
+  deprecated?: boolean;
+  responseHandler?: string;
+  responseHandlerReturnType?: string;
+  booleanStatus?: boolean;
 }
 
 function toCamelCase(str: string): string {
-    // Handle special cases like "oas_v3.json" -> "oasV3Json"
-    return str
-        .replace(/[._-]([a-z0-9])/gi, (_, letter) => letter.toUpperCase())
-        .replace(/^([A-Z])/, (_, letter) => letter.toLowerCase());
+  // Handle special cases like "oas_v3.json" -> "oasV3Json"
+  return str
+    .replace(/[._-]([a-z0-9])/gi, (_, letter) => letter.toUpperCase())
+    .replace(/^([A-Z])/, (_, letter) => letter.toLowerCase());
 }
 
 function toPascalCase(str: string): string {
-    const camel = toCamelCase(str);
-    return camel.charAt(0).toUpperCase() + camel.slice(1);
+  const camel = toCamelCase(str);
+  return camel.charAt(0).toUpperCase() + camel.slice(1);
 }
 
 function extractPathParams(path: string): PathParam[] {
-    const params: PathParam[] = [];
-    const regex = /\{([^}]+)\}/g;
-    let match: RegExpExecArray | null = null;
+  const params: PathParam[] = [];
+  const regex = /\{([^}]+)\}/g;
+  let match: RegExpExecArray | null = null;
 
-    while ((match = regex.exec(path)) !== null) {
-        params.push({
-            name: match[1],
-            camelName: toCamelCase(match[1]),
-        });
-    }
+  while ((match = regex.exec(path)) !== null) {
+    params.push({
+      name: match[1],
+      camelName: toCamelCase(match[1]),
+    });
+  }
 
-    return params;
+  return params;
 }
 
 function sanitizeIdentifier(str: string): string {
-    // Remove or replace invalid characters for JS identifiers
-    return str
-        .replace(/\./g, "")
-        .replace(/[^a-zA-Z0-9_$]/g, "_")
-        .replace(/^(\d)/, "_$1");
+  // Remove or replace invalid characters for JS identifiers
+  return str
+    .replace(/\./g, "")
+    .replace(/[^a-zA-Z0-9_$]/g, "_")
+    .replace(/^(\d)/, "_$1");
 }
 
 function formatJsDoc(summary?: string, description?: string, deprecated?: boolean): string {
-    const lines: string[] = [];
-    
-    if (summary || description || deprecated) {
-        lines.push("/**");
-        if (!description) {
-            description = summary;
-        }
-        
-        if (description) {
-            // Split description into lines if it's multi-line
-            const descLines = description.split("\n");
-            descLines.forEach(line => {
-                lines.push(` * ${line}`);
-            });
-        }
-        
-        if (deprecated) {
-            lines.push(" * @deprecated");
-        }
-        
-        lines.push(" */");
-        return lines.join("\n") + "\n";
+  const lines: string[] = [];
+
+  if (summary || description || deprecated) {
+    lines.push("/**");
+    if (!description) {
+      description = summary;
     }
-    
-    return "";
+
+    if (description) {
+      // Split description into lines if it's multi-line
+      const descLines = description.split("\n");
+      descLines.forEach((line) => {
+        lines.push(` * ${line}`);
+      });
+    }
+
+    if (deprecated) {
+      lines.push(" * @deprecated");
+    }
+
+    lines.push(" */");
+    return lines.join("\n") + "\n";
+  }
+
+  return "";
 }
 
 function getMethodNameFromOperationId(operationId: string, resource: string): string {
-    // Convert operation ID to a method name
-    // e.g., "getForecastedCosts" -> "getForecastedCosts"
-    // e.g., "createCostExport" -> "createExport"
+  // Convert operation ID to a method name
+  // e.g., "getForecastedCosts" -> "getForecastedCosts"
+  // e.g., "createCostExport" -> "createExport"
 
-    let name = toCamelCase(operationId);
+  let name = toCamelCase(operationId);
 
-    // Remove resource name prefix if present
-    const resourcePascal = toPascalCase(resource);
+  // Remove resource name prefix if present
+  const resourcePascal = toPascalCase(resource);
 
-    if (name.startsWith("get" + resourcePascal)) {
-        name = "get" + name.slice(3 + resourcePascal.length);
-    } else if (name.startsWith("create" + resourcePascal)) {
-        name = "create" + name.slice(6 + resourcePascal.length);
-    } else if (name.startsWith("update" + resourcePascal)) {
-        name = "update" + name.slice(6 + resourcePascal.length);
-    } else if (name.startsWith("delete" + resourcePascal)) {
-        name = "delete" + name.slice(6 + resourcePascal.length);
-    }
+  if (name.startsWith("get" + resourcePascal)) {
+    name = "get" + name.slice(3 + resourcePascal.length);
+  } else if (name.startsWith("create" + resourcePascal)) {
+    name = "create" + name.slice(6 + resourcePascal.length);
+  } else if (name.startsWith("update" + resourcePascal)) {
+    name = "update" + name.slice(6 + resourcePascal.length);
+  } else if (name.startsWith("delete" + resourcePascal)) {
+    name = "delete" + name.slice(6 + resourcePascal.length);
+  }
 
-    // Handle singular forms
-    const singularResource = resource.endsWith("s") ? resource.slice(0, -1) : resource;
-    const singularPascal = toPascalCase(singularResource);
+  // Handle singular forms
+  const singularResource = resource.endsWith("s") ? resource.slice(0, -1) : resource;
+  const singularPascal = toPascalCase(singularResource);
 
-    if (name.startsWith("get" + singularPascal) && name !== "get") {
-        name = "get" + name.slice(3 + singularPascal.length);
-    } else if (name.startsWith("create" + singularPascal) && name !== "create") {
-        name = "create" + name.slice(6 + singularPascal.length);
-    } else if (name.startsWith("update" + singularPascal) && name !== "update") {
-        name = "update" + name.slice(6 + singularPascal.length);
-    } else if (name.startsWith("delete" + singularPascal) && name !== "delete") {
-        name = "delete" + name.slice(6 + singularPascal.length);
-    }
+  if (name.startsWith("get" + singularPascal) && name !== "get") {
+    name = "get" + name.slice(3 + singularPascal.length);
+  } else if (name.startsWith("create" + singularPascal) && name !== "create") {
+    name = "create" + name.slice(6 + singularPascal.length);
+  } else if (name.startsWith("update" + singularPascal) && name !== "update") {
+    name = "update" + name.slice(6 + singularPascal.length);
+  } else if (name.startsWith("delete" + singularPascal) && name !== "delete") {
+    name = "delete" + name.slice(6 + singularPascal.length);
+  }
 
-    // If name is empty, use the original
-    if (!name || name === "get" || name === "create" || name === "update" || name === "delete") {
-        return toCamelCase(operationId);
-    }
+  // If name is empty, use the original
+  if (!name || name === "get" || name === "create" || name === "update" || name === "delete") {
+    return toCamelCase(operationId);
+  }
 
-    return name;
+  return name;
 }
 
 function generateMethod(methodName: string, endpoint: EndpointInfo): string {
-    let requestType: string;
+  let requestType: string;
 
-    const typeBaseName = toPascalCase(endpoint.operationId);
-    requestType = `${typeBaseName}Request`;
+  const typeBaseName = toPascalCase(endpoint.operationId);
+  requestType = `${typeBaseName}Request`;
 
-    // Build parameters
-    const params: string[] = [];
+  // Build parameters
+  const params: string[] = [];
 
-    // Add path parameters
-    for (const param of endpoint.pathParams) {
-        params.push(`${param.camelName}: string`);
-    }
+  // Add path parameters
+  for (const param of endpoint.pathParams) {
+    params.push(`${param.camelName}: string`);
+  }
 
-    // Add body parameter if needed
-    const needsBody = endpoint.hasBody || endpoint.hasQuery;
+  // Add body parameter if needed
+  const needsBody = endpoint.hasBody || endpoint.hasQuery;
 
-    if (needsBody) {
-        const optional = endpoint.isBodyOptional && !endpoint.hasBody;
-        params.push(`body${optional ? "?" : ""}: ${requestType}`);
-    }
+  if (needsBody) {
+    const optional = endpoint.isBodyOptional && !endpoint.hasBody;
+    params.push(`body${optional ? "?" : ""}: ${requestType}`);
+  }
 
-    // Build path template
-    let pathTemplate = endpoint.originalPath;
-    for (const param of endpoint.pathParams) {
-        pathTemplate = pathTemplate.replace(`{${param.name}}`, `\${pathEncode(${param.camelName})}`);
-    }
-    pathTemplate = `/v2${pathTemplate}`;
+  // Build path template
+  let pathTemplate = endpoint.originalPath;
+  for (const param of endpoint.pathParams) {
+    pathTemplate = pathTemplate.replace(`{${param.name}}`, `\${pathEncode(${param.camelName})}`);
+  }
+  pathTemplate = `/v2${pathTemplate}`;
 
-    // Generate JSDoc comment
-    const jsDoc = formatJsDoc(endpoint.summary, endpoint.description, endpoint.deprecated);
+  // Generate JSDoc comment
+  const jsDoc = formatJsDoc(endpoint.summary, endpoint.description, endpoint.deprecated);
 
-    let output = jsDoc;
-    output += `    ${methodName}(${params.join(", ")}) {\n`;
-    output += `        return this.client.request(\n`;
-    output += `            \`${pathTemplate}\`,\n`;
-    output += `            "${endpoint.method}",\n`;
+  let output = jsDoc;
+  output += `    ${methodName}(${params.join(", ")}) {\n`;
+  output += `        return this.client.request(\n`;
+  output += `            \`${pathTemplate}\`,\n`;
+  output += `            "${endpoint.method}",\n`;
 
-    if (needsBody) {
-        output += `            body,\n`;
-    } else {
-        output += `            {},\n`;
-    }
+  if (needsBody) {
+    output += `            body,\n`;
+  } else {
+    output += `            {},\n`;
+  }
 
-    output += `        );\n`;
-    output += `    }\n\n`;
+  output += `        );\n`;
+  output += `    }\n\n`;
 
-    return output;
+  return output;
 }
 
 async function main() {
-    const schema = await fetch("https://api.vantage.sh/v2/oas_v3.json").then(
-        (res) => {
-            if (!res.ok) {
-                throw new Error(
-                    `Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`
-                );
-            }
-            return res.json();
-        }
-    );
-
-    const dts = await openapiGen(schema, {
-        // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
-        // This makes the generated TS types nicer to use (and matches runtime behavior).
-        transformProperty: (property, schemaObject) => {
-            let updatedProperty = property;
-            
-            // Handle x-nullable: add null union type
-            if (schemaObject && (schemaObject as any)["x-nullable"] === true && property.type) {
-                const unionType = ts.factory.createUnionTypeNode([
-                    property.type,
-                    ts.factory.createLiteralTypeNode(ts.factory.createNull())
-                ]);
-                updatedProperty = ts.factory.updatePropertySignature(
-                    updatedProperty,
-                    updatedProperty.modifiers,
-                    updatedProperty.name,
-                    updatedProperty.questionToken,
-                    unionType
-                );
-            }
-            
-            // Handle default: make property optional
-            if (schemaObject && schemaObject.default !== undefined) {
-                updatedProperty = ts.factory.updatePropertySignature(
-                    updatedProperty,
-                    updatedProperty.modifiers,
-                    updatedProperty.name,
-                    ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-                    updatedProperty.type
-                );
-            }
-            
-            return updatedProperty;
-        },
-    });
-    
-    // Convert AST to string and replace Record<string, never> with Record<string, any>
-    let schemaOutput = astToString(dts);
-    schemaOutput = schemaOutput.replace(/Record<string, never>/g, "Record<string, any>");
-
-    writeFileSync("swaggerSchema.d.ts", schemaOutput, { encoding: "utf-8" });
-    console.log("Generated swaggerSchema.d.ts");
-
-    const paths = schema.paths as Record<string, any>;
-
-    // Collect all endpoints
-    const endpoints: EndpointInfo[] = [];
-
-    for (const [path, methods] of Object.entries(paths)) {
-        for (const [method, details] of Object.entries(methods as Record<string, any>)) {
-            if (!["get", "post", "put", "delete", "patch"].includes(method)) continue;
-
-            const operationId = details.operationId;
-            const pathParams = extractPathParams(path);
-
-            // Check for query params
-            const hasQuery = details.parameters?.some((p: any) => p.in === "query") ?? false;
-
-            // Check for request body
-            const hasBody = !!details.requestBody;
-            const isBodyOptional = !hasBody || !details.requestBody.required;
-
-            // Detect response handler edgecases by scanning response descriptions
-            let responseHandler: string | undefined;
-            let responseHandlerReturnType: string | undefined;
-            for (const respDesc of Object.values((details.responses ?? {}) as Record<string, any>)) {
-                const text = (respDesc as any).description ?? "";
-                for (const { phrase, handler, returnType } of RESPONSE_HANDLERS) {
-                    if (text.includes(phrase)) {
-                        responseHandler = handler;
-                        responseHandlerReturnType = returnType;
-                        break;
-                    }
-                }
-                if (responseHandler) break;
-            }
-
-            const booleanStatus = BOOLEAN_STATUS_ROUTES.some(
-                ([m, p]) => m.toUpperCase() === method.toUpperCase() && p === path
-            );
-
-            endpoints.push({
-                path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
-                originalPath: path,
-                method: method.toUpperCase(),
-                operationId,
-                pathParams,
-                hasQuery,
-                hasBody,
-                isBodyOptional,
-                summary: details.summary,
-                description: details.description,
-                deprecated: details.deprecated,
-                responseHandler,
-                responseHandlerReturnType,
-                booleanStatus,
-            });
-        }
+  const schema = await fetch("https://api.vantage.sh/v2/oas_v3.json").then((res) => {
+    if (!res.ok) {
+      throw new Error(`Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`);
     }
+    return res.json();
+  });
 
-    // Collect endpoints that have a response handler edgecase
-    const edgecaseEndpoints = endpoints.filter(e => e.responseHandler !== undefined || e.booleanStatus);
+  const dts = await openapiGen(schema, {
+    // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
+    // This makes the generated TS types nicer to use (and matches runtime behavior).
+    transformProperty: (property, schemaObject) => {
+      let updatedProperty = property;
 
-    // Generate output
-    let output = `// Auto-generated Vantage API Client
+      // Handle x-nullable: add null union type
+      if (schemaObject && (schemaObject as any)["x-nullable"] === true && property.type) {
+        const unionType = ts.factory.createUnionTypeNode([
+          property.type,
+          ts.factory.createLiteralTypeNode(ts.factory.createNull()),
+        ]);
+        updatedProperty = ts.factory.updatePropertySignature(
+          updatedProperty,
+          updatedProperty.modifiers,
+          updatedProperty.name,
+          updatedProperty.questionToken,
+          unionType
+        );
+      }
+
+      // Handle default: make property optional
+      if (schemaObject && schemaObject.default !== undefined) {
+        updatedProperty = ts.factory.updatePropertySignature(
+          updatedProperty,
+          updatedProperty.modifiers,
+          updatedProperty.name,
+          ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+          updatedProperty.type
+        );
+      }
+
+      return updatedProperty;
+    },
+  });
+
+  // Convert AST to string and replace Record<string, never> with Record<string, any>
+  let schemaOutput = astToString(dts);
+  schemaOutput = schemaOutput.replace(/Record<string, never>/g, "Record<string, any>");
+
+  writeFileSync("swaggerSchema.d.ts", schemaOutput, { encoding: "utf-8" });
+  console.log("Generated swaggerSchema.d.ts");
+
+  const paths = schema.paths as Record<string, any>;
+
+  // Collect all endpoints
+  const endpoints: EndpointInfo[] = [];
+
+  for (const [path, methods] of Object.entries(paths)) {
+    for (const [method, details] of Object.entries(methods as Record<string, any>)) {
+      if (!["get", "post", "put", "delete", "patch"].includes(method)) continue;
+
+      const operationId = details.operationId;
+      const pathParams = extractPathParams(path);
+
+      // Check for query params
+      const hasQuery = details.parameters?.some((p: any) => p.in === "query") ?? false;
+
+      // Check for request body
+      const hasBody = !!details.requestBody;
+      const isBodyOptional = !hasBody || !details.requestBody.required;
+
+      // Detect response handler edgecases by scanning response descriptions
+      let responseHandler: string | undefined;
+      let responseHandlerReturnType: string | undefined;
+      for (const respDesc of Object.values((details.responses ?? {}) as Record<string, any>)) {
+        const text = (respDesc as any).description ?? "";
+        for (const { phrase, handler, returnType } of RESPONSE_HANDLERS) {
+          if (text.includes(phrase)) {
+            responseHandler = handler;
+            responseHandlerReturnType = returnType;
+            break;
+          }
+        }
+        if (responseHandler) break;
+      }
+
+      const booleanStatus = BOOLEAN_STATUS_ROUTES.some(
+        ([m, p]) => m.toUpperCase() === method.toUpperCase() && p === path
+      );
+
+      endpoints.push({
+        path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
+        originalPath: path,
+        method: method.toUpperCase(),
+        operationId,
+        pathParams,
+        hasQuery,
+        hasBody,
+        isBodyOptional,
+        summary: details.summary,
+        description: details.description,
+        deprecated: details.deprecated,
+        responseHandler,
+        responseHandlerReturnType,
+        booleanStatus,
+      });
+    }
+  }
+
+  // Collect endpoints that have a response handler edgecase
+  const edgecaseEndpoints = endpoints.filter((e) => e.responseHandler !== undefined || e.booleanStatus);
+
+  // Generate output
+  let output = `// Auto-generated Vantage API Client
 // Do not edit this file directly
 
 import {
@@ -325,236 +321,237 @@ import {
 
 `;
 
-    // Always emit the interface so BaseClient.ts can import it unconditionally.
-    // Entries are added for every route whose response comes via Location header.
-    output += `export interface PathResponseEdgecases {\n`;
-    for (const ep of edgecaseEndpoints) {
+  // Always emit the interface so BaseClient.ts can import it unconditionally.
+  // Entries are added for every route whose response comes via Location header.
+  output += `export interface PathResponseEdgecases {\n`;
+  for (const ep of edgecaseEndpoints) {
+    if (ep.booleanStatus) {
+      // Use a template literal index signature to match the path prefix at type level
+      const prefix = ep.originalPath.split("{")[0];
+      output += `    [key: \`${ep.method} /v2${prefix}\${NoSlashString}\`]: boolean;\n`;
+    } else {
+      output += `    "${ep.method} /v2${ep.originalPath}": ${ep.responseHandlerReturnType};\n`;
+    }
+  }
+  output += `}\n\n`;
+
+  // Generate type exports for each endpoint
+  // Note: Template literal types with multiple ${string} segments don't work well in generic type parameters
+  // For paths without parameters or with a single parameter at the end, we can generate proper types
+  output += `// Request/Response types for each endpoint\n`;
+
+  for (const endpoint of endpoints) {
+    const typeBaseName = toPascalCase(endpoint.operationId);
+
+    let typePath = `/v2${endpoint.path}`;
+    if (typePath.includes("${NoSlashString}")) {
+      typePath = `\`${typePath}\``;
+    } else {
+      typePath = `"${typePath}"`;
+    }
+
+    // Only generate request type if there are body or query params
+    const needsBody = endpoint.hasBody || endpoint.hasQuery;
+    if (needsBody) {
+      // Generate JSDoc for request type
+      const requestDoc = formatJsDoc(
+        endpoint.summary ? `Request type for ${endpoint.summary}` : undefined,
+        endpoint.description,
+        endpoint.deprecated
+      );
+      output += requestDoc;
+      output += `export type ${typeBaseName}Request = RequestBodyForPathAndMethod<${typePath}, "${endpoint.method}">;\n`;
+    }
+
+    // Generate JSDoc for response type
+    const responseDoc = formatJsDoc(
+      endpoint.summary ? `Response type for ${endpoint.summary}` : undefined,
+      undefined,
+      endpoint.deprecated
+    );
+    output += responseDoc;
+    output += `export type ${typeBaseName}Response = ResponseBodyForPathAndMethod<${typePath}, "${endpoint.method}">;\n`;
+  }
+
+  output += `\n`;
+
+  // Group endpoints by their "resource" (first path segment)
+  const resourceGroups = new Map<string, EndpointInfo[]>();
+
+  for (const endpoint of endpoints) {
+    const segments = endpoint.originalPath.split("/").filter(Boolean);
+    const resource = segments[0];
+
+    if (!resourceGroups.has(resource)) {
+      resourceGroups.set(resource, []);
+    }
+    resourceGroups.get(resource)!.push(endpoint);
+  }
+
+  // Generate the client class
+  output += `/** Vantage API Client with typed methods */\n`;
+  output += `export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<NeverThrow> {\n`;
+
+  // Generate the constructor
+  output += `    /**\n`;
+  output += `     * Initializes a new instance of the APIV2Client.\n`;
+  output += `     * @param bearerToken The bearer token for authentication.\n`;
+  output += `     * @param neverThrow Whether to never throw exceptions on API errors and instead return an array with [value, error].\n`;
+  output += `     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh".\n`;
+  output += `     */\n`;
+  output += `    constructor(\n`;
+  output += `        bearerToken: string,\n`;
+  output += `        neverThrow: NeverThrow = false as NeverThrow,\n`;
+  output += `        baseUrl: string = "https://api.vantage.sh",\n`;
+  output += `    ) {\n`;
+  output += `        super(bearerToken, neverThrow, baseUrl);\n`;
+  output += `    }\n\n`;
+
+  // Override the location header routes set with the generated list
+  if (edgecaseEndpoints.length > 0) {
+    const mapEntries = edgecaseEndpoints
+      .map((ep) => {
         if (ep.booleanStatus) {
-            // Use a template literal index signature to match the path prefix at type level
-            const prefix = ep.originalPath.split("{")[0];
-            output += `    [key: \`${ep.method} /v2${prefix}\${NoSlashString}\`]: boolean;\n`;
-        } else {
-            output += `    "${ep.method} /v2${ep.originalPath}": ${ep.responseHandlerReturnType};\n`;
+          const prefix = ep.originalPath.split("{")[0];
+          return `["${ep.method} /v2${prefix}", "boolean"]`;
         }
-    }
-    output += `}\n\n`;
+        return `["${ep.method} /v2${ep.originalPath}", "location"]`;
+      })
+      .join(", ");
+    output += `    protected override routeEdgecases: ReadonlyMap<string, string> = new Map([${mapEntries}]);\n\n`;
+  }
 
+  // Generate private fields for each resource
+  for (const resource of resourceGroups.keys()) {
+    const fieldName = sanitizeIdentifier(toCamelCase(resource));
+    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    output += `    private _${fieldName}?: ${className}<NeverThrow>;\n`;
+  }
 
-    // Generate type exports for each endpoint
-    // Note: Template literal types with multiple ${string} segments don't work well in generic type parameters
-    // For paths without parameters or with a single parameter at the end, we can generate proper types
-    output += `// Request/Response types for each endpoint\n`;
+  output += `\n`;
 
-    for (const endpoint of endpoints) {
-        const typeBaseName = toPascalCase(endpoint.operationId);
+  // Generate getters for each resource
+  for (const resource of resourceGroups.keys()) {
+    const fieldName = sanitizeIdentifier(toCamelCase(resource));
+    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
 
-        let typePath = `/v2${endpoint.path}`;
-        if (typePath.includes("${NoSlashString}")) {
-            typePath = `\`${typePath}\``;
-        } else {
-            typePath = `"${typePath}"`;
-        }
-        
-        // Only generate request type if there are body or query params
-        const needsBody = endpoint.hasBody || endpoint.hasQuery;
-        if (needsBody) {
-            // Generate JSDoc for request type
-            const requestDoc = formatJsDoc(
-                endpoint.summary ? `Request type for ${endpoint.summary}` : undefined,
-                endpoint.description,
-                endpoint.deprecated
-            );
-            output += requestDoc;
-            output += `export type ${typeBaseName}Request = RequestBodyForPathAndMethod<${typePath}, "${endpoint.method}">;\n`;
-        }
-        
-        // Generate JSDoc for response type
-        const responseDoc = formatJsDoc(
-            endpoint.summary ? `Response type for ${endpoint.summary}` : undefined,
-            undefined,
-            endpoint.deprecated
-        );
-        output += responseDoc;
-        output += `export type ${typeBaseName}Response = ResponseBodyForPathAndMethod<${typePath}, "${endpoint.method}">;\n`;
-    }
-
-    output += `\n`;
-
-    // Group endpoints by their "resource" (first path segment)
-    const resourceGroups = new Map<string, EndpointInfo[]>();
-
-    for (const endpoint of endpoints) {
-        const segments = endpoint.originalPath.split("/").filter(Boolean);
-        const resource = segments[0];
-
-        if (!resourceGroups.has(resource)) {
-            resourceGroups.set(resource, []);
-        }
-        resourceGroups.get(resource)!.push(endpoint);
-    }
-
-    // Generate the client class
-    output += `/** Vantage API Client with typed methods */\n`;
-    output += `export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<NeverThrow> {\n`;
-
-    // Generate the constructor
-    output += `    /**\n`;
-    output += `     * Initializes a new instance of the APIV2Client.\n`;
-    output += `     * @param bearerToken The bearer token for authentication.\n`;
-    output += `     * @param neverThrow Whether to never throw exceptions on API errors and instead return an array with [value, error].\n`;
-    output += `     * @param baseUrl The base URL for the API. Defaults to "https://api.vantage.sh".\n`;
-    output += `     */\n`;
-    output += `    constructor(\n`;
-    output += `        bearerToken: string,\n`;
-    output += `        neverThrow: NeverThrow = false as NeverThrow,\n`;
-    output += `        baseUrl: string = "https://api.vantage.sh",\n`;
-    output += `    ) {\n`;
-    output += `        super(bearerToken, neverThrow, baseUrl);\n`;
+    output += `    get ${fieldName}(): ${className}<NeverThrow> {\n`;
+    output += `        if (!this._${fieldName}) {\n`;
+    output += `            this._${fieldName} = new ${className}(this);\n`;
+    output += `        }\n`;
+    output += `        return this._${fieldName};\n`;
     output += `    }\n\n`;
+  }
 
-    // Override the location header routes set with the generated list
-    if (edgecaseEndpoints.length > 0) {
-        const mapEntries = edgecaseEndpoints.map(ep => {
-            if (ep.booleanStatus) {
-                const prefix = ep.originalPath.split("{")[0];
-                return `["${ep.method} /v2${prefix}", "boolean"]`;
-            }
-            return `["${ep.method} /v2${ep.originalPath}", "location"]`;
-        }).join(", ");
-        output += `    protected override routeEdgecases: ReadonlyMap<string, string> = new Map([${mapEntries}]);\n\n`;
+  output += `}\n\n`;
+
+  // Generate API classes for each resource
+  for (const [resource, resourceEndpoints] of resourceGroups) {
+    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+
+    output += `class ${className}<NeverThrow extends boolean> {\n`;
+    output += `    constructor(private client: BaseClient<NeverThrow>) {}\n\n`;
+
+    // Categorize endpoints
+    const listEndpoint = resourceEndpoints.find((e) => {
+      const segments = e.originalPath.split("/").filter(Boolean);
+      return segments.length === 1 && e.method === "GET" && e.hasQuery;
+    });
+
+    const createEndpoint = resourceEndpoints.find((e) => {
+      const segments = e.originalPath.split("/").filter(Boolean);
+      return segments.length === 1 && e.method === "POST";
+    });
+
+    const getEndpoint = resourceEndpoints.find((e) => {
+      return e.method === "GET" && !e.hasQuery;
+    });
+
+    const updateEndpoint = resourceEndpoints.find((e) => {
+      const segments = e.originalPath.split("/").filter(Boolean);
+      return segments.length === 2 && segments[1].startsWith("{") && (e.method === "PUT" || e.method === "PATCH");
+    });
+
+    const deleteEndpoint = resourceEndpoints.find((e) => {
+      const segments = e.originalPath.split("/").filter(Boolean);
+      return segments.length === 2 && segments[1].startsWith("{") && e.method === "DELETE";
+    });
+
+    // Generate standard CRUD methods
+    if (listEndpoint) {
+      output += generateMethod("list", listEndpoint);
     }
 
-    // Generate private fields for each resource
-    for (const resource of resourceGroups.keys()) {
-        const fieldName = sanitizeIdentifier(toCamelCase(resource));
-        const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
-        output += `    private _${fieldName}?: ${className}<NeverThrow>;\n`;
+    if (createEndpoint) {
+      output += generateMethod("create", createEndpoint);
     }
 
-    output += `\n`;
+    if (getEndpoint) {
+      output += generateMethod("get", getEndpoint);
+    }
 
-    // Generate getters for each resource
-    for (const resource of resourceGroups.keys()) {
-        const fieldName = sanitizeIdentifier(toCamelCase(resource));
-        const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    if (updateEndpoint) {
+      output += generateMethod("update", updateEndpoint);
+    }
 
-        output += `    get ${fieldName}(): ${className}<NeverThrow> {\n`;
-        output += `        if (!this._${fieldName}) {\n`;
-        output += `            this._${fieldName} = new ${className}(this);\n`;
-        output += `        }\n`;
-        output += `        return this._${fieldName};\n`;
-        output += `    }\n\n`;
+    if (deleteEndpoint) {
+      output += generateMethod("delete", deleteEndpoint);
+    }
+
+    // Handle nested endpoints and special endpoints
+    const specialEndpoints = resourceEndpoints.filter((e) => {
+      const segments = e.originalPath.split("/").filter(Boolean);
+      // Skip the standard CRUD endpoints we already handled
+      if (segments.length === 1) return false;
+      if (segments.length === 2 && segments[1].startsWith("{")) return false;
+      return true;
+    });
+
+    // Group special endpoints by their sub-resource
+    const subResourceMap = new Map<string, EndpointInfo[]>();
+
+    for (const ep of specialEndpoints) {
+      const segments = ep.originalPath.split("/").filter(Boolean);
+
+      // Find the first non-param segment after the resource
+      let subResource = "";
+      let depth = 0;
+
+      for (let i = 1; i < segments.length; i++) {
+        if (!segments[i].startsWith("{")) {
+          if (depth === 0) {
+            subResource = segments[i];
+          } else {
+            subResource += "_" + segments[i];
+          }
+          depth++;
+        }
+      }
+
+      if (subResource) {
+        if (!subResourceMap.has(subResource)) {
+          subResourceMap.set(subResource, []);
+        }
+        subResourceMap.get(subResource)!.push(ep);
+      }
+    }
+
+    // Generate methods for each sub-resource grouping
+    for (const subEndpoints of subResourceMap.values()) {
+      for (const ep of subEndpoints) {
+        const methodName = getMethodNameFromOperationId(ep.operationId, resource);
+        output += generateMethod(methodName, ep);
+      }
     }
 
     output += `}\n\n`;
+  }
 
-    // Generate API classes for each resource
-    for (const [resource, resourceEndpoints] of resourceGroups) {
-        const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
-
-        output += `class ${className}<NeverThrow extends boolean> {\n`;
-        output += `    constructor(private client: BaseClient<NeverThrow>) {}\n\n`;
-
-        // Categorize endpoints
-        const listEndpoint = resourceEndpoints.find(e => {
-            const segments = e.originalPath.split("/").filter(Boolean);
-            return segments.length === 1 && e.method === "GET" && e.hasQuery;
-        });
-
-        const createEndpoint = resourceEndpoints.find(e => {
-            const segments = e.originalPath.split("/").filter(Boolean);
-            return segments.length === 1 && e.method === "POST";
-        });
-
-        const getEndpoint = resourceEndpoints.find(e => {
-            return e.method === "GET" && !e.hasQuery;
-        });
-
-        const updateEndpoint = resourceEndpoints.find(e => {
-            const segments = e.originalPath.split("/").filter(Boolean);
-            return segments.length === 2 && segments[1].startsWith("{") && (e.method === "PUT" || e.method === "PATCH");
-        });
-
-        const deleteEndpoint = resourceEndpoints.find(e => {
-            const segments = e.originalPath.split("/").filter(Boolean);
-            return segments.length === 2 && segments[1].startsWith("{") && e.method === "DELETE";
-        });
-
-        // Generate standard CRUD methods
-        if (listEndpoint) {
-            output += generateMethod("list", listEndpoint);
-        }
-
-        if (createEndpoint) {
-            output += generateMethod("create", createEndpoint);
-        }
-
-        if (getEndpoint) {
-            output += generateMethod("get", getEndpoint);
-        }
-
-        if (updateEndpoint) {
-            output += generateMethod("update", updateEndpoint);
-        }
-
-        if (deleteEndpoint) {
-            output += generateMethod("delete", deleteEndpoint);
-        }
-
-        // Handle nested endpoints and special endpoints
-        const specialEndpoints = resourceEndpoints.filter(e => {
-            const segments = e.originalPath.split("/").filter(Boolean);
-            // Skip the standard CRUD endpoints we already handled
-            if (segments.length === 1) return false;
-            if (segments.length === 2 && segments[1].startsWith("{")) return false;
-            return true;
-        });
-
-        // Group special endpoints by their sub-resource
-        const subResourceMap = new Map<string, EndpointInfo[]>();
-
-        for (const ep of specialEndpoints) {
-            const segments = ep.originalPath.split("/").filter(Boolean);
-
-            // Find the first non-param segment after the resource
-            let subResource = "";
-            let depth = 0;
-
-            for (let i = 1; i < segments.length; i++) {
-                if (!segments[i].startsWith("{")) {
-                    if (depth === 0) {
-                        subResource = segments[i];
-                    } else {
-                        subResource += "_" + segments[i];
-                    }
-                    depth++;
-                }
-            }
-
-            if (subResource) {
-                if (!subResourceMap.has(subResource)) {
-                    subResourceMap.set(subResource, []);
-                }
-                subResourceMap.get(subResource)!.push(ep);
-            }
-        }
-
-        // Generate methods for each sub-resource grouping
-        for (const subEndpoints of subResourceMap.values()) {
-            for (const ep of subEndpoints) {
-                const methodName = getMethodNameFromOperationId(ep.operationId, resource);
-                output += generateMethod(methodName, ep);
-            }
-        }
-
-        output += `}\n\n`;
-    }
-
-    writeFileSync("clientAutogen.ts", output, { encoding: "utf-8" });
-    console.log("Generated clientAutogen.ts");
+  writeFileSync("clientAutogen.ts", output, { encoding: "utf-8" });
+  console.log("Generated clientAutogen.ts");
 }
 
 main().catch((err) => {
-    console.error(err);
-    process.exit(1);
+  console.error(err);
+  process.exit(1);
 });

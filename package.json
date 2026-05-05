@@ -23,6 +23,7 @@
         "url": "git+https://github.com/vantage-sh/vantage-ts.git"
     },
     "devDependencies": {
+        "@biomejs/biome": "2.2.5",
         "@types/node": "^25.0.3",
         "openapi-typescript": "^7.10.1",
         "tsup": "^8.5.1",
@@ -34,6 +35,10 @@
         "generate": "tsx ./generate.ts",
         "build": "tsup",
         "type-check": "npm run build && tsc --noEmit",
-        "test": "npm run build && vitest"
+        "test": "npm run build && vitest",
+        "format": "biome format --write",
+        "lint": "biome lint",
+        "lint:fix": "biome lint --fix",
+        "check:lint:all": "biome check"
     }
 }
