@@ -13,17 +13,17 @@ jobs:
   publish:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Install npm 11
+        run: npm install -g npm@11.12.1
 
       - run: npm ci
 
@@ -37,7 +37,7 @@ jobs:
 
             # Build the package and publish it
             npm run build
-            npm publish
+            npm publish --provenance
 
             # Push the tag to the remote repository
             git tag "v$VERSION"
