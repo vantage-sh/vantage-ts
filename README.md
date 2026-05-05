@@ -238,6 +238,13 @@ The SDK exports several utility types for advanced use:
 | `ResponseBodyForPathAndMethod<P, M>` | Response body type for a path/method |
 | `NoSlashString` | Branded type for safely encoded path segments |
 
+## Testing
+
+To run the tests, create an `.env.local` file copying the values from `.env.example`. You will need
+* `VANTAGE_API_TOKEN` - API Token with Read / Write access
+* `VANTAGE_WORKSPACE_TOKEN` - Workspace token for a location to create objects
+* `VANTAGE_API_BASE_URL` - Optionally, override the API URL. Default is `api.vantage.sh`
+
 ## Publishing
 
 After building locally and confirming the changes in the Vantage API are reflected in the types in this

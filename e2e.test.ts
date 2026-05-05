@@ -11,10 +11,12 @@ if (!workspaceToken) {
   throw new Error("VANTAGE_WORKSPACE_TOKEN environment variable is not set.");
 }
 
+const baseUrl = process.env.VANTAGE_API_BASE_URL || "https://api.vantage.sh";
+
 let folderToken: string;
 
 test("POST request with parameters (create folder)", async () => {
-  const client = new APIV2Client(token);
+  const client = new APIV2Client(token, false, baseUrl);
   const folder = await client.folders.create({
     title: "E2E Test Folder",
     workspace_token: workspaceToken,
@@ -28,7 +30,7 @@ describe("GET requests for folder", () => {
     if (!folderToken) {
       throw new Error("Folder token is not set from previous test.");
     }
-    const client = new APIV2Client(token);
+    const client = new APIV2Client(token, false, baseUrl);
     const folder = await client.folders.get(folderToken);
     expect(folder.title).toBe("E2E Test Folder");
   });
@@ -37,7 +39,7 @@ describe("GET requests for folder", () => {
     if (!workspaceToken) {
       throw new Error("Workspace token is not set from previous test.");
     }
-    const client = new APIV2Client(token, true);
+    const client = new APIV2Client(token, true, baseUrl);
     const [folder, error] = await client.folders.get(folderToken);
     expect(error).toBeNull();
     expect(folder.title).toBe("E2E Test Folder");
@@ -49,7 +51,7 @@ describe("PUT requests for folder", () => {
     if (!folderToken) {
       throw new Error("Folder token is not set from previous test.");
     }
-    const client = new APIV2Client(token);
+    const client = new APIV2Client(token, false, baseUrl);
     const updated = await client.folders.update(folderToken, {
       title: "Updated E2E Test Folder",
     });
@@ -60,7 +62,7 @@ describe("PUT requests for folder", () => {
     if (!folderToken) {
       throw new Error("Folder token is not set from previous test.");
     }
-    const client = new APIV2Client(token, true);
+    const client = new APIV2Client(token, true, baseUrl);
     const [updated, error] = await client.folders.update(folderToken, {
       title: "Updated E2E Test Folder Again",
     });
@@ -73,13 +75,13 @@ test("DELETE request (delete folder)", async () => {
   if (!folderToken) {
     throw new Error("Folder token is not set from previous test.");
   }
-  const client = new APIV2Client(token);
+  const client = new APIV2Client(token, false, baseUrl);
   await client.folders.delete(folderToken);
 });
 
 describe("API throws", () => {
   test("never throw works", async () => {
-    const client = new APIV2Client("bad", true);
+    const client = new APIV2Client("bad", true, baseUrl);
     const [response, error] = await client.me.get();
     expect(response).toBeNull();
     expect(error).not.toBeNull();
@@ -88,7 +90,7 @@ describe("API throws", () => {
   });
 
   test("throw works", async () => {
-    const client = new APIV2Client("bad", false);
+    const client = new APIV2Client("bad", false, baseUrl);
     let caughtError: any = null;
     try {
       await client.me.get();
