@@ -461,7 +461,11 @@ export interface paths {
         get: operations["getBusinessMetricValues"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete business metric values
+         * @description Deletes Business Metric values (historical or forecasted unit metrics).
+         */
+        delete: operations["deleteBusinessMetricValues"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2445,7 +2449,11 @@ export interface paths {
          */
         put: operations["updateWorkspace"];
         post?: never;
-        delete?: never;
+        /**
+         * Delete workspace
+         * @description Delete a workspace
+         */
+        delete: operations["deleteWorkspace"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3544,6 +3552,15 @@ export interface components {
                 }[];
             };
         };
+        /** @description BusinessMetricValuesDeleteResponse model */
+        BusinessMetricValuesDeleteResponse: {
+            /**
+             * Format: int32
+             * @description Number of unit metric rows removed.
+             * @example 120
+             */
+            deleted_count: number;
+        };
         /** @description CostAlertEvents model */
         CostAlertEvents: {
             links?: components["schemas"]["Links"];
@@ -3762,6 +3779,11 @@ export interface components {
                  * @default true
                  */
                 show_previous_period?: boolean | null;
+                /**
+                 * @description Report will restrict date ranges to completed periods only.
+                 * @default false
+                 */
+                complete_period?: boolean | null;
             };
             /**
              * @description The date and time, in UTC, the report was created. ISO 8601 Formatted.
@@ -3846,7 +3868,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -3922,6 +3944,11 @@ export interface components {
                  * @default true
                  */
                 show_previous_period?: boolean;
+                /**
+                 * @description Report will restrict date ranges to completed periods only.
+                 * @default false
+                 */
+                complete_period?: boolean;
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -3947,7 +3974,7 @@ export interface components {
              * @default cumulative
              * @enum {string}
              */
-            date_bin?: "cumulative" | "day" | "week" | "month" | "quarter";
+            date_bin?: "cumulative" | "day" | "week" | "month" | "quarter" | "hour";
             /** @description Report chart settings. */
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
@@ -3999,6 +4026,8 @@ export interface components {
                 aggregate_by?: string | null;
                 /** @description Report will show previous period costs or usage comparison. */
                 show_previous_period?: boolean | null;
+                /** @description Report will restrict date ranges to completed periods only. */
+                complete_period?: boolean;
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -4031,7 +4060,7 @@ export interface components {
              * @default cumulative
              * @enum {string}
              */
-            date_bin?: "cumulative" | "day" | "week" | "month" | "quarter";
+            date_bin?: "cumulative" | "day" | "week" | "month" | "quarter" | "hour";
         };
         /** @description Generate a DataExport of costs. */
         createCostExport: {
@@ -4045,17 +4074,62 @@ export interface components {
             start_date?: string;
             /** @description Last date you would like to filter costs to. ISO 8601 formatted. */
             end_date?: string;
+            /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+            groupings?: string[];
             /**
              * @description The date bin of the costs. Defaults to the report's default or day.
              * @enum {string}
              */
-            date_bin?: "day" | "week" | "month" | "quarter";
+            date_bin?: "day" | "week" | "month" | "quarter" | "hour";
             /**
              * @description The schema of the data export.
              * @default vntg
              * @enum {string}
              */
             schema?: "vntg" | "focus" | "comparison";
+            /** @description Cost-related settings. */
+            settings?: {
+                /**
+                 * @description Results will include credits.
+                 * @default false
+                 */
+                include_credits?: boolean;
+                /**
+                 * @description Results will include refunds.
+                 * @default false
+                 */
+                include_refunds?: boolean;
+                /**
+                 * @description Results will include discounts.
+                 * @default true
+                 */
+                include_discounts?: boolean;
+                /**
+                 * @description Results will include tax.
+                 * @default true
+                 */
+                include_tax?: boolean;
+                /**
+                 * @description Results will amortize.
+                 * @default true
+                 */
+                amortize?: boolean;
+                /**
+                 * @description Results will show unallocated costs.
+                 * @default false
+                 */
+                unallocated?: boolean;
+                /**
+                 * @description Results will aggregate by cost or usage.
+                 * @default cost
+                 */
+                aggregate_by?: string;
+                /**
+                 * @description Results will show previous period costs or usage comparison.
+                 * @default true
+                 */
+                show_previous_period?: boolean;
+            };
         };
         /** @description Costs model */
         Costs: {
@@ -4114,7 +4188,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -4552,6 +4626,8 @@ export interface components {
              * @example Platform Team Reports
              */
             title: string | null;
+            /** @description The type of the Folder. */
+            type: string;
             /** @description The token for the parent Folder, if any. */
             parent_folder_token?: string | null;
             /** @description The tokens for the SavedFilters assigned to the Folder. */
@@ -4579,6 +4655,12 @@ export interface components {
             saved_filter_tokens?: string[];
             /** @description The token of the Workspace to add the Folder to. Ignored if 'parent_folder_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
+            /**
+             * @description The type of the Folder.
+             * @default CostFolder
+             * @enum {string}
+             */
+            type?: "CostFolder" | "ProviderResourceFolder";
         };
         /** @description Update a Folder for CostReports. */
         updateFolder: {
@@ -4819,7 +4901,7 @@ export interface components {
             /** @description How costs are aggregated by. Possible values: idle_cost, amount, cost_efficiency. */
             aggregated_by: string;
             /**
-             * @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, labeled, category, pod, label, label:<label_name>.
+             * @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>.
              * @example cluster_id, namespace
              */
             groupings: string | null;
@@ -4877,7 +4959,7 @@ export interface components {
              * @enum {string}
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
-            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, labeled, category, pod, label, label:<label_name>. */
+            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
             groupings?: string[];
         };
         /** @description Update a KubernetesEfficiencyReport. */
@@ -4911,7 +4993,7 @@ export interface components {
              * @enum {string}
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
-            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, labeled, category, pod, label, label:<label_name>. */
+            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
             groupings?: string[];
         };
         /** @description ManagedAccounts model */
@@ -5081,7 +5163,7 @@ export interface components {
         /** @description Update the authenticated User. */
         updateMe: {
             /** @description The token of a Dashboard to set as the User default. Send null to clear. */
-            default_dashboard_token?: string;
+            default_dashboard_token?: string | null;
         };
         /** @description CostProviders model */
         CostProviders: {
@@ -5403,11 +5485,44 @@ export interface components {
         /** @description RecommendationProviderResources model */
         RecommendationProviderResources: {
             links?: components["schemas"]["Links"];
-            resources: components["schemas"]["ProviderResource"][];
+            resources: components["schemas"]["RecommendationProviderResource"][];
         };
-        /** @description ProviderResource model */
-        ProviderResource: {
+        /** @description RecommendationProviderResource model */
+        RecommendationProviderResource: {
             token: string;
+            /**
+             * @description The unique identifier for the resource.
+             * @example i-0a1b2c3d4e5f6g7h8
+             */
+            uuid: string;
+            /**
+             * @description The kind of resource.
+             * @example aws_instance
+             */
+            type: string;
+            label: string | null;
+            /** @description Type-specific attributes of the resource. */
+            metadata: Record<string, any> | null;
+            /** @description The provider account where the resource is located. */
+            account_id: string | null;
+            /** @description The provider billing account this resource is charged to. */
+            billing_account_id: string | null;
+            /**
+             * @description The provider of the resource.
+             * @example aws
+             */
+            provider: string;
+            /**
+             * @description The region where the resource is located. Region values are specific to each provider.
+             * @example us-west-2
+             */
+            region: string | null;
+            /** @description The cost of the resource broken down by category. */
+            costs?: components["schemas"]["ResourceCost"][];
+            /** @description The date and time when Vantage first observed the resource. */
+            created_at: string;
+            /** @description Key-value pairs of tags associated with the resource. */
+            tags: Record<string, any>;
             /**
              * @description The unique identifier of the Active Resource.
              * @example i-0a1b2c3d4e5f6g7h8
@@ -5415,6 +5530,15 @@ export interface components {
             resource_id: string;
             /** @description The actions to take to implement the Recommendation. */
             recommendation_actions?: components["schemas"]["RecommendationAction"][];
+        };
+        ResourceCost: {
+            /** @description The category of the cost. */
+            category: string;
+            /**
+             * Format: float
+             * @description The cost amount.
+             */
+            amount: number;
         };
         RecommendationAction: {
             action: string;
@@ -5465,6 +5589,8 @@ export interface components {
             account_ids?: string[] | null;
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
             regions?: string[] | null;
+            /** @description Filter by one or more recommendation type slugs. */
+            types?: string[] | null;
             /**
              * @description Filter by tag key (must be used with tag_value).
              * @example environment
@@ -5475,6 +5601,12 @@ export interface components {
              * @example production
              */
             tag_value?: string | null;
+            /**
+             * Format: float
+             * @description Filter recommendations with at least this amount of potential savings.
+             * @example 100.5
+             */
+            min_savings?: number | null;
             /**
              * @description The date and time, in UTC, the view was created. ISO 8601 Formatted.
              * @example 2023-08-04T00:00:00Z
@@ -5497,6 +5629,8 @@ export interface components {
             account_ids?: string[];
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
             regions?: string[];
+            /** @description Filter by one or more recommendation type slugs. */
+            types?: string[];
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string;
             /** @description Filter by tag value (requires tag_key). */
@@ -5505,6 +5639,11 @@ export interface components {
             start_date?: string;
             /** @description Filter recommendations created on/before this YYYY-MM-DD date. */
             end_date?: string;
+            /**
+             * Format: float
+             * @description Filter recommendations with at least this amount of potential savings.
+             */
+            min_savings?: number;
         };
         /** @description Update a RecommendationView. */
         updateRecommendationView: {
@@ -5518,6 +5657,8 @@ export interface components {
             account_ids?: string[];
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
             regions?: string[];
+            /** @description Filter by one or more recommendation type slugs. */
+            types?: string[];
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string;
             /** @description Filter by tag value (requires tag_key). */
@@ -5526,6 +5667,11 @@ export interface components {
             start_date?: string;
             /** @description Filter recommendations created on/before this YYYY-MM-DD date. */
             end_date?: string;
+            /**
+             * Format: float
+             * @description Filter recommendations with at least this amount of potential savings.
+             */
+            min_savings?: number;
         };
         /** @description ReportNotifications model */
         ReportNotifications: {
@@ -5625,6 +5771,8 @@ export interface components {
             user_token: string | null;
             /** @description The token for the User or Team who created this ResourceReport. */
             created_by_token: string | null;
+            /** @description The token for the Folder the ResourceReport is a part of. */
+            folder_token?: string | null;
             /** @description Array of column names configured for the ResourceReport table display. */
             columns: string[];
         };
@@ -5638,6 +5786,8 @@ export interface components {
             filter?: string;
             /** @description Array of column names to display in the table. Column names should match those returned by the /resource_reports/columns endpoint. The order determines the display order. Only available for reports with a single resource type filter. */
             columns?: string[];
+            /** @description The token of the Folder to add the ResourceReport to. */
+            folder_token?: string;
         };
         /** @description Update a ResourceReport. */
         updateResourceReport: {
@@ -5647,6 +5797,8 @@ export interface components {
             filter?: string;
             /** @description Array of column names to display in the table. Column names should match those returned by the /resource_reports/columns endpoint. The order determines the display order. Only available for reports with a single resource type filter. */
             columns?: string[];
+            /** @description The token of the Folder to move the ResourceReport to. */
+            folder_token?: string;
         };
         /** @description Resources model */
         Resources: {
@@ -5687,15 +5839,8 @@ export interface components {
             costs?: components["schemas"]["ResourceCost"][];
             /** @description The date and time when Vantage first observed the resource. */
             created_at: string;
-        };
-        ResourceCost: {
-            /** @description The category of the cost. */
-            category: string;
-            /**
-             * Format: float
-             * @description The cost amount.
-             */
-            amount: number;
+            /** @description Key-value pairs of tags associated with the resource. */
+            tags: Record<string, any>;
         };
         /** @description SavedFilters model */
         SavedFilters: {
@@ -5877,6 +6022,8 @@ export interface components {
             tag_key: string;
             /** @description Whether the Tag has been hidden from the Vantage UI. */
             hidden: boolean;
+            /** @description Whether the Tag has been marked as preferred. */
+            preferred: boolean;
             /** @description The unique providers that are covered by the Tag key. */
             providers: string[];
         };
@@ -6024,7 +6171,7 @@ export interface components {
              * @description The date bin of the unit costs. Defaults to the report's default or day.
              * @enum {string}
              */
-            date_bin?: "day" | "week" | "month" | "quarter";
+            date_bin?: "day" | "week" | "month" | "quarter" | "hour";
         };
         /** @description UnitCosts model */
         UnitCosts: {
@@ -6102,7 +6249,7 @@ export interface components {
         /** @description Update a specific User. */
         updateUser: {
             /** @description The token of a Dashboard to set as the User default. Send null to clear. */
-            default_dashboard_token?: string;
+            default_dashboard_token?: string | null;
         };
         /** @description VirtualTagConfigs model */
         VirtualTagConfigs: {
@@ -6129,7 +6276,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2025-09-01
+             * @example 2025-11-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -6143,8 +6290,13 @@ export interface components {
              * @example team
              */
             key: string;
-            /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
-            providers: string[];
+            /** @description The providers this collapsed tag key applies to. Defaults to all providers when omitted. */
+            providers?: string[] | null;
+            /**
+             * @description The VQL filter this collapsed tag key applies to.
+             * @example (costs.provider = 'aws') OR (costs.provider = 'gcp')
+             */
+            filter?: string | null;
         };
         VirtualTagConfigValue: {
             /**
@@ -6163,6 +6315,10 @@ export interface components {
              */
             business_metric_token?: string | null;
             cost_metric?: components["schemas"]["VirtualTagConfigValueCostMetric"];
+            /** @description The display name for this allocation value. */
+            display_name?: string | null;
+            /** @description Label transforms applied to business metric labels. */
+            label_transforms?: components["schemas"]["VirtualTagConfigValueLabelTransform"][];
             /** @description Labeled percentage allocations for matching costs. */
             percentages?: components["schemas"]["VirtualTagConfigValuePercentage"][];
             /** @description Date ranges restricting when this value applies. */
@@ -6176,6 +6332,22 @@ export interface components {
         VirtualTagConfigValueCostMetricAggregation: {
             /** @description The tag to aggregate on. */
             tag?: string | null;
+        };
+        VirtualTagConfigValueLabelTransform: {
+            /**
+             * @description The label transform type.
+             * @enum {string}
+             */
+            type: "split" | "format";
+            /** @description Delimiter used by split transforms. */
+            delimiter?: string | null;
+            /**
+             * Format: int32
+             * @description Zero-based index used by split transforms.
+             */
+            index?: number | null;
+            /** @description Template used by format transforms. */
+            template?: string | null;
         };
         VirtualTagConfigValuePercentage: {
             /**
@@ -6236,6 +6408,8 @@ export interface components {
                 key: string;
                 /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
                 providers?: string[];
+                /** @description The VQL filter this collapsed tag key applies to. */
+                filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
             values?: {
@@ -6245,6 +6419,15 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
+                display_name?: string;
+                label_transforms?: {
+                    type: string;
+                    delimiter?: string | null;
+                    /** Format: int32 */
+                    index?: number | null;
+                    template?: string | null;
+                }[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
@@ -6282,6 +6465,8 @@ export interface components {
                 key: string;
                 /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
                 providers?: string[];
+                /** @description The VQL filter this collapsed tag key applies to. */
+                filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
             values?: {
@@ -6291,6 +6476,15 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
+                display_name?: string;
+                label_transforms?: {
+                    type: string;
+                    delimiter?: string | null;
+                    /** Format: int32 */
+                    index?: number | null;
+                    template?: string | null;
+                }[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
@@ -6341,6 +6535,8 @@ export interface components {
                 key: string;
                 /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
                 providers?: string[];
+                /** @description The VQL filter this collapsed tag key applies to. */
+                filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
             values?: {
@@ -6350,6 +6546,15 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
+                display_name?: string;
+                label_transforms?: {
+                    type: string;
+                    delimiter?: string | null;
+                    /** Format: int32 */
+                    index?: number | null;
+                    template?: string | null;
+                }[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
@@ -7120,7 +7325,7 @@ export interface operations {
                 /** @description Filter by source. */
                 source?: "console" | "api" | "finops_agent";
                 /** @description Filter by object type. */
-                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment";
+                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment" | "segment";
                 /** @description Filter by audit log token. */
                 token?: string;
                 /** @description Filter by object token (auditable_token). */
@@ -8561,6 +8766,68 @@ export interface operations {
             };
         };
     };
+    deleteBusinessMetricValues: {
+        parameters: {
+            query?: {
+                /** @description Inclusive lower bound (ISO 8601 date or datetime, UTC). Date-only values start at 00:00:00 UTC that day. */
+                start_date?: string;
+                /** @description Inclusive upper bound (ISO 8601 date or datetime, UTC). Date-only values include the full calendar day through 23:59:59.999999999 UTC. */
+                end_date?: string;
+                /** @description When present in the query string (including as an empty value), only unit metrics with this exact label are deleted. Omit the parameter to delete all labels in range. */
+                label?: string;
+                /** @description When true, deletes forecasted unit metrics instead of historical ones. */
+                forecasted?: boolean;
+            };
+            header?: never;
+            path: {
+                business_metric_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "deleted_count": 120
+                     *     }
+                     */
+                    "application/json": components["schemas"]["BusinessMetricValuesDeleteResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getBusinessMetricForecastedValues: {
         parameters: {
             query?: {
@@ -9071,7 +9338,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -9479,7 +9746,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -9575,10 +9842,7 @@ export interface operations {
     };
     createCostExport: {
         parameters: {
-            query?: {
-                /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
-                groupings?: string[];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9647,7 +9911,7 @@ export interface operations {
                 /** @description The page of results to return. */
                 page?: number;
                 /** @description The date bin of the costs. Defaults to the report's default or day. */
-                date_bin?: "day" | "week" | "month" | "quarter";
+                date_bin?: "day" | "week" | "month" | "quarter" | "hour";
                 /** @description Results will include credits. */
                 "settings[include_credits]"?: boolean;
                 /** @description Results will include refunds. */
@@ -10567,6 +10831,8 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by folder type. */
+                type?: "CostFolder" | "ProviderResourceFolder";
             };
             header?: never;
             path?: never;
@@ -10782,7 +11048,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -11119,7 +11385,8 @@ export interface operations {
             header?: never;
             path: {
                 integration_token: string;
-                user_costs_upload_token: number;
+                /** @description Token of the UserCostsUpload to delete. */
+                user_costs_upload_token: string;
             };
             cookie?: never;
         };
@@ -11656,7 +11923,7 @@ export interface operations {
     createKubernetesEfficiencyReportExport: {
         parameters: {
             query?: {
-                /** @description Group the results by specific field(s). Valid groupings: cluster_id, namespace, labeled, category, pod, label, label:<label_name>. */
+                /** @description Group the results by specific field(s). Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
                 groupings?: string[];
             };
             header?: never;
@@ -12938,7 +13205,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The number of results to return. The maximum is 1000. */
+                /** @description The number of results to return. Defaults to 25. The maximum is 500. */
                 limit?: number;
             };
             header?: never;
@@ -13017,7 +13284,7 @@ export interface operations {
                      *       ]
                      *     }
                      */
-                    "application/json": components["schemas"]["ProviderResource"];
+                    "application/json": components["schemas"]["RecommendationProviderResource"];
                 };
             };
             /** @description NotFound */
@@ -14683,7 +14950,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -14706,23 +14973,32 @@ export interface operations {
                 content: {
                     /**
                      * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/tags",
+                     *         "first": "https://api.vantage.sh/v2/tags?page=1",
+                     *         "next": null,
+                     *         "last": null,
+                     *         "prev": null
+                     *       },
                      *       "tags": [
                      *         {
                      *           "tag_key": "app",
                      *           "hidden": false,
+                     *           "preferred": false,
                      *           "providers": [
                      *             "aws",
                      *             "azure",
-                     *             "custom_provider:accss_crdntl_14b098088d3fe0ea"
+                     *             "custom_provider:accss_crdntl_ef89becbcf119a74"
                      *           ]
                      *         },
                      *         {
                      *           "tag_key": "environment",
                      *           "hidden": false,
+                     *           "preferred": false,
                      *           "providers": [
                      *             "aws",
                      *             "azure",
-                     *             "custom_provider:accss_crdntl_14b098088d3fe0ea"
+                     *             "custom_provider:accss_crdntl_ef89becbcf119a74"
                      *           ]
                      *         }
                      *       ]
@@ -14757,10 +15033,11 @@ export interface operations {
                      *         {
                      *           "tag_key": "app",
                      *           "hidden": true,
+                     *           "preferred": false,
                      *           "providers": [
                      *             "aws",
                      *             "azure",
-                     *             "custom_provider:accss_crdntl_11bcb3867900b0df"
+                     *             "custom_provider:accss_crdntl_6d2b7b71244943a1"
                      *           ]
                      *         }
                      *       ]
@@ -14811,7 +15088,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
@@ -14838,11 +15115,11 @@ export interface operations {
                     /**
                      * @example {
                      *       "links": {
-                     *         "next": "[link to next page]",
-                     *         "prev": "[link to previous page]",
-                     *         "self": "<link to current page>",
-                     *         "first": "<link to first page>",
-                     *         "last": "[link to last page]"
+                     *         "self": "https://api.vantage.sh/v2/tags/environment/values?sort_column=tag_value&sort_direction=asc",
+                     *         "first": "https://api.vantage.sh/v2/tags/environment/values?sort_column=tag_value&sort_direction=asc&page=1",
+                     *         "next": null,
+                     *         "last": null,
+                     *         "prev": null
                      *       },
                      *       "tag_values": [
                      *         {
@@ -14850,7 +15127,7 @@ export interface operations {
                      *           "providers": [
                      *             "aws",
                      *             "azure",
-                     *             "custom_provider:accss_crdntl_3d5f465892a0718f"
+                     *             "custom_provider:accss_crdntl_b180279f14faa5b7"
                      *           ]
                      *         },
                      *         {
@@ -14858,7 +15135,7 @@ export interface operations {
                      *           "providers": [
                      *             "aws",
                      *             "azure",
-                     *             "custom_provider:accss_crdntl_3d5f465892a0718f"
+                     *             "custom_provider:accss_crdntl_b180279f14faa5b7"
                      *           ]
                      *         }
                      *       ]
@@ -15411,7 +15688,7 @@ export interface operations {
                 /** @description Last date you would like to filter unit costs to. Defaults to the report's default. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description The date bin of the unit costs. Defaults to the report's default or day. */
-                date_bin?: "day" | "week" | "month" | "quarter";
+                date_bin?: "day" | "week" | "month" | "quarter" | "hour";
                 /** @description Whether to order unit costs by date in an ascending or descending manner. */
                 order?: "asc" | "desc";
                 /** @description The amount of results to return. The maximum is 1000. */
@@ -16324,6 +16601,54 @@ export interface operations {
             };
             /** @description BadRequest */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workspace"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

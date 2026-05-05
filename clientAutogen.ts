@@ -286,6 +286,14 @@ export type GetBusinessMetricValuesRequest = RequestBodyForPathAndMethod<`/v2/bu
  */
 export type GetBusinessMetricValuesResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "GET">;
 /**
+ * Deletes Business Metric values (historical or forecasted unit metrics).
+ */
+export type DeleteBusinessMetricValuesRequest = RequestBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "DELETE">;
+/**
+ * Response type for Delete business metric values
+ */
+export type DeleteBusinessMetricValuesResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "DELETE">;
+/**
  * Return forecasted values of a BusinessMetric
  */
 export type GetBusinessMetricForecastedValuesRequest = RequestBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/forecasted_values`, "GET">;
@@ -1221,6 +1229,10 @@ export type UpdateWorkspaceRequest = RequestBodyForPathAndMethod<`/v2/workspaces
  * Response type for Update workspace
  */
 export type UpdateWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspaces/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete workspace
+ */
+export type DeleteWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspaces/${NoSlashString}`, "DELETE">;
 export type PingResponse = ResponseBodyForPathAndMethod<"/v2/ping", "GET">;
 
 /** Vantage API Client with typed methods */
@@ -2067,6 +2079,17 @@ class BusinessMetricsApi<NeverThrow extends boolean> {
         return this.client.request(
             `/v2/business_metrics/${pathEncode(businessMetricToken)}/values`,
             "GET",
+            body,
+        );
+    }
+
+/**
+ * Deletes Business Metric values (historical or forecasted unit metrics).
+ */
+    deleteValues(businessMetricToken: string, body?: DeleteBusinessMetricValuesRequest) {
+        return this.client.request(
+            `/v2/business_metrics/${pathEncode(businessMetricToken)}/values`,
+            "DELETE",
             body,
         );
     }
@@ -3762,6 +3785,17 @@ class WorkspacesApi<NeverThrow extends boolean> {
             `/v2/workspaces/${pathEncode(workspaceToken)}`,
             "PUT",
             body,
+        );
+    }
+
+/**
+ * Delete a workspace
+ */
+    delete(workspaceToken: string) {
+        return this.client.request(
+            `/v2/workspaces/${pathEncode(workspaceToken)}`,
+            "DELETE",
+            {},
         );
     }
 
