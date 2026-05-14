@@ -6,7 +6,7 @@ jobs:
         name: TypeScript Check
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
@@ -20,7 +20,7 @@ jobs:
         name: Unit Tests
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
@@ -34,7 +34,7 @@ jobs:
         name: E2E Tests
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
@@ -51,7 +51,7 @@ jobs:
         name: Dry Build
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
@@ -64,7 +64,7 @@ jobs:
         name: Compare to API
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
