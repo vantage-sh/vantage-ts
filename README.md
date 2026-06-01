@@ -194,6 +194,14 @@ const report = await client.request(
 
 ## Development
 
+### Generate the latest API changes
+
+To create the checked in generated files, run the following command.
+
+```bash
+npm run generate
+```
+
 ### Building
 
 ```bash
