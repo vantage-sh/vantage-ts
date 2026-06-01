@@ -350,6 +350,14 @@ export type UpdateCostAlertResponse = ResponseBodyForPathAndMethod<`/v2/cost_ale
  */
 export type DeleteCostAlertResponse = ResponseBodyForPathAndMethod<`/v2/cost_alerts/${NoSlashString}`, "DELETE">;
 /**
+ * List CostProviders available to query in a given Workspace.
+ */
+export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_providers", "GET">;
+/**
+ * Response type for Get cost providers
+ */
+export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
+/**
  * List CostProviderAccounts available in a given Workspace.
  */
 export type GetCostProviderAccountsRequest = RequestBodyForPathAndMethod<"/v2/cost_provider_accounts", "GET">;
@@ -413,6 +421,14 @@ export type GetCostsRequest = RequestBodyForPathAndMethod<"/v2/costs", "GET">;
  * Response type for Get costs for cost report or VQL filter
  */
 export type GetCostsResponse = ResponseBodyForPathAndMethod<"/v2/costs", "GET">;
+/**
+ * List CostServices available to query in a given Workspace.
+ */
+export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_services", "GET">;
+/**
+ * Response type for Get cost services
+ */
+export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
 /**
  * Return all Dashboards.
  */
@@ -750,30 +766,6 @@ export type UpdateMeRequest = RequestBodyForPathAndMethod<"/v2/me", "PUT">;
  */
 export type UpdateMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "PUT">;
 /**
- * List CostProviders available to query in a given Workspace.
- */
-export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_providers", "GET">;
-/**
- * Response type for Get cost providers
- */
-export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
-/**
- * List CostServices available to query in a given Workspace.
- */
-export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_services", "GET">;
-/**
- * Response type for Get cost services
- */
-export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
-/**
- * Provide UserFeedback for our product and features.
- */
-export type CreateUserFeedbackRequest = RequestBodyForPathAndMethod<"/v2/user_feedback", "POST">;
-/**
- * Response type for Submit user feedback
- */
-export type CreateUserFeedbackResponse = ResponseBodyForPathAndMethod<"/v2/user_feedback", "POST">;
-/**
  * Return all NetworkFlowReports.
  */
 export type GetNetworkFlowReportsRequest = RequestBodyForPathAndMethod<"/v2/network_flow_reports", "GET">;
@@ -805,6 +797,7 @@ export type UpdateNetworkFlowReportResponse = ResponseBodyForPathAndMethod<`/v2/
  * Response type for Delete network flow report
  */
 export type DeleteNetworkFlowReportResponse = ResponseBodyForPathAndMethod<`/v2/network_flow_reports/${NoSlashString}`, "DELETE">;
+export type PingResponse = ResponseBodyForPathAndMethod<"/v2/ping", "GET">;
 /**
  * Return available Prices across all Regions for a Product.
  */
@@ -1138,6 +1131,14 @@ export type GetUnitCostsRequest = RequestBodyForPathAndMethod<"/v2/unit_costs", 
  */
 export type GetUnitCostsResponse = ResponseBodyForPathAndMethod<"/v2/unit_costs", "GET">;
 /**
+ * Provide UserFeedback for our product and features.
+ */
+export type CreateUserFeedbackRequest = RequestBodyForPathAndMethod<"/v2/user_feedback", "POST">;
+/**
+ * Response type for Submit user feedback
+ */
+export type CreateUserFeedbackResponse = ResponseBodyForPathAndMethod<"/v2/user_feedback", "POST">;
+/**
  * Return all Users that the current API token has access to.
  */
 export type GetUsersRequest = RequestBodyForPathAndMethod<"/v2/users", "GET">;
@@ -1233,7 +1234,6 @@ export type UpdateWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspac
  * Response type for Delete workspace
  */
 export type DeleteWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspaces/${NoSlashString}`, "DELETE">;
-export type PingResponse = ResponseBodyForPathAndMethod<"/v2/ping", "GET">;
 
 /** Vantage API Client with typed methods */
 export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<NeverThrow> {
@@ -1263,9 +1263,11 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _budgets?: BudgetsApi<NeverThrow>;
     private _businessMetrics?: BusinessMetricsApi<NeverThrow>;
     private _costAlerts?: CostAlertsApi<NeverThrow>;
+    private _costProviders?: CostProvidersApi<NeverThrow>;
     private _costProviderAccounts?: CostProviderAccountsApi<NeverThrow>;
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
+    private _costServices?: CostServicesApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
     private _dataExports?: DataExportsApi<NeverThrow>;
     private _exchangeRates?: ExchangeRatesApi<NeverThrow>;
@@ -1277,10 +1279,8 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _kubernetesEfficiencyReports?: KubernetesEfficiencyReportsApi<NeverThrow>;
     private _managedAccounts?: ManagedAccountsApi<NeverThrow>;
     private _me?: MeApi<NeverThrow>;
-    private _costProviders?: CostProvidersApi<NeverThrow>;
-    private _costServices?: CostServicesApi<NeverThrow>;
-    private _userFeedback?: UserFeedbackApi<NeverThrow>;
     private _networkFlowReports?: NetworkFlowReportsApi<NeverThrow>;
+    private _ping?: PingApi<NeverThrow>;
     private _products?: ProductsApi<NeverThrow>;
     private _recommendations?: RecommendationsApi<NeverThrow>;
     private _recommendationViews?: RecommendationViewsApi<NeverThrow>;
@@ -1292,10 +1292,10 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _tags?: TagsApi<NeverThrow>;
     private _teams?: TeamsApi<NeverThrow>;
     private _unitCosts?: UnitCostsApi<NeverThrow>;
+    private _userFeedback?: UserFeedbackApi<NeverThrow>;
     private _users?: UsersApi<NeverThrow>;
     private _virtualTagConfigs?: VirtualTagConfigsApi<NeverThrow>;
     private _workspaces?: WorkspacesApi<NeverThrow>;
-    private _ping?: PingApi<NeverThrow>;
 
     get accessGrants(): AccessGrantsApi<NeverThrow> {
         if (!this._accessGrants) {
@@ -1367,6 +1367,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
         return this._costAlerts;
     }
 
+    get costProviders(): CostProvidersApi<NeverThrow> {
+        if (!this._costProviders) {
+            this._costProviders = new CostProvidersApi(this);
+        }
+        return this._costProviders;
+    }
+
     get costProviderAccounts(): CostProviderAccountsApi<NeverThrow> {
         if (!this._costProviderAccounts) {
             this._costProviderAccounts = new CostProviderAccountsApi(this);
@@ -1386,6 +1393,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costs = new CostsApi(this);
         }
         return this._costs;
+    }
+
+    get costServices(): CostServicesApi<NeverThrow> {
+        if (!this._costServices) {
+            this._costServices = new CostServicesApi(this);
+        }
+        return this._costServices;
     }
 
     get dashboards(): DashboardsApi<NeverThrow> {
@@ -1465,32 +1479,18 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
         return this._me;
     }
 
-    get costProviders(): CostProvidersApi<NeverThrow> {
-        if (!this._costProviders) {
-            this._costProviders = new CostProvidersApi(this);
-        }
-        return this._costProviders;
-    }
-
-    get costServices(): CostServicesApi<NeverThrow> {
-        if (!this._costServices) {
-            this._costServices = new CostServicesApi(this);
-        }
-        return this._costServices;
-    }
-
-    get userFeedback(): UserFeedbackApi<NeverThrow> {
-        if (!this._userFeedback) {
-            this._userFeedback = new UserFeedbackApi(this);
-        }
-        return this._userFeedback;
-    }
-
     get networkFlowReports(): NetworkFlowReportsApi<NeverThrow> {
         if (!this._networkFlowReports) {
             this._networkFlowReports = new NetworkFlowReportsApi(this);
         }
         return this._networkFlowReports;
+    }
+
+    get ping(): PingApi<NeverThrow> {
+        if (!this._ping) {
+            this._ping = new PingApi(this);
+        }
+        return this._ping;
     }
 
     get products(): ProductsApi<NeverThrow> {
@@ -1570,6 +1570,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
         return this._unitCosts;
     }
 
+    get userFeedback(): UserFeedbackApi<NeverThrow> {
+        if (!this._userFeedback) {
+            this._userFeedback = new UserFeedbackApi(this);
+        }
+        return this._userFeedback;
+    }
+
     get users(): UsersApi<NeverThrow> {
         if (!this._users) {
             this._users = new UsersApi(this);
@@ -1589,13 +1596,6 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._workspaces = new WorkspacesApi(this);
         }
         return this._workspaces;
-    }
-
-    get ping(): PingApi<NeverThrow> {
-        if (!this._ping) {
-            this._ping = new PingApi(this);
-        }
-        return this._ping;
     }
 
 }
@@ -2189,6 +2189,22 @@ class CostAlertsApi<NeverThrow extends boolean> {
 
 }
 
+class CostProvidersApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * List CostProviders available to query in a given Workspace.
+ */
+    list(body?: GetCostProvidersRequest) {
+        return this.client.request(
+            `/v2/cost_providers`,
+            "GET",
+            body,
+        );
+    }
+
+}
+
 class CostProviderAccountsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
@@ -2297,6 +2313,22 @@ class CostsApi<NeverThrow extends boolean> {
         return this.client.request(
             `/v2/costs/data_exports`,
             "POST",
+            body,
+        );
+    }
+
+}
+
+class CostServicesApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * List CostServices available to query in a given Workspace.
+ */
+    list(body?: GetCostServicesRequest) {
+        return this.client.request(
+            `/v2/cost_services`,
+            "GET",
             body,
         );
     }
@@ -2930,54 +2962,6 @@ class MeApi<NeverThrow extends boolean> {
 
 }
 
-class CostProvidersApi<NeverThrow extends boolean> {
-    constructor(private client: BaseClient<NeverThrow>) {}
-
-/**
- * List CostProviders available to query in a given Workspace.
- */
-    list(body?: GetCostProvidersRequest) {
-        return this.client.request(
-            `/v2/cost_providers`,
-            "GET",
-            body,
-        );
-    }
-
-}
-
-class CostServicesApi<NeverThrow extends boolean> {
-    constructor(private client: BaseClient<NeverThrow>) {}
-
-/**
- * List CostServices available to query in a given Workspace.
- */
-    list(body?: GetCostServicesRequest) {
-        return this.client.request(
-            `/v2/cost_services`,
-            "GET",
-            body,
-        );
-    }
-
-}
-
-class UserFeedbackApi<NeverThrow extends boolean> {
-    constructor(private client: BaseClient<NeverThrow>) {}
-
-/**
- * Provide UserFeedback for our product and features.
- */
-    create(body: CreateUserFeedbackRequest) {
-        return this.client.request(
-            `/v2/user_feedback`,
-            "POST",
-            body,
-        );
-    }
-
-}
-
 class NetworkFlowReportsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
@@ -3032,6 +3016,22 @@ class NetworkFlowReportsApi<NeverThrow extends boolean> {
         return this.client.request(
             `/v2/network_flow_reports/${pathEncode(networkFlowReportToken)}`,
             "DELETE",
+            {},
+        );
+    }
+
+}
+
+class PingApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly.
+ */
+    get() {
+        return this.client.request(
+            `/v2/ping`,
+            "GET",
             {},
         );
     }
@@ -3621,6 +3621,22 @@ class UnitCostsApi<NeverThrow extends boolean> {
 
 }
 
+class UserFeedbackApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Provide UserFeedback for our product and features.
+ */
+    create(body: CreateUserFeedbackRequest) {
+        return this.client.request(
+            `/v2/user_feedback`,
+            "POST",
+            body,
+        );
+    }
+
+}
+
 class UsersApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
@@ -3795,22 +3811,6 @@ class WorkspacesApi<NeverThrow extends boolean> {
         return this.client.request(
             `/v2/workspaces/${pathEncode(workspaceToken)}`,
             "DELETE",
-            {},
-        );
-    }
-
-}
-
-class PingApi<NeverThrow extends boolean> {
-    constructor(private client: BaseClient<NeverThrow>) {}
-
-/**
- * This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly.
- */
-    get() {
-        return this.client.request(
-            `/v2/ping`,
-            "GET",
             {},
         );
     }

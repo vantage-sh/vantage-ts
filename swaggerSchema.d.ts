@@ -603,6 +603,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/cost_providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost providers
+         * @description List CostProviders available to query in a given Workspace.
+         */
+        get: operations["getCostProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/cost_provider_accounts": {
         parameters: {
             query?: never;
@@ -727,6 +747,26 @@ export interface paths {
          * @description Return all Costs for a CostReport or VQL filter.
          */
         get: operations["getCosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cost_services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost services
+         * @description List CostServices available to query in a given Workspace.
+         */
+        get: operations["getCostServices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1459,66 +1499,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cost_providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost providers
-         * @description List CostProviders available to query in a given Workspace.
-         */
-        get: operations["getCostProviders"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cost_services": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost services
-         * @description List CostServices available to query in a given Workspace.
-         */
-        get: operations["getCostServices"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/user_feedback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Submit user feedback
-         * @description Provide UserFeedback for our product and features.
-         */
-        post: operations["createUserFeedback"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/network_flow_reports": {
         parameters: {
             query?: never;
@@ -1566,6 +1546,23 @@ export interface paths {
          * @description Delete a NetworkFlowReport.
          */
         delete: operations["deleteNetworkFlowReport"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+        get: operations["ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2251,6 +2248,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user_feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit user feedback
+         * @description Provide UserFeedback for our product and features.
+         */
+        post: operations["createUserFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;
@@ -2454,23 +2471,6 @@ export interface paths {
          * @description Delete a workspace
          */
         delete: operations["deleteWorkspace"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/ping": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-        get: operations["ping"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -3362,11 +3362,12 @@ export interface components {
              * @example datadog_metrics
              * @enum {string|null}
              */
-            import_type: "datadog_metrics" | "cloudwatch" | "csv" | null;
+            import_type: "datadog_metrics" | "cloudwatch" | "snowflake_metrics" | "metronome_metrics" | "csv" | null;
             /** @description The Integration token used to import the BusinessMetric. */
             integration_token: string | null;
             cloudwatch_fields?: components["schemas"]["CloudwatchFields"];
             datadog_metric_fields?: components["schemas"]["DatadogMetricFields"];
+            snowflake_metric_fields?: components["schemas"]["SnowflakeMetricFields"];
         };
         AttachedCostReportForBusinessMetric: {
             /**
@@ -3420,6 +3421,13 @@ export interface components {
              * @example sum:aws.applicationelb.request_count{region:us-east-1}.rollup(avg,daily)
              */
             query: string;
+        };
+        SnowflakeMetricFields: {
+            /**
+             * @description The SQL query used to import Snowflake metrics.
+             * @example SELECT date, value, label FROM my_metrics_table
+             */
+            sql_query: string;
         };
         /** @description BusinessMetricValues model */
         BusinessMetricValues: {
@@ -4215,6 +4223,11 @@ export interface components {
              */
             resource_id?: string | null;
             /**
+             * @description The human-readable resource name when Vantage can enrich the resource id.
+             * @example claude_code_key_name
+             */
+            resource_name?: string | null;
+            /**
              * @description The tag attached to the cost that was incurred.
              *     DEPRECATED: does not support multiple tags.
              * @example production
@@ -4309,7 +4322,7 @@ export interface components {
         createDashboard: {
             /** @description The title of the Dashboard. */
             title: string;
-            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, and FinancialCommitmentReport. */
+            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, FinancialCommitmentReport, and RecommendationView. */
             widgets?: {
                 /** @description The token of the represented Resource. */
                 widgetable_token: string;
@@ -4344,7 +4357,7 @@ export interface components {
         updateDashboard: {
             /** @description The title of the Dashboard. */
             title?: string;
-            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, and FinancialCommitmentReport. */
+            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, FinancialCommitmentReport, and RecommendationView. */
             widgets?: {
                 /** @description The token of the represented Resource. */
                 widgetable_token: string;
@@ -5455,6 +5468,11 @@ export interface components {
             provider_account_id: string | null;
             description: string;
             /**
+             * @description A URL to related documentation if available.
+             * @example https://handbook.vantage.sh/aws/services/s3-pricing/#intelligent-tiering
+             */
+            documentation_url: string | null;
+            /**
              * @description The monthly potential savings of the Recommendation, converted to the organization's selected currency.
              * @example 100.00
              */
@@ -6276,11 +6294,11 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2025-11-01
+             * @example 2025-12-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
-            collapsed_tag_keys?: components["schemas"]["VirtualTagConfigCollapsedTagKey"][];
+            collapsed_tag_keys: components["schemas"]["VirtualTagConfigCollapsedTagKey"][];
             /** @description Values for the VirtualTagConfig, with match precedence determined by their relative order in the list. */
             values: components["schemas"]["VirtualTagConfigValue"][];
         };
@@ -6290,13 +6308,13 @@ export interface components {
              * @example team
              */
             key: string;
-            /** @description The providers this collapsed tag key applies to. Defaults to all providers when omitted. */
-            providers?: string[] | null;
+            /** @description The providers this collapsed tag key applies to. Empty when it applies to all providers. */
+            providers: string[];
             /**
-             * @description The VQL filter this collapsed tag key applies to.
+             * @description The VQL filter this collapsed tag key applies to. Null when the key is provider-scoped or unset.
              * @example (costs.provider = 'aws') OR (costs.provider = 'gcp')
              */
-            filter?: string | null;
+            filter: string | null;
         };
         VirtualTagConfigValue: {
             /**
@@ -6318,11 +6336,11 @@ export interface components {
             /** @description The display name for this allocation value. */
             display_name?: string | null;
             /** @description Label transforms applied to business metric labels. */
-            label_transforms?: components["schemas"]["VirtualTagConfigValueLabelTransform"][];
+            label_transforms: components["schemas"]["VirtualTagConfigValueLabelTransform"][];
             /** @description Labeled percentage allocations for matching costs. */
-            percentages?: components["schemas"]["VirtualTagConfigValuePercentage"][];
+            percentages: components["schemas"]["VirtualTagConfigValuePercentage"][];
             /** @description Date ranges restricting when this value applies. */
-            date_ranges?: components["schemas"]["VirtualTagConfigValueDateRange"][];
+            date_ranges: components["schemas"]["VirtualTagConfigValueDateRange"][];
         };
         VirtualTagConfigValueCostMetric: {
             /** @description The filter VQL for the cost metric. */
@@ -6406,9 +6424,9 @@ export interface components {
             collapsed_tag_keys?: {
                 /** @description The tag key to collapse values for. */
                 key: string;
-                /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
+                /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
                 providers?: string[];
-                /** @description The VQL filter this collapsed tag key applies to. */
+                /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
@@ -6463,9 +6481,9 @@ export interface components {
             collapsed_tag_keys?: {
                 /** @description The tag key to collapse values for. */
                 key: string;
-                /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
+                /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
                 providers?: string[];
-                /** @description The VQL filter this collapsed tag key applies to. */
+                /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
@@ -6533,9 +6551,9 @@ export interface components {
             collapsed_tag_keys?: {
                 /** @description The tag key to collapse values for. */
                 key: string;
-                /** @description The providers this collapsed tag key applies to. Defaults to all providers. */
+                /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
                 providers?: string[];
-                /** @description The VQL filter this collapsed tag key applies to. */
+                /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
             }[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
@@ -7312,7 +7330,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The amount of results to return. The maximum is 1000. */
+                /** @description The amount of results to return. Defaults to 100. The maximum is 5000. */
                 limit?: number;
                 /** @description Filter by personal or service API token that performed the action. */
                 user?: number;
@@ -7432,17 +7450,12 @@ export interface operations {
                      *           }
                      *         }
                      *       ],
-                     *       "_links": {
-                     *         "self": "/v2/audit_logs?page=1&limit=25",
-                     *         "first": "/v2/audit_logs?page=1&limit=25",
-                     *         "next": "/v2/audit_logs?page=2&limit=25",
-                     *         "last": "/v2/audit_logs?page=10&limit=25",
+                     *       "links": {
+                     *         "self": "/v2/audit_logs?page=1",
+                     *         "first": "/v2/audit_logs?page=1",
+                     *         "next": "/v2/audit_logs?page=2",
+                     *         "last": "/v2/audit_logs?page=3",
                      *         "prev": null
-                     *       },
-                     *       "_meta": {
-                     *         "total_count": 248,
-                     *         "per_page": 25,
-                     *         "page": 1
                      *       }
                      *     }
                      */
@@ -9332,6 +9345,29 @@ export interface operations {
             };
         };
     };
+    getCostProviders: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of connected CostProviders. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostProviders"];
+                };
+            };
+        };
+    };
     getCostProviderAccounts: {
         parameters: {
             query?: {
@@ -10025,6 +10061,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCostServices: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of CostServices, used to query costs using VQL. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostServices"];
                 };
             };
         };
@@ -12495,94 +12554,6 @@ export interface operations {
             };
         };
     };
-    getCostProviders: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of connected CostProviders. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostProviders"];
-                };
-            };
-        };
-    };
-    getCostServices: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of CostServices, used to query costs using VQL. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostServices"];
-                };
-            };
-        };
-    };
-    createUserFeedback: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["createUserFeedback"];
-            };
-        };
-        responses: {
-            /** @description Provide UserFeedback for our product and features. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserFeedback"];
-                };
-            };
-            /** @description BadRequest */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description UnprocessableEntity */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
     getNetworkFlowReports: {
         parameters: {
             query?: {
@@ -12827,6 +12798,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
+            };
+        };
+    };
+    ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -13094,6 +13083,8 @@ export interface operations {
                 end_date?: string;
                 /** @description Filter by status. */
                 status?: "active" | "archived";
+                /** @description Filter by recommendations whose potential savings are greater than or equal to this amount, in the workspace's currency. Requires workspace_token. */
+                min_savings?: number;
                 /** @description The page of results to return. */
                 page?: number;
                 /** @description The number of results to return. The maximum is 1000. */
@@ -13138,6 +13129,7 @@ export interface operations {
                      *           "provider": "aws",
                      *           "provider_account_id": "123456789012",
                      *           "description": "IP address is not attached to an instance.",
+                     *           "documentation_url": "https://handbook.vantage.sh/aws/services/ec2-other-pricing/#stranded-resources",
                      *           "potential_savings": "100.0",
                      *           "service": "AWS IP",
                      *           "created_at": "2026-01-28T16:53:32Z",
@@ -13178,6 +13170,7 @@ export interface operations {
                      *       "provider": "aws",
                      *       "provider_account_id": "123456789012",
                      *       "description": "IP address is not attached to an instance.",
+                     *       "documentation_url": "https://handbook.vantage.sh/aws/services/ec2-other-pricing/#stranded-resources",
                      *       "potential_savings": "100.0",
                      *       "service": "AWS IP",
                      *       "created_at": "2026-01-28T16:53:23Z",
@@ -13319,6 +13312,8 @@ export interface operations {
                 end_date?: string;
                 /** @description Filter by status. */
                 status?: "active" | "archived";
+                /** @description Filter by recommendations whose potential savings are greater than or equal to this amount, in the workspace's currency. Requires workspace_token. */
+                min_savings?: number;
                 /** @description The page of results to return. */
                 page?: number;
                 /** @description The number of results to return. The maximum is 1000. */
@@ -15792,6 +15787,48 @@ export interface operations {
             };
         };
     };
+    createUserFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createUserFeedback"];
+            };
+        };
+        responses: {
+            /** @description Provide UserFeedback for our product and features. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserFeedback"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getUsers: {
         parameters: {
             query?: {
@@ -15957,18 +15994,28 @@ export interface operations {
                      *           "key": "Product Team",
                      *           "overridable": false,
                      *           "backfill_until": "2025-12-01",
+                     *           "collapsed_tag_keys": [],
                      *           "values": [
                      *             {
                      *               "filter": "(costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud' AND costs.account_id IN ('1234', '5678'))",
-                     *               "name": "Growth"
+                     *               "name": "Growth",
+                     *               "label_transforms": [],
+                     *               "percentages": [],
+                     *               "date_ranges": []
                      *             },
                      *             {
                      *               "filter": "(costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')",
-                     *               "name": "API"
+                     *               "name": "API",
+                     *               "label_transforms": [],
+                     *               "percentages": [],
+                     *               "date_ranges": []
                      *             },
                      *             {
                      *               "filter": "(costs.provider = 'aws' AND costs.service = 'AmazonEC2')",
-                     *               "business_metric_token": "bsnss_mtrc_60e1ffb95a9a00f0"
+                     *               "business_metric_token": "bsnss_mtrc_60e1ffb95a9a00f0",
+                     *               "label_transforms": [],
+                     *               "percentages": [],
+                     *               "date_ranges": []
                      *             },
                      *             {
                      *               "filter": "(costs.provider = 'aws' AND costs.service != 'Amazon Elastic Compute Cloud')",
@@ -15977,10 +16024,14 @@ export interface operations {
                      *                 "aggregation": {
                      *                   "tag": "aws:CreatedBy"
                      *                 }
-                     *               }
+                     *               },
+                     *               "label_transforms": [],
+                     *               "percentages": [],
+                     *               "date_ranges": []
                      *             },
                      *             {
                      *               "filter": "(costs.provider = 'azure' AND costs.service = 'Azure Compute')",
+                     *               "label_transforms": [],
                      *               "percentages": [
                      *                 {
                      *                   "value": "apples-a",
@@ -15990,7 +16041,8 @@ export interface operations {
                      *                   "value": "apples-b",
                      *                   "pct": 50
                      *                 }
-                     *               ]
+                     *               ],
+                     *               "date_ranges": []
                      *             }
                      *           ]
                      *         }
@@ -16027,10 +16079,13 @@ export interface operations {
                      *       "key": "Expense Code",
                      *       "overridable": false,
                      *       "backfill_until": "2024-07-01",
+                     *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
                      *           "filter": "costs.provider = 'aws' AND\ncosts.service = 'Amazon Elastic Compute Cloud' AND\ncosts.account_id IN ('1234', '5678')\n",
                      *           "name": "EXPC-1234",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
                      *           "date_ranges": [
                      *             {
                      *               "start_date": "2024-01-01",
@@ -16040,7 +16095,10 @@ export interface operations {
                      *         },
                      *         {
                      *           "filter": "(\n  (costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR\n  (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')\n)\n",
-                     *           "name": "EXPC-9876"
+                     *           "name": "EXPC-9876",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
+                     *           "date_ranges": []
                      *         }
                      *       ]
                      *     }
@@ -16109,10 +16167,13 @@ export interface operations {
                      *       "key": "Product Team",
                      *       "overridable": false,
                      *       "backfill_until": "2024-07-01",
+                     *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
                      *           "filter": "(costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud') AND (costs.provider = 'aws' AND costs.account_id IN ('1234', '5678'))",
                      *           "name": "Growth",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
                      *           "date_ranges": [
                      *             {
                      *               "start_date": "2024-01-01",
@@ -16122,7 +16183,10 @@ export interface operations {
                      *         },
                      *         {
                      *           "filter": "(costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')",
-                     *           "name": "API"
+                     *           "name": "API",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
+                     *           "date_ranges": []
                      *         }
                      *       ]
                      *     }
@@ -16168,10 +16232,13 @@ export interface operations {
                      *       "key": "team",
                      *       "overridable": true,
                      *       "backfill_until": "2024-07-01",
+                     *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
                      *           "filter": "costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud' AND\ncosts.account_id IN ('1234', '5678')\n",
                      *           "name": "marketing",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
                      *           "date_ranges": [
                      *             {
                      *               "start_date": "2024-01-01",
@@ -16181,7 +16248,10 @@ export interface operations {
                      *         },
                      *         {
                      *           "filter": "((costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR\n(costs.provider = 'gcp' AND costs.service = 'Google Compute Engine'))\n",
-                     *           "name": "third-party integrations"
+                     *           "name": "third-party integrations",
+                     *           "label_transforms": [],
+                     *           "percentages": [],
+                     *           "date_ranges": []
                      *         }
                      *       ]
                      *     }
@@ -16655,24 +16725,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
-            };
-        };
-    };
-    ping: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
