@@ -511,6 +511,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/canvases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all canvases
+         * @description Return all Canvases.
+         */
+        get: operations["getCanvases"];
+        put?: never;
+        /**
+         * Create canvas
+         * @description Create a Canvas.
+         */
+        post: operations["createCanvas"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/canvases/{canvas_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get canvas by token
+         * @description Return a specific Canvas.
+         */
+        get: operations["getCanvas"];
+        /**
+         * Update canvas
+         * @description Update a Canvas.
+         */
+        put: operations["updateCanvas"];
+        post?: never;
+        /**
+         * Delete canvas
+         * @description Delete a Canvas.
+         */
+        delete: operations["deleteCanvas"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/cost_alerts/{cost_alert_token}/events": {
         parameters: {
             query?: never;
@@ -3569,6 +3621,61 @@ export interface components {
              */
             deleted_count: number;
         };
+        /** @description Canvases model */
+        Canvases: {
+            links?: components["schemas"]["Links"];
+            canvases: components["schemas"]["Canvas"][];
+        };
+        /** @description Canvas model */
+        Canvas: {
+            /** @example cnvs_abcd1234567890 */
+            token: string;
+            /**
+             * @description The title of the Canvas.
+             * @example Weekly Spend by Team
+             */
+            title: string;
+            /** @description The prompt used to generate the Canvas. */
+            prompt: string;
+            data?: components["schemas"]["CanvasData"];
+            /**
+             * @description The token for the Workspace the Canvas belongs to.
+             * @example wrkspc_abcd1234567890
+             */
+            workspace_token: string;
+            /**
+             * @description The date and time, in UTC, the Canvas was created. ISO 8601 Formatted.
+             * @example 2024-01-01T00:00:00Z
+             */
+            created_at: string;
+            /**
+             * @description The date and time, in UTC, the Canvas was last updated. ISO 8601 Formatted.
+             * @example 2024-01-01T00:00:00Z
+             */
+            updated_at: string;
+        };
+        CanvasData: {
+            table?: components["schemas"]["CanvasTable"];
+            /** @description Error message if the refresh workflow failed. Read-only. */
+            error?: string | null;
+        };
+        CanvasTable: Record<string, any>;
+        /** @description Create a Canvas. */
+        createCanvas: {
+            /** @description The title of the Canvas. */
+            title: string;
+            /** @description The prompt used to generate the Canvas. */
+            prompt: string;
+            /** @description The token of the Workspace to add the Canvas to. Required if the API token is associated with multiple Workspaces. */
+            workspace_token?: string;
+        };
+        /** @description Update a Canvas. */
+        updateCanvas: {
+            /** @description The title of the Canvas. */
+            title?: string;
+            /** @description The prompt used to generate the Canvas. */
+            prompt?: string;
+        };
         /** @description CostAlertEvents model */
         CostAlertEvents: {
             links?: components["schemas"]["Links"];
@@ -3738,6 +3845,13 @@ export interface components {
             saved_filter_tokens?: string[] | null;
             /** @description The tokens for the BusinessMetrics assigned to the CostReport, the unit scale, and label filter. */
             business_metric_tokens_with_metadata: components["schemas"]["AttachedBusinessMetricForCostReport"][];
+            /**
+             * @description The default forecast selection for the CostReport.
+             * @example {
+             *       "kind": "baseline"
+             *     }
+             */
+            default_forecast: Record<string, any>;
             /** @description The filter applied to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
             /**
@@ -3876,7 +3990,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -4016,6 +4130,16 @@ export interface components {
             }[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
+            /** @description The default forecast selection for the CostReport. */
+            default_forecast?: {
+                /**
+                 * @description The default forecast selection kind.
+                 * @enum {string}
+                 */
+                kind: "baseline" | "report_forecast";
+                /** @description The token for the report forecast to set as default when kind is report_forecast. */
+                report_forecast_token?: string;
+            };
             /** @description Report settings. */
             settings?: {
                 /** @description Report will include credits. */
@@ -4059,13 +4183,11 @@ export interface components {
             date_interval?: "this_month" | "last_7_days" | "last_30_days" | "last_month" | "last_3_months" | "last_6_months" | "custom" | "last_12_months" | "last_24_months" | "last_36_months" | "next_month" | "next_3_months" | "next_6_months" | "next_12_months" | "year_to_date" | "last_3_days" | "last_14_days";
             /**
              * @description The chart type of the CostReport.
-             * @default line
              * @enum {string}
              */
             chart_type?: "area" | "line" | "pie" | "bar" | "multi_bar";
             /**
              * @description The date bin of the CostReport.
-             * @default cumulative
              * @enum {string}
              */
             date_bin?: "cumulative" | "day" | "week" | "month" | "quarter" | "hour";
@@ -4196,7 +4318,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -5023,7 +5145,7 @@ export interface components {
             parent_account_token: string;
             /** @description The tokens for the Access Credentials assigned to the Managed Account. */
             access_credential_tokens: string[];
-            /** @description The tokens for the Billing Rules assigned to the Managed Account. */
+            /** @description The tokens for the Billing Rules assigned to the Managed Account, in the order they will execute against this account's cost data. */
             billing_rule_tokens: string[];
             /** @description Email domain associated with this Managed Account for SSO. */
             email_domain?: string | null;
@@ -5047,7 +5169,7 @@ export interface components {
             contact_email: string;
             /** @description Access Credential (aka Integrations) tokens to assign to the Managed Account. */
             access_credential_tokens?: string[];
-            /** @description Billing Rule tokens to assign to the Managed Account. */
+            /** @description Billing Rule tokens to assign to the Managed Account, in their desired execution order. Tokens must be ordered by execution group: AWS transforms, then COST inserts, then COST transforms, then monthly post-transform inserts. Within a group any order is accepted and persisted as-is. Submitting a list whose cross-group ordering does not match the pipeline returns a 400.Existing rules with apply_to_all enabled will be added implicity to the end of their execution group. */
             billing_rule_tokens?: string[];
             /** @description Email domain to associate with this Managed Account for SSO. */
             email_domain?: string;
@@ -5060,7 +5182,7 @@ export interface components {
             contact_email?: string;
             /** @description Access Credential (aka Integrations) tokens to assign to the Managed Account. */
             access_credential_tokens?: string[];
-            /** @description Billing Rule tokens to assign to the Managed Account. */
+            /** @description Billing Rule tokens to assign to the Managed Account, in their desired execution order. Tokens must be ordered by execution group: AWS transforms, then COST inserts, then COST transforms, then monthly post-transform inserts. Within a group any order is accepted and persisted as-is. Submitting a list whose cross-group ordering does not match the pipeline returns a 400. */
             billing_rule_tokens?: string[];
             /** @description Email domain to associate with this Managed Account for SSO. */
             email_domain?: string;
@@ -8990,6 +9112,165 @@ export interface operations {
             };
         };
     };
+    getCanvases: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Canvases"];
+                };
+            };
+        };
+    };
+    createCanvas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createCanvas"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Canvas"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCanvas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Canvas"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateCanvas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateCanvas"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Canvas"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteCanvas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Canvas"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getCostAlertEvents: {
         parameters: {
             query?: {
@@ -9374,7 +9655,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -9447,13 +9728,16 @@ export interface operations {
                      *       },
                      *       "cost_reports": [
                      *         {
-                     *           "token": "rprt_403b6516ad289a52",
+                     *           "token": "rprt_6f2c7d330c05636f",
                      *           "title": "Untitled",
                      *           "folder_token": null,
                      *           "saved_filter_tokens": [
-                     *             "svd_fltr_03a9f354fe7cad59"
+                     *             "svd_fltr_9f2aca5e894b432a"
                      *           ],
                      *           "business_metric_tokens_with_metadata": [],
+                     *           "default_forecast": {
+                     *             "kind": "baseline"
+                     *           },
                      *           "filter": null,
                      *           "groupings": "service,provider",
                      *           "settings": {
@@ -9464,10 +9748,11 @@ export interface operations {
                      *             "amortize": true,
                      *             "unallocated": false,
                      *             "aggregate_by": "cost",
-                     *             "show_previous_period": true
+                     *             "show_previous_period": true,
+                     *             "complete_period": false
                      *           },
                      *           "created_at": "2024-07-03T00:00:00Z",
-                     *           "workspace_token": "wrkspc_b7743329296e6e96",
+                     *           "workspace_token": "wrkspc_3f4145fd51b19463",
                      *           "previous_period_start_date": null,
                      *           "previous_period_end_date": null,
                      *           "start_date": "2024-07-01",
@@ -9510,15 +9795,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprt_377f6f8b25e8053d",
+                     *       "token": "rprt_299359872859a568",
                      *       "title": "New Cost Report",
-                     *       "folder_token": "fldr_f20201244e42cb99",
+                     *       "folder_token": "fldr_736175272c30b820",
                      *       "saved_filter_tokens": [
-                     *         "svd_fltr_550e30f350ffafe4"
+                     *         "svd_fltr_3cf17b5bd79e849c"
                      *       ],
                      *       "business_metric_tokens_with_metadata": [
                      *         {
-                     *           "business_metric_token": "bsnss_mtrc_ff259eb1ce9fe935",
+                     *           "business_metric_token": "bsnss_mtrc_b90d5fe5fbff292d",
                      *           "unit_scale": "per_thousand",
                      *           "label_filter": [
                      *             "CBGB",
@@ -9528,6 +9813,9 @@ export interface operations {
                      *           ]
                      *         }
                      *       ],
+                     *       "default_forecast": {
+                     *         "kind": "baseline"
+                     *       },
                      *       "filter": "costs.provider = 'aws' AND costs.service = 'Amazon Simple Storage Service'",
                      *       "groupings": "service,provider",
                      *       "settings": {
@@ -9538,10 +9826,11 @@ export interface operations {
                      *         "amortize": true,
                      *         "unallocated": false,
                      *         "aggregate_by": "cost",
-                     *         "show_previous_period": true
+                     *         "show_previous_period": true,
+                     *         "complete_period": false
                      *       },
                      *       "created_at": "2024-07-03T00:00:00Z",
-                     *       "workspace_token": "wrkspc_d364d177f557981e",
+                     *       "workspace_token": "wrkspc_9e2675148d6275f8",
                      *       "previous_period_start_date": null,
                      *       "previous_period_end_date": null,
                      *       "start_date": "2024-07-01",
@@ -9598,13 +9887,16 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprt_fb27faa25ef5ea72",
+                     *       "token": "rprt_5db7a73cf4d09998",
                      *       "title": "Untitled",
                      *       "folder_token": null,
                      *       "saved_filter_tokens": [
-                     *         "svd_fltr_dd642aeffbe29367"
+                     *         "svd_fltr_e1166df04e1709bf"
                      *       ],
                      *       "business_metric_tokens_with_metadata": [],
+                     *       "default_forecast": {
+                     *         "kind": "baseline"
+                     *       },
                      *       "filter": null,
                      *       "groupings": "service,provider",
                      *       "settings": {
@@ -9615,10 +9907,11 @@ export interface operations {
                      *         "amortize": true,
                      *         "unallocated": false,
                      *         "aggregate_by": "cost",
-                     *         "show_previous_period": true
+                     *         "show_previous_period": true,
+                     *         "complete_period": false
                      *       },
                      *       "created_at": "2024-07-03T00:00:00Z",
-                     *       "workspace_token": "wrkspc_e5c550d14cfa3101",
+                     *       "workspace_token": "wrkspc_9c6847147c762f2a",
                      *       "previous_period_start_date": null,
                      *       "previous_period_end_date": null,
                      *       "start_date": "2024-07-01",
@@ -9670,15 +9963,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprt_c02b21cb3750e2c8",
+                     *       "token": "rprt_1e692ea6b3eddf6b",
                      *       "title": "Updated Cost Report",
-                     *       "folder_token": "fldr_5671a9c9785c0aff",
+                     *       "folder_token": "fldr_86dec25791dca5ce",
                      *       "saved_filter_tokens": [
-                     *         "svd_fltr_fe456f29a8e9a706"
+                     *         "svd_fltr_1977fb9dc5e2b336"
                      *       ],
                      *       "business_metric_tokens_with_metadata": [
                      *         {
-                     *           "business_metric_token": "bsnss_mtrc_352795a0c2b0be50",
+                     *           "business_metric_token": "bsnss_mtrc_14dc9a1fb1ce67ce",
                      *           "unit_scale": "per_thousand",
                      *           "label_filter": [
                      *             "CBGB",
@@ -9688,10 +9981,13 @@ export interface operations {
                      *           ]
                      *         },
                      *         {
-                     *           "business_metric_token": "bsnss_mtrc_13ce0c4cb90eb641",
+                     *           "business_metric_token": "bsnss_mtrc_ab4227c15f99f995",
                      *           "unit_scale": "per_million"
                      *         }
                      *       ],
+                     *       "default_forecast": {
+                     *         "kind": "baseline"
+                     *       },
                      *       "filter": "costs.provider = 'azure'",
                      *       "groupings": "account_id,service",
                      *       "settings": {
@@ -9702,10 +9998,11 @@ export interface operations {
                      *         "amortize": true,
                      *         "unallocated": false,
                      *         "aggregate_by": "cost",
-                     *         "show_previous_period": true
+                     *         "show_previous_period": true,
+                     *         "complete_period": false
                      *       },
                      *       "created_at": "2024-07-03T00:00:00Z",
-                     *       "workspace_token": "wrkspc_b727d292ad47b28b",
+                     *       "workspace_token": "wrkspc_a8fb0662fdca90e0",
                      *       "previous_period_start_date": null,
                      *       "previous_period_end_date": null,
                      *       "start_date": "2024-07-01",
@@ -9782,7 +10079,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -9806,10 +10103,10 @@ export interface operations {
                     /**
                      * @example {
                      *       "links": {
-                     *         "self": "https://api.vantage.sh/v2/cost_reports/rprt_3f79e0058066d5f7/forecasted_costs",
-                     *         "first": "https://api.vantage.sh/v2/cost_reports/rprt_3f79e0058066d5f7/forecasted_costs?page=1",
+                     *         "self": "https://api.vantage.sh/v2/cost_reports/rprt_106b4bfcc2a03f63/forecasted_costs",
+                     *         "first": "https://api.vantage.sh/v2/cost_reports/rprt_106b4bfcc2a03f63/forecasted_costs?page=1",
                      *         "next": null,
-                     *         "last": "https://api.vantage.sh/v2/cost_reports/rprt_3f79e0058066d5f7/forecasted_costs?page=1",
+                     *         "last": "https://api.vantage.sh/v2/cost_reports/rprt_106b4bfcc2a03f63/forecasted_costs?page=1",
                      *         "prev": null
                      *       },
                      *       "forecasted_costs": [
@@ -11107,7 +11404,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -14945,7 +15242,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -15083,7 +15380,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */

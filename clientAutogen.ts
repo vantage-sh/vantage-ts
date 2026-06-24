@@ -310,6 +310,38 @@ export type UpdateBusinessMetricValuesCSVRequest = RequestBodyForPathAndMethod<`
  */
 export type UpdateBusinessMetricValuesCSVResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values.csv`, "PUT">;
 /**
+ * Return all Canvases.
+ */
+export type GetCanvasesRequest = RequestBodyForPathAndMethod<"/v2/canvases", "GET">;
+/**
+ * Response type for Get all canvases
+ */
+export type GetCanvasesResponse = ResponseBodyForPathAndMethod<"/v2/canvases", "GET">;
+/**
+ * Create a Canvas.
+ */
+export type CreateCanvasRequest = RequestBodyForPathAndMethod<"/v2/canvases", "POST">;
+/**
+ * Response type for Create canvas
+ */
+export type CreateCanvasResponse = ResponseBodyForPathAndMethod<"/v2/canvases", "POST">;
+/**
+ * Response type for Get canvas by token
+ */
+export type GetCanvasResponse = ResponseBodyForPathAndMethod<`/v2/canvases/${NoSlashString}`, "GET">;
+/**
+ * Update a Canvas.
+ */
+export type UpdateCanvasRequest = RequestBodyForPathAndMethod<`/v2/canvases/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update canvas
+ */
+export type UpdateCanvasResponse = ResponseBodyForPathAndMethod<`/v2/canvases/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete canvas
+ */
+export type DeleteCanvasResponse = ResponseBodyForPathAndMethod<`/v2/canvases/${NoSlashString}`, "DELETE">;
+/**
  * Get all CostAlertEvents
  */
 export type GetCostAlertEventsRequest = RequestBodyForPathAndMethod<`/v2/cost_alerts/${NoSlashString}/events`, "GET">;
@@ -1262,6 +1294,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _budgetAlerts?: BudgetAlertsApi<NeverThrow>;
     private _budgets?: BudgetsApi<NeverThrow>;
     private _businessMetrics?: BusinessMetricsApi<NeverThrow>;
+    private _canvases?: CanvasesApi<NeverThrow>;
     private _costAlerts?: CostAlertsApi<NeverThrow>;
     private _costProviders?: CostProvidersApi<NeverThrow>;
     private _costProviderAccounts?: CostProviderAccountsApi<NeverThrow>;
@@ -1358,6 +1391,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._businessMetrics = new BusinessMetricsApi(this);
         }
         return this._businessMetrics;
+    }
+
+    get canvases(): CanvasesApi<NeverThrow> {
+        if (!this._canvases) {
+            this._canvases = new CanvasesApi(this);
+        }
+        return this._canvases;
     }
 
     get costAlerts(): CostAlertsApi<NeverThrow> {
@@ -2113,6 +2153,66 @@ class BusinessMetricsApi<NeverThrow extends boolean> {
             `/v2/business_metrics/${pathEncode(businessMetricToken)}/values.csv`,
             "PUT",
             body,
+        );
+    }
+
+}
+
+class CanvasesApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all Canvases.
+ */
+    list(body?: GetCanvasesRequest) {
+        return this.client.request(
+            `/v2/canvases`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a Canvas.
+ */
+    create(body: CreateCanvasRequest) {
+        return this.client.request(
+            `/v2/canvases`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a specific Canvas.
+ */
+    get(canvasToken: string) {
+        return this.client.request(
+            `/v2/canvases/${pathEncode(canvasToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a Canvas.
+ */
+    update(canvasToken: string, body: UpdateCanvasRequest) {
+        return this.client.request(
+            `/v2/canvases/${pathEncode(canvasToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a Canvas.
+ */
+    delete(canvasToken: string) {
+        return this.client.request(
+            `/v2/canvases/${pathEncode(canvasToken)}`,
+            "DELETE",
+            {},
         );
     }
 
