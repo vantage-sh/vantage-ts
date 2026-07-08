@@ -1,4 +1,7 @@
-on: push
+on:
+    pull_request:
+    push:
+        branches: [main]
 name: Run Tests
 
 jobs:
@@ -65,13 +68,24 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v6.0.2
+            - uses: dorny/paths-filter@v4
+              id: changes
+              with:
+                  filters: |
+                      autogen:
+                          - clientAutogen.ts
+                          - swaggerSchema.d.ts
+                          - generate.ts
             - name: Setup Node.js
+              if: steps.changes.outputs.autogen == 'true'
               uses: actions/setup-node@v6.3.0
               with:
                   node-version: "22"
             - name: Install Dependencies
+              if: steps.changes.outputs.autogen == 'true'
               run: npm install
             - name: Diff the generated types with the API
+              if: steps.changes.outputs.autogen == 'true'
               run: |
                 mv clientAutogen.ts clientAutogen.ts.old
                 mv swaggerSchema.d.ts swaggerSchema.d.ts.old
