@@ -33,7 +33,7 @@ jobs:
 
       - name: Wait for prod swagger to update
         if: github.event_name == 'repository_dispatch'
-        run: sleep 600
+        run: sleep 1800
 
       - name: Generate SDK
         run: npm run generate
