@@ -675,6 +675,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/cost_providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost providers
+         * @description List CostProviders available to query in a given Workspace.
+         */
+        get: operations["getCostProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/cost_provider_accounts": {
         parameters: {
             query?: never;
@@ -799,6 +819,26 @@ export interface paths {
          * @description Return all Costs for a CostReport or VQL filter.
          */
         get: operations["getCosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cost_services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost services
+         * @description List CostServices available to query in a given Workspace.
+         */
+        get: operations["getCostServices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1531,66 +1571,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cost_providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost providers
-         * @description List CostProviders available to query in a given Workspace.
-         */
-        get: operations["getCostProviders"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cost_services": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost services
-         * @description List CostServices available to query in a given Workspace.
-         */
-        get: operations["getCostServices"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/user_feedback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Submit user feedback
-         * @description Provide UserFeedback for our product and features.
-         */
-        post: operations["createUserFeedback"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/network_flow_reports": {
         parameters: {
             query?: never;
@@ -1638,6 +1618,23 @@ export interface paths {
          * @description Delete a NetworkFlowReport.
          */
         delete: operations["deleteNetworkFlowReport"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+        get: operations["ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2323,6 +2320,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user_feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit user feedback
+         * @description Provide UserFeedback for our product and features.
+         */
+        post: operations["createUserFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;
@@ -2526,40 +2543,6 @@ export interface paths {
          * @description Delete a workspace
          */
         delete: operations["deleteWorkspace"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/ping": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-        get: operations["ping"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/oas_v3.json": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is an OpenAPI specification endpoint. It can be used to access a compliant OpenAPI specification for Vantage's API. */
-        get: operations["getOpenAPISpecifications"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -8974,7 +8957,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The number of results to return per page. Defaults to 100. The maximum is 1000. */
+                /** @description The number of results to return per page. Defaults to 1000. The maximum is 5000. */
                 limit?: number;
             };
             header?: never;
@@ -9808,6 +9791,29 @@ export interface operations {
             };
         };
     };
+    getCostProviders: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of connected CostProviders. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostProviders"];
+                };
+            };
+        };
+    };
     getCostProviderAccounts: {
         parameters: {
             query?: {
@@ -10517,6 +10523,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCostServices: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of CostServices, used to query costs using VQL. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostServices"];
                 };
             };
         };
@@ -12987,94 +13016,6 @@ export interface operations {
             };
         };
     };
-    getCostProviders: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of connected CostProviders. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostProviders"];
-                };
-            };
-        };
-    };
-    getCostServices: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of CostServices, used to query costs using VQL. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostServices"];
-                };
-            };
-        };
-    };
-    createUserFeedback: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["createUserFeedback"];
-            };
-        };
-        responses: {
-            /** @description Provide UserFeedback for our product and features. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserFeedback"];
-                };
-            };
-            /** @description BadRequest */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description UnprocessableEntity */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
     getNetworkFlowReports: {
         parameters: {
             query?: {
@@ -13319,6 +13260,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
+            };
+        };
+    };
+    ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -16290,6 +16249,48 @@ export interface operations {
             };
         };
     };
+    createUserFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createUserFeedback"];
+            };
+        };
+        responses: {
+            /** @description Provide UserFeedback for our product and features. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserFeedback"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getUsers: {
         parameters: {
             query?: {
@@ -17189,42 +17190,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
-            };
-        };
-    };
-    ping: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    getOpenAPISpecifications: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description This is an OpenAPI specification endpoint. It can be used to access a compliant OpenAPI specification for Vantage's API. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
