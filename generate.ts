@@ -1,10 +1,6 @@
 import openapiGen, { astToString } from "openapi-typescript";
-import { convertObj } from "swagger2openapi";
 import ts from "typescript";
 import { writeFileSync } from "fs";
-
-const OPENAPI_URL = "https://api.vantage.sh/v2/oas_v3.json";
-const SWAGGER_URL = "https://api.vantage.sh/v2/swagger.json";
 
 // Maps a substring found in a response description to a handler name and the
 // TypeScript return type to use. Checked against every response description
@@ -200,53 +196,13 @@ function generateMethod(methodName: string, endpoint: EndpointInfo): string {
   return output;
 }
 
-function normalizeConvertedExamples(value: any): void {
-  if (!value || typeof value !== "object") return;
-
-  const examples = value.examples;
-  if (
-    examples &&
-    typeof examples === "object" &&
-    Object.keys(examples).length === 1 &&
-    "response" in examples &&
-    examples.response &&
-    typeof examples.response === "object" &&
-    "value" in examples.response
-  ) {
-    value.example = examples.response.value;
-    delete value.examples;
-  }
-
-  for (const child of Object.values(value)) {
-    normalizeConvertedExamples(child);
-  }
-}
-
-async function fetchOpenAPISchema(): Promise<any> {
-  const openapiResponse = await fetch(OPENAPI_URL);
-  if (openapiResponse.ok) {
-    return openapiResponse.json();
-  }
-
-  console.warn(
-    `Failed to fetch OpenAPI schema (${openapiResponse.status} ${openapiResponse.statusText}); falling back to Swagger 2.0`
-  );
-
-  const swaggerResponse = await fetch(SWAGGER_URL);
-  if (!swaggerResponse.ok) {
-    throw new Error(`Failed to fetch Swagger schema: ${swaggerResponse.status} ${swaggerResponse.statusText}`);
-  }
-
-  const schema = await convertObj(await swaggerResponse.json(), {
-    direct: true,
-    patch: true,
-  });
-  normalizeConvertedExamples(schema);
-  return schema;
-}
-
 async function main() {
-  const schema = await fetchOpenAPISchema();
+  const schema = await fetch("https://api.vantage.sh/v2/oas_v3.json").then((res) => {
+    if (!res.ok) {
+      throw new Error(`Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+  });
 
   const dts = await openapiGen(schema, {
     // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
