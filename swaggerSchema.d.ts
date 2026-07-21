@@ -4087,7 +4087,7 @@ export interface components {
             title: string;
             /** @description The token of the Workspace to add the Cost Report to. Ignored if 'folder_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
-            /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+            /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
@@ -4201,7 +4201,7 @@ export interface components {
         updateCostReport: {
             /** @description The title of the CostReport. */
             title?: string;
-            /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+            /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
@@ -4304,7 +4304,7 @@ export interface components {
             start_date?: string;
             /** @description Last date you would like to filter costs to. ISO 8601 formatted. */
             end_date?: string;
-            /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+            /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string[];
             /**
              * @description The date bin of the costs. Defaults to the report's default or day.
@@ -10400,7 +10400,7 @@ export interface operations {
                 start_date?: string;
                 /** @description Last date you would like to filter costs to. ISO 8601 formatted. */
                 end_date?: string;
-                /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+                /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
                 groupings?: string[];
                 /** @description Whether to order costs by date in an ascending or descending manner. */
                 order?: "asc" | "desc";
