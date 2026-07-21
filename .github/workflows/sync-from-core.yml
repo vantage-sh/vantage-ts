@@ -1,0 +1,82 @@
+# Regenerates the TypeScript SDK from Vantage's OpenAPI spec and opens a PR.
+#
+# Triggered manually (workflow_dispatch) or by repository_dispatch from vantage-sh/core.
+# Generates against the production API at api.vantage.sh.
+
+name: Sync SDK from vantage-core
+
+on:
+  repository_dispatch:
+    types: [vantage-core-api-sync]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-and-pr:
+    runs-on: ubuntu-latest
+    env:
+      CORE_PR_URL: ${{ github.event.client_payload.core_pr_url }}
+    steps:
+      - name: Checkout vantage-ts
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Wait for prod swagger to update
+        if: github.event_name == 'repository_dispatch'
+        run: sleep 1800
+
+      - name: Generate SDK
+        run: npm run generate
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No generated changes; skipping PR."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          BRANCH="sync/api-client-${SHORT_SHA}"
+
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "chore: regenerate API client" \
+            -m "Generated against https://api.vantage.sh."
+
+          git fetch origin "$BRANCH" || true
+
+          git push -u origin "$BRANCH" --force-with-lease
+
+          DEFAULT_BRANCH="$(gh api "repos/${{ github.repository }}" --jq '.default_branch')"
+
+          EXISTING=$(gh api "repos/${{ github.repository }}/pulls" --paginate \
+            --jq ".[] | select(.head.ref==\"$BRANCH\" and .state==\"open\") | .number" | head -1)
+
+          if [ -z "$EXISTING" ]; then
+            PR_BODY="Automated regeneration of the TypeScript SDK client from the Vantage OpenAPI spec."
+            if [ -n "$CORE_PR_URL" ]; then
+              PR_BODY="${PR_BODY}"$'\n\n'"Triggered by: ${CORE_PR_URL}"
+            fi
+            gh pr create \
+              --base "$DEFAULT_BRANCH" \
+              --head "$BRANCH" \
+              --title "chore: regenerate API client" \
+              --body "$PR_BODY"
+          else
+            echo "Open PR #${EXISTING} already exists for head ${BRANCH}; skipping create."
+          fi
