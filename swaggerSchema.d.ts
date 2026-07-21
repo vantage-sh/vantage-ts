@@ -9211,6 +9211,18 @@ export interface operations {
         };
         requestBody: {
             content: {
+                "application/x-www-form-urlencoded": {
+                    /**
+                     * Format: binary
+                     * @description CSV file containing BusinessMetric dates and amounts
+                     */
+                    csv: string;
+                    /**
+                     * @description When true, imports values as forecasted metrics instead of historical metrics.
+                     * @default false
+                     */
+                    forecasted?: boolean;
+                };
                 "multipart/form-data": {
                     /**
                      * Format: binary
@@ -10960,6 +10972,13 @@ export interface operations {
         };
         requestBody: {
             content: {
+                "application/x-www-form-urlencoded": {
+                    /**
+                     * Format: binary
+                     * @description CSV file containing exchange rates. Format: base_currency_code, currency_code, rate, date (YYYY-MM-DD)
+                     */
+                    csv: string;
+                };
                 "multipart/form-data": {
                     /**
                      * Format: binary
@@ -11767,6 +11786,18 @@ export interface operations {
         };
         requestBody: {
             content: {
+                "application/x-www-form-urlencoded": {
+                    /**
+                     * Format: binary
+                     * @description CSV file containing custom costs
+                     */
+                    csv: string;
+                    /**
+                     * @description Attempt to automatically transform the CSV file to match the FOCUS format.
+                     * @default false
+                     */
+                    auto_transform?: boolean;
+                };
                 "multipart/form-data": {
                     /**
                      * Format: binary
