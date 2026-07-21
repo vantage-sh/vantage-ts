@@ -447,6 +447,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/business_metrics/{business_metric_token}/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get business metric labels
+         * @description Return labels of a BusinessMetric.
+         */
+        get: operations["getBusinessMetricLabels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/business_metrics/{business_metric_token}/values": {
         parameters: {
             query?: never;
@@ -3439,6 +3459,11 @@ export interface components {
              * @enum {string}
              */
             calculation_type: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+            /**
+             * @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type.
+             * @example Gross Margin
+             */
+            label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
         };
@@ -3487,6 +3512,18 @@ export interface components {
              */
             sql_query: string;
         };
+        /** @description BusinessMetricLabels model */
+        BusinessMetricLabels: {
+            links?: components["schemas"]["Links"];
+            labels: components["schemas"]["BusinessMetricLabel"][];
+        };
+        BusinessMetricLabel: {
+            /**
+             * @description A label value associated with the BusinessMetric.
+             * @example Enterprise
+             */
+            value: string;
+        };
         /** @description BusinessMetricValues model */
         BusinessMetricValues: {
             values: components["schemas"]["BusinessMetricValue"][];
@@ -3522,6 +3559,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
             }[];
@@ -3561,6 +3606,13 @@ export interface components {
                     name?: string;
                     value?: string;
                 }[];
+            };
+            /** @description Snowflake metric configuration fields. */
+            snowflake_metric_fields?: {
+                /** @description Integration token for the Snowflake integration from which you would like to fetch metrics. */
+                integration_token?: string;
+                /** @description Snowflake SQL query returning date, value, and optional label columns. */
+                sql_query?: string;
             };
         };
         /** @description Updates an existing BusinessMetric. */
@@ -3577,6 +3629,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
             }[];
@@ -3616,6 +3676,13 @@ export interface components {
                     name?: string;
                     value?: string;
                 }[];
+            };
+            /** @description Snowflake metric configuration fields. */
+            snowflake_metric_fields?: {
+                /** @description Integration token for the Snowflake integration from which you would like to fetch metrics. */
+                integration_token?: string;
+                /** @description Snowflake SQL query returning date, value, and optional label columns. */
+                sql_query?: string;
             };
         };
         /** @description BusinessMetricValuesDeleteResponse model */
@@ -3966,11 +4033,16 @@ export interface components {
              * @enum {string}
              */
             calculation_type: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+            /**
+             * @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type.
+             * @example Gross Margin
+             */
+            label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
         };
         ChartSettings: {
-            /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage'. Defaults to 'cost'. */
+            /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
             y_axis_dimension: string;
             /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
             x_axis_dimension: string[];
@@ -4002,7 +4074,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -4031,6 +4103,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
             }[];
@@ -4113,7 +4193,7 @@ export interface components {
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
                 x_axis_dimension?: string[];
-                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage'. Defaults to 'cost'. */
+                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
                 y_axis_dimension?: string;
             };
         };
@@ -4137,6 +4217,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
             }[];
@@ -4177,7 +4265,7 @@ export interface components {
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
                 x_axis_dimension?: string[];
-                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage'. Defaults to 'cost'. */
+                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
                 y_axis_dimension?: string;
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
@@ -4330,7 +4418,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -8864,6 +8952,63 @@ export interface operations {
             };
         };
     };
+    getBusinessMetricLabels: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return per page. Defaults to 1000. The maximum is 5000. */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                business_metric_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/business_metrics/bsnss_mtrc_aaf0a1b22b10aecc/labels",
+                     *         "first": "https://api.vantage.sh/v2/business_metrics/bsnss_mtrc_aaf0a1b22b10aecc/labels?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/business_metrics/bsnss_mtrc_aaf0a1b22b10aecc/labels?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "labels": [
+                     *         {
+                     *           "value": "alpha"
+                     *         },
+                     *         {
+                     *           "value": "beta"
+                     *         },
+                     *         {
+                     *           "value": "Enterprise"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["BusinessMetricLabels"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getBusinessMetricValues: {
         parameters: {
             query?: {
@@ -8873,6 +9018,8 @@ export interface operations {
                 limit?: number;
                 /** @description Query BusinessMetrics by the first date you would like to filter from. ISO 8601 Formatted - 2021-07-15 */
                 start_date?: string;
+                /** @description Return values matching any exact label value. For multi-label metrics, matches values under any label key. */
+                label_values?: string[];
             };
             header?: never;
             path: {
@@ -9673,7 +9820,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -10097,7 +10244,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -11422,7 +11569,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -15260,7 +15407,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -15398,7 +15545,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
@@ -16288,7 +16435,10 @@ export interface operations {
     };
     getVirtualTagConfigs: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description A search query to filter VirtualTagConfigs by key. */
+                q?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;

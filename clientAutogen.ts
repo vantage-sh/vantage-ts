@@ -278,6 +278,14 @@ export type UpdateBusinessMetricResponse = ResponseBodyForPathAndMethod<`/v2/bus
  */
 export type DeleteBusinessMetricResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}`, "DELETE">;
 /**
+ * Return labels of a BusinessMetric.
+ */
+export type GetBusinessMetricLabelsRequest = RequestBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/labels`, "GET">;
+/**
+ * Response type for Get business metric labels
+ */
+export type GetBusinessMetricLabelsResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/labels`, "GET">;
+/**
  * Return values of a BusinessMetric
  */
 export type GetBusinessMetricValuesRequest = RequestBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "GET">;
@@ -1190,6 +1198,10 @@ export type UpdateUserRequest = RequestBodyForPathAndMethod<`/v2/users/${NoSlash
  * Response type for Update a user
  */
 export type UpdateUserResponse = ResponseBodyForPathAndMethod<`/v2/users/${NoSlashString}`, "PUT">;
+/**
+ * Return all VirtualTagConfigs that the current API token has access to.
+ */
+export type GetVirtualTagConfigsRequest = RequestBodyForPathAndMethod<"/v2/virtual_tag_configs", "GET">;
 /**
  * Response type for Get all virtual tag configs
  */
@@ -2109,6 +2121,17 @@ class BusinessMetricsApi<NeverThrow extends boolean> {
             `/v2/business_metrics/${pathEncode(businessMetricToken)}`,
             "DELETE",
             {},
+        );
+    }
+
+/**
+ * Return labels of a BusinessMetric.
+ */
+    getLabels(businessMetricToken: string, body?: GetBusinessMetricLabelsRequest) {
+        return this.client.request(
+            `/v2/business_metrics/${pathEncode(businessMetricToken)}/labels`,
+            "GET",
+            body,
         );
     }
 
@@ -3779,6 +3802,17 @@ class VirtualTagConfigsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
+ * Return all VirtualTagConfigs that the current API token has access to.
+ */
+    list(body?: GetVirtualTagConfigsRequest) {
+        return this.client.request(
+            `/v2/virtual_tag_configs`,
+            "GET",
+            body,
+        );
+    }
+
+/**
  * Create a new VirtualTagConfig.
  */
     create(body: CreateVirtualTagConfigRequest) {
@@ -3790,11 +3824,11 @@ class VirtualTagConfigsApi<NeverThrow extends boolean> {
     }
 
 /**
- * Return all VirtualTagConfigs that the current API token has access to.
+ * Return a specific VirtualTagConfig.
  */
-    get() {
+    get(token: string) {
         return this.client.request(
-            `/v2/virtual_tag_configs`,
+            `/v2/virtual_tag_configs/${pathEncode(token)}`,
             "GET",
             {},
         );
