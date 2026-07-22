@@ -1,6 +1,6 @@
 {
     "name": "@vantage-sh/vantage-client",
-    "version": "2.7.0",
+    "version": "2.8.0",
     "description": "The Vantage Client SDK for TypeScript and JavaScript applications.",
     "main": "dist/index.js",
     "module": "dist/index.mjs",

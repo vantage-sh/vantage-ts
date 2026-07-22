@@ -9123,6 +9123,8 @@ export interface operations {
                 start_date?: string;
                 /** @description Return values matching any exact label value. For multi-label metrics, matches values under any label key. */
                 label_values?: string[];
+                /** @description Sum values by UTC day or month while preserving labels. When omitted, values are returned without aggregation. */
+                date_bin?: "day" | "month";
             };
             header?: never;
             path: {
@@ -9156,6 +9158,15 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["BusinessMetricValues"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
