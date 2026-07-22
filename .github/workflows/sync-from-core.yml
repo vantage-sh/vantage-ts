@@ -83,11 +83,14 @@ jobs:
             if [ -n "$CORE_PR_URL" ]; then
               PR_BODY="${PR_BODY}"$'\n\n'"Triggered by: ${CORE_PR_URL}"
             fi
-            gh pr create \
+            PR_URL="$(gh pr create \
               --base "$DEFAULT_BRANCH" \
               --head "$BRANCH" \
               --title "chore: regenerate API client (v${VERSION})" \
-              --body "$PR_BODY"
+              --body "$PR_BODY")"
           else
             echo "Open PR #${EXISTING} already exists for head ${BRANCH}; skipping create."
+            PR_URL="$EXISTING"
           fi
+
+          gh pr merge --auto --squash "$PR_URL"
