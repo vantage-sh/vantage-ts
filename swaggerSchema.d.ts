@@ -3466,6 +3466,19 @@ export interface components {
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
+            /**
+             * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
+             * @example {
+             *       "team": [
+             *         "platform",
+             *         "finops"
+             *       ],
+             *       "environment": [
+             *         "production"
+             *       ]
+             *     }
+             */
+            label_filters?: Record<string, any> | null;
         };
         CloudwatchFields: {
             /**
@@ -3559,16 +3572,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
             values?: {
@@ -3629,16 +3649,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
             values?: {
@@ -4040,6 +4067,19 @@ export interface components {
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
+            /**
+             * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
+             * @example {
+             *       "team": [
+             *         "platform",
+             *         "finops"
+             *       ],
+             *       "environment": [
+             *         "production"
+             *       ]
+             *     }
+             */
+            label_filters?: Record<string, any> | null;
         };
         ChartSettings: {
             /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
@@ -4103,16 +4143,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
@@ -4217,16 +4264,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
