@@ -18,6 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  actions: write
   contents: write
   pull-requests: write
 
@@ -46,6 +47,7 @@ jobs:
         run: npm run generate
 
       - name: Open pull request
+        id: open-pr
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -94,3 +96,26 @@ jobs:
           fi
 
           gh pr merge --auto --squash "$PR_URL"
+          echo "pr=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Publish merged version
+        if: steps.open-pr.outputs.pr != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ steps.open-pr.outputs.pr }}
+        run: |
+          for _ in {1..60}; do
+            PR_STATE="$(gh pr view "$PR_URL" --json state --jq '.state')"
+            if [ "$PR_STATE" = "MERGED" ]; then
+              gh workflow run npm-publish.yml --ref main
+              exit 0
+            fi
+            if [ "$PR_STATE" = "CLOSED" ]; then
+              echo "Generated SDK PR closed without merging."
+              exit 1
+            fi
+            sleep 10
+          done
+
+          echo "Timed out waiting for generated SDK PR to merge."
+          exit 1
