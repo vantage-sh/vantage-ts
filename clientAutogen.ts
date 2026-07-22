@@ -806,6 +806,14 @@ export type UpdateMeRequest = RequestBodyForPathAndMethod<"/v2/me", "PUT">;
  */
 export type UpdateMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "PUT">;
 /**
+ * Return aggregated Network Flow Logs for a saved report or ad hoc VQL query.
+ */
+export type GetNetworkFlowLogsRequest = RequestBodyForPathAndMethod<"/v2/network_flow_logs", "GET">;
+/**
+ * Response type for Get network flow logs
+ */
+export type GetNetworkFlowLogsResponse = ResponseBodyForPathAndMethod<"/v2/network_flow_logs", "GET">;
+/**
  * Return all NetworkFlowReports.
  */
 export type GetNetworkFlowReportsRequest = RequestBodyForPathAndMethod<"/v2/network_flow_reports", "GET">;
@@ -1324,6 +1332,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _kubernetesEfficiencyReports?: KubernetesEfficiencyReportsApi<NeverThrow>;
     private _managedAccounts?: ManagedAccountsApi<NeverThrow>;
     private _me?: MeApi<NeverThrow>;
+    private _networkFlowLogs?: NetworkFlowLogsApi<NeverThrow>;
     private _networkFlowReports?: NetworkFlowReportsApi<NeverThrow>;
     private _ping?: PingApi<NeverThrow>;
     private _products?: ProductsApi<NeverThrow>;
@@ -1529,6 +1538,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._me = new MeApi(this);
         }
         return this._me;
+    }
+
+    get networkFlowLogs(): NetworkFlowLogsApi<NeverThrow> {
+        if (!this._networkFlowLogs) {
+            this._networkFlowLogs = new NetworkFlowLogsApi(this);
+        }
+        return this._networkFlowLogs;
     }
 
     get networkFlowReports(): NetworkFlowReportsApi<NeverThrow> {
@@ -3080,6 +3096,22 @@ class MeApi<NeverThrow extends boolean> {
             `/v2/me`,
             "GET",
             {},
+        );
+    }
+
+}
+
+class NetworkFlowLogsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return aggregated Network Flow Logs for a saved report or ad hoc VQL query.
+ */
+    list(body?: GetNetworkFlowLogsRequest) {
+        return this.client.request(
+            `/v2/network_flow_logs`,
+            "GET",
+            body,
         );
     }
 

@@ -1571,6 +1571,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/network_flow_logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get network flow logs
+         * @description Return aggregated Network Flow Logs for a saved report or ad hoc VQL query.
+         */
+        get: operations["getNetworkFlowLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/network_flow_reports": {
         parameters: {
             query?: never;
@@ -3466,6 +3486,19 @@ export interface components {
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
+            /**
+             * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
+             * @example {
+             *       "team": [
+             *         "platform",
+             *         "finops"
+             *       ],
+             *       "environment": [
+             *         "production"
+             *       ]
+             *     }
+             */
+            label_filters?: Record<string, any> | null;
         };
         CloudwatchFields: {
             /**
@@ -3559,16 +3592,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
             values?: {
@@ -3629,16 +3669,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
             values?: {
@@ -4040,6 +4087,19 @@ export interface components {
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
             label_filter?: string[] | null;
+            /**
+             * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
+             * @example {
+             *       "team": [
+             *         "platform",
+             *         "finops"
+             *       ],
+             *       "environment": [
+             *         "production"
+             *       ]
+             *     }
+             */
+            label_filters?: Record<string, any> | null;
         };
         ChartSettings: {
             /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
@@ -4103,16 +4163,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
@@ -4217,16 +4284,23 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
-                /**
-                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
-                 * @default unit_cost
-                 * @enum {string}
-                 */
-                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
-                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
-                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
+                /**
+                 * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
+                 * @example {
+                 *       "team": [
+                 *         "platform",
+                 *         "finops"
+                 *       ],
+                 *       "environment": [
+                 *         "production"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                };
             }[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
@@ -5453,6 +5527,35 @@ export interface components {
              */
             created_at: string;
         };
+        /** @description NetworkFlowLogs model */
+        NetworkFlowLogs: {
+            links?: components["schemas"]["Links"];
+            /** @description The dimension used to order the aggregated rows. */
+            flow_weight: string;
+            /** @description Sampling metadata for the selected data. */
+            sampling: Record<string, any>;
+            network_flow_logs: components["schemas"]["NetworkFlowLog"][];
+        };
+        NetworkFlowLog: {
+            /** @description The grouping values for this aggregated Network Flow Log row. */
+            groupings: Record<string, any>;
+            /**
+             * Format: float
+             * @description The sampling-adjusted estimated byte count.
+             */
+            bytes: number;
+            /** @description The sampling-adjusted estimated cost. */
+            estimated_cost: string;
+            /** @description The ISO 4217 currency code for estimated costs. */
+            currency: string;
+            /**
+             * Format: float
+             * @description The observed byte count when sampling applies.
+             */
+            sampled_bytes: number | null;
+            /** @description The observed estimated cost when sampling applies. */
+            sampled_estimated_cost: string | null;
+        };
         /** @description NetworkFlowReports model */
         NetworkFlowReports: {
             links?: components["schemas"]["Links"];
@@ -5520,26 +5623,26 @@ export interface components {
             filter?: string;
             /**
              * Format: date
-             * @description The start date of the NetworkFlowReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
+             * @description The start date of a custom NetworkFlowReport. YYYY-MM-DD formatted.
              */
             start_date?: string;
             /**
              * Format: date
-             * @description The end date of the NetworkFlowReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
+             * @description The end date of a custom NetworkFlowReport. YYYY-MM-DD formatted.
              */
             end_date?: string;
             /**
-             * @description The date interval of the NetworkFlowReport. Unless 'custom' is used, this is incompatible with 'start_date' and 'end_date' parameters. Defaults to 'last_7_days'.
+             * @description The date interval of the NetworkFlowReport. Dates are used only for the 'custom' interval. Defaults to 'last_7_days'.
              * @enum {string}
              */
-            date_interval?: "last_3_days" | "last_7_days" | "custom";
+            date_interval?: "last_3_days" | "last_7_days" | "last_14_days" | "last_30_days" | "custom";
             /** @description Grouping values for aggregating data on the NetworkFlowReport. Valid groupings: account_id, az_id, dstaddr, dsthostname, flow_direction, interface_id, instance_id, peer_resource_uuid, peer_account_id, peer_vpc_id, peer_region, peer_az_id, peer_subnet_id, peer_interface_id, peer_instance_id, region, resource_uuid, srcaddr, srchostname, subnet_id, traffic_category, traffic_path, vpc_id. */
             groupings?: ("account_id" | "az_id" | "dstaddr" | "dsthostname" | "flow_direction" | "interface_id" | "instance_id" | "peer_resource_uuid" | "peer_account_id" | "peer_vpc_id" | "peer_region" | "peer_az_id" | "peer_subnet_id" | "peer_interface_id" | "peer_instance_id" | "region" | "resource_uuid" | "srcaddr" | "srchostname" | "subnet_id" | "traffic_category" | "traffic_path" | "vpc_id")[];
             /**
              * @description The flow direction of the NetworkFlowReport.
              * @enum {string}
              */
-            flow_direction?: "ingress" | "egress";
+            flow_direction?: "all" | "ingress" | "egress";
             /**
              * @description The dimension by which the logs in the report are sorted. Defaults to costs.
              * @enum {string}
@@ -5554,26 +5657,26 @@ export interface components {
             filter?: string;
             /**
              * Format: date
-             * @description The start date of the NetworkFlowReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
+             * @description The start date of a custom NetworkFlowReport. YYYY-MM-DD formatted.
              */
             start_date?: string;
             /**
              * Format: date
-             * @description The end date of the NetworkFlowReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
+             * @description The end date of a custom NetworkFlowReport. YYYY-MM-DD formatted.
              */
             end_date?: string;
             /**
-             * @description The date interval of the NetworkFlowReport. Unless 'custom' is used, this is incompatible with 'start_date' and 'end_date' parameters. Defaults to 'last_7_days'.
+             * @description The date interval of the NetworkFlowReport. Dates are used only for the 'custom' interval. Defaults to 'last_7_days'.
              * @enum {string}
              */
-            date_interval?: "last_3_days" | "last_7_days" | "custom";
+            date_interval?: "last_3_days" | "last_7_days" | "last_14_days" | "last_30_days" | "custom";
             /** @description Grouping values for aggregating data on the NetworkFlowReport. Valid groupings: account_id, az_id, dstaddr, dsthostname, flow_direction, interface_id, instance_id, peer_resource_uuid, peer_account_id, peer_vpc_id, peer_region, peer_az_id, peer_subnet_id, peer_interface_id, peer_instance_id, region, resource_uuid, srcaddr, srchostname, subnet_id, traffic_category, traffic_path, vpc_id. */
             groupings?: ("account_id" | "az_id" | "dstaddr" | "dsthostname" | "flow_direction" | "interface_id" | "instance_id" | "peer_resource_uuid" | "peer_account_id" | "peer_vpc_id" | "peer_region" | "peer_az_id" | "peer_subnet_id" | "peer_interface_id" | "peer_instance_id" | "region" | "resource_uuid" | "srcaddr" | "srchostname" | "subnet_id" | "traffic_category" | "traffic_path" | "vpc_id")[];
             /**
              * @description The flow direction of the NetworkFlowReport.
              * @enum {string}
              */
-            flow_direction?: "ingress" | "egress";
+            flow_direction?: "all" | "ingress" | "egress";
             /**
              * @description The dimension by which the logs in the report are sorted. Defaults to costs.
              * @enum {string}
@@ -8642,7 +8745,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The amount of results to return. The maximum is 1000. */
+                /** @description The amount of results to return. The maximum is 5000. */
                 limit?: number;
             };
             header?: never;
@@ -9014,7 +9117,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The amount of results to return. The maximum is 1000. */
+                /** @description The amount of results to return. The maximum is 5000. */
                 limit?: number;
                 /** @description Query BusinessMetrics by the first date you would like to filter from. ISO 8601 Formatted - 2021-07-15 */
                 start_date?: string;
@@ -9133,7 +9236,7 @@ export interface operations {
             query?: {
                 /** @description The page of results to return. */
                 page?: number;
-                /** @description The amount of results to return. The maximum is 1000. */
+                /** @description The amount of results to return. The maximum is 5000. */
                 limit?: number;
                 /** @description Query BusinessMetrics by the first date you would like to filter from. ISO 8601 Formatted - 2021-07-15 */
                 start_date?: string;
@@ -13016,9 +13119,115 @@ export interface operations {
             };
         };
     };
+    getNetworkFlowLogs: {
+        parameters: {
+            query?: {
+                network_flow_report_token?: string;
+                workspace_token?: string;
+                filter?: string;
+                date_interval?: "last_3_days" | "last_7_days" | "last_14_days" | "last_30_days";
+                start_date?: string;
+                end_date?: string;
+                groupings?: ("account_id" | "az_id" | "dstaddr" | "dsthostname" | "flow_direction" | "interface_id" | "instance_id" | "peer_resource_uuid" | "peer_account_id" | "peer_vpc_id" | "peer_region" | "peer_az_id" | "peer_subnet_id" | "peer_interface_id" | "peer_instance_id" | "region" | "resource_uuid" | "srcaddr" | "srchostname" | "subnet_id" | "traffic_category" | "traffic_path" | "vpc_id")[];
+                flow_direction?: "all" | "ingress" | "egress";
+                flow_weight?: "costs" | "bytes";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/network_flow_logs?network_flow_report_token=ntflw_lg_rprt_aea0bdc238d0cf65",
+                     *         "first": "https://api.vantage.sh/v2/network_flow_logs?network_flow_report_token=ntflw_lg_rprt_aea0bdc238d0cf65&page=1",
+                     *         "next": null,
+                     *         "last": null,
+                     *         "prev": null
+                     *       },
+                     *       "flow_weight": "costs",
+                     *       "sampling": {
+                     *         "sampled": true,
+                     *         "max_sampling_rate_percent": 50
+                     *       },
+                     *       "network_flow_logs": [
+                     *         {
+                     *           "groupings": {
+                     *             "resource_uuid": {
+                     *               "value": "resource-123",
+                     *               "label": "production-web-1",
+                     *               "provider_resource_token": "prvdr_rsrc_39e94b2468400dca"
+                     *             },
+                     *             "traffic_category": {
+                     *               "value": "public",
+                     *               "label": "public",
+                     *               "provider_resource_token": null
+                     *             }
+                     *           },
+                     *           "bytes": 200,
+                     *           "estimated_cost": "2.5",
+                     *           "currency": "USD",
+                     *           "sampled_bytes": 100,
+                     *           "sampled_estimated_cost": "1.25"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["NetworkFlowLogs"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description PaymentRequired */
+            402: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getNetworkFlowReports: {
         parameters: {
             query?: {
+                /** @description A search query to filter NetworkFlowReports by title. */
+                q?: string;
                 /** @description The page of results to return. */
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
