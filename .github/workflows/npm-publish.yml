@@ -4,13 +4,7 @@ on:
   push:
     branches:
       - main
-    paths:
-      - package.json
   workflow_dispatch:
-
-concurrency:
-  group: publish-package
-  cancel-in-progress: false
 
 permissions:
   id-token: write # Required for OIDC
