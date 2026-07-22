@@ -2,6 +2,9 @@
 #
 # Triggered manually (workflow_dispatch) or by repository_dispatch from vantage-sh/core.
 # Generates against the production API at api.vantage.sh.
+#
+# Manual runs skip the prod swagger wait. Only one sync runs at a time; newer runs
+# cancel older ones so a manual dispatch can preempt a sleeping auto-sync.
 
 name: Sync SDK from vantage-core
 
@@ -9,6 +12,10 @@ on:
   repository_dispatch:
     types: [vantage-core-api-sync]
   workflow_dispatch:
+
+concurrency:
+  group: sync-from-core
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -47,15 +54,19 @@ jobs:
             exit 0
           fi
 
+          npm version minor --no-git-tag-version
+          npm install --package-lock-only
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          VERSION="$(jq -r '.version' package.json)"
           SHORT_SHA="$(git rev-parse --short HEAD)"
           BRANCH="sync/api-client-${SHORT_SHA}"
 
           git checkout -b "$BRANCH"
           git add -A
-          git commit -m "chore: regenerate API client" \
+          git commit -m "chore: regenerate API client (v${VERSION})" \
             -m "Generated against https://api.vantage.sh."
 
           git fetch origin "$BRANCH" || true
@@ -68,14 +79,14 @@ jobs:
             --jq ".[] | select(.head.ref==\"$BRANCH\" and .state==\"open\") | .number" | head -1)
 
           if [ -z "$EXISTING" ]; then
-            PR_BODY="Automated regeneration of the TypeScript SDK client from the Vantage OpenAPI spec."
+            PR_BODY="Automated regeneration of the TypeScript SDK client from the Vantage OpenAPI spec (v${VERSION})."
             if [ -n "$CORE_PR_URL" ]; then
               PR_BODY="${PR_BODY}"$'\n\n'"Triggered by: ${CORE_PR_URL}"
             fi
             gh pr create \
               --base "$DEFAULT_BRANCH" \
               --head "$BRANCH" \
-              --title "chore: regenerate API client" \
+              --title "chore: regenerate API client (v${VERSION})" \
               --body "$PR_BODY"
           else
             echo "Open PR #${EXISTING} already exists for head ${BRANCH}; skipping create."
