@@ -69,10 +69,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           VERSION="$(jq -r '.version' package.json)"
-          SHORT_SHA="$(git rev-parse --short HEAD)"
-          BRANCH="sync/api-client-${SHORT_SHA}"
+          BRANCH="sync/api-client"
 
-          git checkout -b "$BRANCH"
+          git checkout -B "$BRANCH"
           git add -A
           git commit -m "chore: regenerate API client (v${VERSION})" \
             -m "Generated against https://api.vantage.sh."
