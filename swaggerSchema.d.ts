@@ -3592,6 +3592,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
                 /**
@@ -3669,6 +3677,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
                 /**
@@ -4163,6 +4179,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
                 /**
@@ -4284,6 +4308,14 @@ export interface components {
                  * @enum {string}
                  */
                 unit_scale?: "per_unit" | "per_hundred" | "per_thousand" | "per_million" | "per_billion";
+                /**
+                 * @description The calculation type applied when this BusinessMetric is used in the CostReport.
+                 * @default unit_cost
+                 * @enum {string}
+                 */
+                calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
+                /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
+                label?: string;
                 /** @description Include only values with these labels in the CostReport. */
                 label_filter?: string[];
                 /**
