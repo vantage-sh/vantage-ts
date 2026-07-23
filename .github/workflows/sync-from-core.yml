@@ -5,6 +5,8 @@
 #
 # Manual runs skip the prod swagger wait. Only one sync runs at a time; newer runs
 # cancel older ones so a manual dispatch can preempt a sleeping auto-sync.
+# After the PR merges, Publish Package is called via workflow_call (GITHUB_TOKEN
+# merges do not trigger on.push workflows).
 
 name: Sync SDK from vantage-core
 
@@ -24,6 +26,9 @@ permissions:
 jobs:
   generate-and-pr:
     runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.pr.outputs.should_publish }}
+      merge_sha: ${{ steps.pr.outputs.merge_sha }}
     env:
       CORE_PR_URL: ${{ github.event.client_payload.core_pr_url }}
     steps:
@@ -46,9 +51,12 @@ jobs:
         run: npm run generate
 
       - name: Open pull request
+        id: pr
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          echo "should_publish=false" >> "$GITHUB_OUTPUT"
+
           if [ -z "$(git status --porcelain)" ]; then
             echo "No generated changes; skipping PR."
             exit 0
@@ -94,3 +102,35 @@ jobs:
           fi
 
           gh pr merge --auto --squash "$PR_URL"
+
+          # --auto may return before merge if checks are pending; wait for MERGED.
+          for i in $(seq 1 60); do
+            STATE="$(gh pr view "$PR_URL" --json state --jq '.state')"
+            if [ "$STATE" = "MERGED" ]; then
+              MERGE_SHA="$(gh pr view "$PR_URL" --json mergeCommit --jq '.mergeCommit.oid')"
+              echo "PR merged at ${MERGE_SHA}"
+              echo "should_publish=true" >> "$GITHUB_OUTPUT"
+              echo "merge_sha=${MERGE_SHA}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [ "$STATE" = "CLOSED" ]; then
+              echo "PR was closed without merging; skipping publish."
+              exit 0
+            fi
+            echo "Waiting for PR to merge (attempt ${i}/60, state=${STATE})..."
+            sleep 30
+          done
+
+          echo "PR did not merge within 30 minutes."
+          exit 1
+
+  publish:
+    needs: generate-and-pr
+    if: needs.generate-and-pr.outputs.should_publish == 'true'
+    uses: ./.github/workflows/npm-publish.yml
+    with:
+      ref: ${{ needs.generate-and-pr.outputs.merge_sha }}
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: write
