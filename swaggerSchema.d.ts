@@ -3981,13 +3981,7 @@ export interface components {
             saved_filter_tokens?: string[] | null;
             /** @description The tokens for the BusinessMetrics assigned to the CostReport, the unit scale, and label filter. */
             business_metric_tokens_with_metadata: components["schemas"]["AttachedBusinessMetricForCostReport"][];
-            /**
-             * @description The default forecast selection for the CostReport.
-             * @example {
-             *       "kind": "baseline"
-             *     }
-             */
-            default_forecast: Record<string, any>;
+            default_forecast: components["schemas"]["DefaultForecast"];
             /** @description The filter applied to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
             /**
@@ -4028,12 +4022,13 @@ export interface components {
                  */
                 unallocated?: boolean | null;
                 /**
-                 * @description Report will aggregate by cost or usage.
+                 * @description Report will aggregate by cost, usage, or count.
                  * @default cost
+                 * @enum {string|null}
                  */
-                aggregate_by?: string | null;
+                aggregate_by?: "cost" | "usage" | "count" | null;
                 /**
-                 * @description Report will show previous period costs or usage comparison.
+                 * @description Report will show previous period cost, usage, or count comparison.
                  * @default true
                  */
                 show_previous_period?: boolean | null;
@@ -4115,11 +4110,25 @@ export interface components {
              *       ]
              *     }
              */
-            label_filters?: Record<string, any> | null;
+            label_filters?: {
+                [key: string]: string[];
+            } | null;
+        };
+        DefaultForecast: {
+            /**
+             * @description The default forecast selection kind.
+             * @enum {string}
+             */
+            kind: "baseline" | "report_forecast";
+            /** @description The token for the report forecast selected as the default. */
+            report_forecast_token?: string | null;
         };
         ChartSettings: {
-            /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
-            y_axis_dimension: string;
+            /**
+             * @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'.
+             * @enum {string}
+             */
+            y_axis_dimension: "cost" | "usage" | "count";
             /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
             x_axis_dimension: string[];
         };
@@ -4240,12 +4249,13 @@ export interface components {
                  */
                 unallocated?: boolean;
                 /**
-                 * @description Report will aggregate by cost or usage.
+                 * @description Report will aggregate by cost, usage, or count.
                  * @default cost
+                 * @enum {string}
                  */
-                aggregate_by?: string;
+                aggregate_by?: "cost" | "usage" | "count";
                 /**
-                 * @description Report will show previous period costs or usage comparison.
+                 * @description Report will show previous period cost, usage, or count comparison.
                  * @default true
                  */
                 show_previous_period?: boolean;
@@ -4284,8 +4294,11 @@ export interface components {
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
                 x_axis_dimension?: string[];
-                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
-                y_axis_dimension?: string;
+                /**
+                 * @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'.
+                 * @enum {string}
+                 */
+                y_axis_dimension?: "cost" | "usage" | "count";
             };
         };
         /** @description Update a CostReport. */
@@ -4360,9 +4373,12 @@ export interface components {
                 amortize?: boolean | null;
                 /** @description Report will show unallocated costs. */
                 unallocated?: boolean | null;
-                /** @description Report will aggregate by cost or usage. */
-                aggregate_by?: string | null;
-                /** @description Report will show previous period costs or usage comparison. */
+                /**
+                 * @description Report will aggregate by cost, usage, or count.
+                 * @enum {string|null}
+                 */
+                aggregate_by?: "cost" | "usage" | "count" | null;
+                /** @description Report will show previous period cost, usage, or count comparison. */
                 show_previous_period?: boolean | null;
                 /** @description Report will restrict date ranges to completed periods only. */
                 complete_period?: boolean;
@@ -4371,8 +4387,11 @@ export interface components {
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
                 x_axis_dimension?: string[];
-                /** @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'. */
-                y_axis_dimension?: string;
+                /**
+                 * @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'.
+                 * @enum {string}
+                 */
+                y_axis_dimension?: "cost" | "usage" | "count";
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -4456,12 +4475,13 @@ export interface components {
                  */
                 unallocated?: boolean;
                 /**
-                 * @description Results will aggregate by cost or usage.
+                 * @description Results will aggregate by cost, usage, or count.
                  * @default cost
+                 * @enum {string}
                  */
-                aggregate_by?: string;
+                aggregate_by?: "cost" | "usage" | "count";
                 /**
-                 * @description Results will show previous period costs or usage comparison.
+                 * @description Results will show previous period cost, usage, or count comparison.
                  * @default true
                  */
                 show_previous_period?: boolean;
@@ -4473,6 +4493,13 @@ export interface components {
             total_cost: components["schemas"]["CostPartial"];
             /** @description The sum of all usage for the CostReport for the requested period, rounded to 2 decimal places, grouped by usage unit. */
             total_usage?: components["schemas"]["UsagePartial"][];
+            /**
+             * Format: int64
+             * @description The sum of the date-binned counts. Present when settings.aggregate_by is 'count'.
+             */
+            total_count?: number | null;
+            /** @description Distinct Group By permutation counts for the full requested period, unaffected by page and limit. Bins without cost are omitted. Present when settings.aggregate_by is 'count'. */
+            counts?: components["schemas"]["CostCount"][];
             costs: components["schemas"]["Cost"][];
         };
         CostPartial: {
@@ -4498,6 +4525,19 @@ export interface components {
              * @example USD
              */
             unit: string;
+        };
+        CostCount: {
+            /**
+             * @description The date bin for the count. ISO 8601 Formatted.
+             * @example 2023-09-05+00:00
+             */
+            accrued_at: string;
+            /**
+             * Format: int64
+             * @description The number of distinct Group By permutations carrying cost in the date bin.
+             * @example 2
+             */
+            count: number;
         };
         /** @description Cost model */
         Cost: {
@@ -10568,9 +10608,9 @@ export interface operations {
                 "settings[amortize]"?: boolean;
                 /** @description Results will show unallocated costs. */
                 "settings[unallocated]"?: boolean;
-                /** @description Results will aggregate by cost or usage. */
-                "settings[aggregate_by]"?: string;
-                /** @description Results will show previous period costs or usage comparison. */
+                /** @description Results will aggregate by cost, usage, or count. */
+                "settings[aggregate_by]"?: "cost" | "usage" | "count";
+                /** @description Results will show previous period cost, usage, or count comparison. */
                 "settings[show_previous_period]"?: boolean;
             };
             header?: never;
