@@ -935,6 +935,38 @@ export type UpdateRecommendationViewResponse = ResponseBodyForPathAndMethod<`/v2
  */
 export type DeleteRecommendationViewResponse = ResponseBodyForPathAndMethod<`/v2/recommendation_views/${NoSlashString}`, "DELETE">;
 /**
+ * Return all scenario-model ReportForecasts for a CostReport.
+ */
+export type GetReportForecastsRequest = RequestBodyForPathAndMethod<"/v2/report_forecasts", "GET">;
+/**
+ * Response type for Get all report forecasts
+ */
+export type GetReportForecastsResponse = ResponseBodyForPathAndMethod<"/v2/report_forecasts", "GET">;
+/**
+ * Create a scenario-model ReportForecast.
+ */
+export type CreateReportForecastRequest = RequestBodyForPathAndMethod<"/v2/report_forecasts", "POST">;
+/**
+ * Response type for Create report forecast
+ */
+export type CreateReportForecastResponse = ResponseBodyForPathAndMethod<"/v2/report_forecasts", "POST">;
+/**
+ * Response type for Get report forecast by token
+ */
+export type GetReportForecastResponse = ResponseBodyForPathAndMethod<`/v2/report_forecasts/${NoSlashString}`, "GET">;
+/**
+ * Update a scenario-model ReportForecast.
+ */
+export type UpdateReportForecastRequest = RequestBodyForPathAndMethod<`/v2/report_forecasts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update report forecast
+ */
+export type UpdateReportForecastResponse = ResponseBodyForPathAndMethod<`/v2/report_forecasts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete report forecast
+ */
+export type DeleteReportForecastResponse = ResponseBodyForPathAndMethod<`/v2/report_forecasts/${NoSlashString}`, "DELETE">;
+/**
  * Return all ReportNotifications.
  */
 export type GetReportNotificationsRequest = RequestBodyForPathAndMethod<"/v2/report_notifications", "GET">;
@@ -1054,6 +1086,38 @@ export type UpdateSavedFilterResponse = ResponseBodyForPathAndMethod<`/v2/saved_
  * Response type for Delete saved filter
  */
 export type DeleteSavedFilterResponse = ResponseBodyForPathAndMethod<`/v2/saved_filters/${NoSlashString}`, "DELETE">;
+/**
+ * Return all ScenarioModels.
+ */
+export type GetScenarioModelsRequest = RequestBodyForPathAndMethod<"/v2/scenario_models", "GET">;
+/**
+ * Response type for Get all scenario models
+ */
+export type GetScenarioModelsResponse = ResponseBodyForPathAndMethod<"/v2/scenario_models", "GET">;
+/**
+ * Create a ScenarioModel.
+ */
+export type CreateScenarioModelRequest = RequestBodyForPathAndMethod<"/v2/scenario_models", "POST">;
+/**
+ * Response type for Create scenario model
+ */
+export type CreateScenarioModelResponse = ResponseBodyForPathAndMethod<"/v2/scenario_models", "POST">;
+/**
+ * Response type for Get scenario model by token
+ */
+export type GetScenarioModelResponse = ResponseBodyForPathAndMethod<`/v2/scenario_models/${NoSlashString}`, "GET">;
+/**
+ * Update a ScenarioModel.
+ */
+export type UpdateScenarioModelRequest = RequestBodyForPathAndMethod<`/v2/scenario_models/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update scenario model
+ */
+export type UpdateScenarioModelResponse = ResponseBodyForPathAndMethod<`/v2/scenario_models/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete scenario model
+ */
+export type DeleteScenarioModelResponse = ResponseBodyForPathAndMethod<`/v2/scenario_models/${NoSlashString}`, "DELETE">;
 /**
  * Return all Segments.
  */
@@ -1338,10 +1402,12 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _products?: ProductsApi<NeverThrow>;
     private _recommendations?: RecommendationsApi<NeverThrow>;
     private _recommendationViews?: RecommendationViewsApi<NeverThrow>;
+    private _reportForecasts?: ReportForecastsApi<NeverThrow>;
     private _reportNotifications?: ReportNotificationsApi<NeverThrow>;
     private _resourceReports?: ResourceReportsApi<NeverThrow>;
     private _resources?: ResourcesApi<NeverThrow>;
     private _savedFilters?: SavedFiltersApi<NeverThrow>;
+    private _scenarioModels?: ScenarioModelsApi<NeverThrow>;
     private _segments?: SegmentsApi<NeverThrow>;
     private _tags?: TagsApi<NeverThrow>;
     private _teams?: TeamsApi<NeverThrow>;
@@ -1582,6 +1648,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
         return this._recommendationViews;
     }
 
+    get reportForecasts(): ReportForecastsApi<NeverThrow> {
+        if (!this._reportForecasts) {
+            this._reportForecasts = new ReportForecastsApi(this);
+        }
+        return this._reportForecasts;
+    }
+
     get reportNotifications(): ReportNotificationsApi<NeverThrow> {
         if (!this._reportNotifications) {
             this._reportNotifications = new ReportNotificationsApi(this);
@@ -1608,6 +1681,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._savedFilters = new SavedFiltersApi(this);
         }
         return this._savedFilters;
+    }
+
+    get scenarioModels(): ScenarioModelsApi<NeverThrow> {
+        if (!this._scenarioModels) {
+            this._scenarioModels = new ScenarioModelsApi(this);
+        }
+        return this._scenarioModels;
     }
 
     get segments(): SegmentsApi<NeverThrow> {
@@ -3362,6 +3442,66 @@ class RecommendationViewsApi<NeverThrow extends boolean> {
 
 }
 
+class ReportForecastsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all scenario-model ReportForecasts for a CostReport.
+ */
+    list(body?: GetReportForecastsRequest) {
+        return this.client.request(
+            `/v2/report_forecasts`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a scenario-model ReportForecast.
+ */
+    create(body: CreateReportForecastRequest) {
+        return this.client.request(
+            `/v2/report_forecasts`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a scenario-model ReportForecast.
+ */
+    get(reportForecastToken: string) {
+        return this.client.request(
+            `/v2/report_forecasts/${pathEncode(reportForecastToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a scenario-model ReportForecast.
+ */
+    update(reportForecastToken: string, body: UpdateReportForecastRequest) {
+        return this.client.request(
+            `/v2/report_forecasts/${pathEncode(reportForecastToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a scenario-model ReportForecast.
+ */
+    delete(reportForecastToken: string) {
+        return this.client.request(
+            `/v2/report_forecasts/${pathEncode(reportForecastToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+}
+
 class ReportNotificationsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
@@ -3562,6 +3702,66 @@ class SavedFiltersApi<NeverThrow extends boolean> {
     delete(savedFilterToken: string) {
         return this.client.request(
             `/v2/saved_filters/${pathEncode(savedFilterToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+}
+
+class ScenarioModelsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all ScenarioModels.
+ */
+    list(body?: GetScenarioModelsRequest) {
+        return this.client.request(
+            `/v2/scenario_models`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a ScenarioModel.
+ */
+    create(body: CreateScenarioModelRequest) {
+        return this.client.request(
+            `/v2/scenario_models`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a ScenarioModel.
+ */
+    get(scenarioModelToken: string) {
+        return this.client.request(
+            `/v2/scenario_models/${pathEncode(scenarioModelToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a ScenarioModel.
+ */
+    update(scenarioModelToken: string, body: UpdateScenarioModelRequest) {
+        return this.client.request(
+            `/v2/scenario_models/${pathEncode(scenarioModelToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a ScenarioModel.
+ */
+    delete(scenarioModelToken: string) {
+        return this.client.request(
+            `/v2/scenario_models/${pathEncode(scenarioModelToken)}`,
             "DELETE",
             {},
         );

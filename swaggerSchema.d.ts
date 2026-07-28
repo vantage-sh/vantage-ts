@@ -1892,6 +1892,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/report_forecasts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all report forecasts
+         * @description Return all scenario-model ReportForecasts for a CostReport.
+         */
+        get: operations["getReportForecasts"];
+        put?: never;
+        /**
+         * Create report forecast
+         * @description Create a scenario-model ReportForecast.
+         */
+        post: operations["createReportForecast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/report_forecasts/{report_forecast_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get report forecast by token
+         * @description Return a scenario-model ReportForecast.
+         */
+        get: operations["getReportForecast"];
+        /**
+         * Update report forecast
+         * @description Update a scenario-model ReportForecast.
+         */
+        put: operations["updateReportForecast"];
+        post?: never;
+        /**
+         * Delete report forecast
+         * @description Delete a scenario-model ReportForecast.
+         */
+        delete: operations["deleteReportForecast"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/report_notifications": {
         parameters: {
             query?: never;
@@ -2103,6 +2155,58 @@ export interface paths {
          * @description Delete a SavedFilter for CostReports.
          */
         delete: operations["deleteSavedFilter"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scenario_models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all scenario models
+         * @description Return all ScenarioModels.
+         */
+        get: operations["getScenarioModels"];
+        put?: never;
+        /**
+         * Create scenario model
+         * @description Create a ScenarioModel.
+         */
+        post: operations["createScenarioModel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scenario_models/{scenario_model_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get scenario model by token
+         * @description Return a ScenarioModel.
+         */
+        get: operations["getScenarioModel"];
+        /**
+         * Update scenario model
+         * @description Update a ScenarioModel.
+         */
+        put: operations["updateScenarioModel"];
+        post?: never;
+        /**
+         * Delete scenario model
+         * @description Delete a ScenarioModel.
+         */
+        delete: operations["deleteScenarioModel"];
         options?: never;
         head?: never;
         patch?: never;
@@ -6155,6 +6259,38 @@ export interface components {
             /** @description The type of change the ReportNotification is tracking. Possible values: percentage, dollars. */
             change?: string;
         };
+        /** @description ReportForecasts model */
+        ReportForecasts: {
+            links?: components["schemas"]["Links"];
+            report_forecasts: components["schemas"]["ReportForecast"][];
+        };
+        /** @description ReportForecast model */
+        ReportForecast: {
+            token: string;
+            title: string;
+            cost_report_token: string;
+            scenario_model_tokens: string[];
+            business_metric_token: string | null;
+            is_default: boolean;
+            created_by_token: string | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /** @description Create a scenario-model ReportForecast. */
+        createReportForecast: {
+            cost_report_token: string;
+            title: string;
+            scenario_model_tokens?: string[];
+            business_metric_token?: string | null;
+            set_as_default?: boolean;
+        };
+        /** @description Update a scenario-model ReportForecast. */
+        updateReportForecast: {
+            title?: string;
+            scenario_model_tokens?: string[];
+            business_metric_token?: string | null;
+            set_as_default?: boolean;
+        };
         /** @description ResourceReportColumns model */
         ResourceReportColumns: {
             /** @description Array of available column names for the specified resource type. */
@@ -6302,6 +6438,87 @@ export interface components {
             title?: string;
             /** @description The filter query language to apply to the SavedFilter, which subsequently gets applied to a CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
+        };
+        /** @description ScenarioModels model */
+        ScenarioModels: {
+            links?: components["schemas"]["Links"];
+            scenario_models: components["schemas"]["ScenarioModel"][];
+        };
+        /** @description ScenarioModel model */
+        ScenarioModel: {
+            token: string;
+            title: string;
+            /** Format: int32 */
+            priority: number | null;
+            workspace_token: string | null;
+            provider: string | null;
+            service: string | null;
+            periods: components["schemas"]["ScenarioModelPeriod"][];
+            created_by_token: string | null;
+            created_at: string;
+            updated_at: string;
+        };
+        ScenarioModelPeriod: {
+            /**
+             * @description The ISO 8601 start date of the period.
+             * @example 2026-01-01
+             */
+            start_at: string;
+            /**
+             * @description The ISO 8601 end date of the period.
+             * @example 2026-03-31
+             */
+            end_at: string | null;
+            /**
+             * @description The period amount as a string to preserve decimal precision.
+             * @example 1250.75
+             */
+            amount: string;
+            /**
+             * @description Whether the amount is in dollars or percent.
+             * @enum {string}
+             */
+            amount_type: "dollar" | "percent";
+        };
+        /** @description Create a ScenarioModel. */
+        createScenarioModel: {
+            title: string;
+            /** Format: int32 */
+            priority?: number | null;
+            provider?: string | null;
+            service?: string | null;
+            workspace_token?: string;
+            /** @description The periods for the ScenarioModel. */
+            periods?: {
+                /** Format: date */
+                start_at: string;
+                /** Format: date */
+                end_at?: string | null;
+                /** Format: double */
+                amount: number;
+                /** @enum {string} */
+                amount_type: "dollar" | "percent";
+            }[];
+        };
+        /** @description Update a ScenarioModel. */
+        updateScenarioModel: {
+            title?: string;
+            /** Format: int32 */
+            priority?: number | null;
+            provider?: string | null;
+            service?: string | null;
+            workspace_token?: string;
+            /** @description The periods for the ScenarioModel. */
+            periods?: {
+                /** Format: date */
+                start_at: string;
+                /** Format: date */
+                end_at?: string | null;
+                /** Format: double */
+                amount: number;
+                /** @enum {string} */
+                amount_type: "dollar" | "percent";
+            }[];
         };
         /** @description Segments model */
         Segments: {
@@ -14409,6 +14626,285 @@ export interface operations {
             };
         };
     };
+    getReportForecasts: {
+        parameters: {
+            query: {
+                cost_report_token: string;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all scenario-model ReportForecasts for a CostReport. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/report_forecasts?cost_report_token=rprt_fd7190753bb1ce4a",
+                     *         "first": "https://api.vantage.sh/v2/report_forecasts?cost_report_token=rprt_fd7190753bb1ce4a&page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/report_forecasts?cost_report_token=rprt_fd7190753bb1ce4a&page=1",
+                     *         "prev": null
+                     *       },
+                     *       "report_forecasts": [
+                     *         {
+                     *           "token": "rprt_frcst_b6fc93cfbe7bb782",
+                     *           "title": "Board Plan",
+                     *           "cost_report_token": "rprt_fd7190753bb1ce4a",
+                     *           "scenario_model_tokens": [
+                     *             "frcst_mdl_998be85cff4d0574"
+                     *           ],
+                     *           "business_metric_token": null,
+                     *           "is_default": false,
+                     *           "created_by_token": "usr_9be7c063f1529dff",
+                     *           "created_at": "2026-07-28T15:37:51Z",
+                     *           "updated_at": "2026-07-28T15:37:51Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportForecasts"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createReportForecast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createReportForecast"];
+            };
+        };
+        responses: {
+            /** @description Create a scenario-model ReportForecast. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_frcst_5d4cc7ef29bed6d2",
+                     *       "title": "Operating Plan",
+                     *       "cost_report_token": "rprt_82a0304aaf254804",
+                     *       "scenario_model_tokens": [
+                     *         "frcst_mdl_ebb14bfd8eabc5fd"
+                     *       ],
+                     *       "business_metric_token": null,
+                     *       "is_default": true,
+                     *       "created_by_token": "usr_10a09baaa100511e",
+                     *       "created_at": "2026-07-28T15:37:52Z",
+                     *       "updated_at": "2026-07-28T15:37:52Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportForecast"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getReportForecast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_forecast_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return a scenario-model ReportForecast. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_frcst_4eb4953f73d088c3",
+                     *       "title": "Board Plan",
+                     *       "cost_report_token": "rprt_89d0dacbe6bdee16",
+                     *       "scenario_model_tokens": [
+                     *         "frcst_mdl_f2fbc239e8f733f5"
+                     *       ],
+                     *       "business_metric_token": null,
+                     *       "is_default": false,
+                     *       "created_by_token": "usr_9c1be40b31fe536c",
+                     *       "created_at": "2026-07-28T15:37:50Z",
+                     *       "updated_at": "2026-07-28T15:37:50Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportForecast"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateReportForecast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_forecast_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateReportForecast"];
+            };
+        };
+        responses: {
+            /** @description Update a scenario-model ReportForecast. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_frcst_1857da57e1638621",
+                     *       "title": "Revised Board Plan",
+                     *       "cost_report_token": "rprt_2ba2ed341ec3140f",
+                     *       "scenario_model_tokens": [
+                     *         "frcst_mdl_71ba27b133ee9ff3"
+                     *       ],
+                     *       "business_metric_token": null,
+                     *       "is_default": true,
+                     *       "created_by_token": "usr_5341c3c0f83a1a3f",
+                     *       "created_at": "2026-07-28T15:37:48Z",
+                     *       "updated_at": "2026-07-28T15:37:48Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportForecast"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteReportForecast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_forecast_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete a scenario-model ReportForecast. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportForecast"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getReportNotifications: {
         parameters: {
             query?: {
@@ -15433,6 +15929,290 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SavedFilter"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getScenarioModels: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all ScenarioModels. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/scenario_models",
+                     *         "first": "https://api.vantage.sh/v2/scenario_models?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/scenario_models?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "scenario_models": [
+                     *         {
+                     *           "token": "frcst_mdl_47f8f6511171bc8f",
+                     *           "title": "Hiring Plan",
+                     *           "priority": 2,
+                     *           "workspace_token": null,
+                     *           "provider": null,
+                     *           "service": null,
+                     *           "periods": [
+                     *             {
+                     *               "start_at": "2026-01-01",
+                     *               "end_at": "2026-03-31",
+                     *               "amount": "1250.75",
+                     *               "amount_type": "dollar"
+                     *             }
+                     *           ],
+                     *           "created_by_token": "usr_41333d06c73b9405",
+                     *           "created_at": "2026-07-28T15:37:49Z",
+                     *           "updated_at": "2026-07-28T15:37:49Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ScenarioModels"];
+                };
+            };
+        };
+    };
+    createScenarioModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createScenarioModel"];
+            };
+        };
+        responses: {
+            /** @description Create a ScenarioModel. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "frcst_mdl_e42020822501d0ee",
+                     *       "title": "Expansion Plan",
+                     *       "priority": 4,
+                     *       "workspace_token": null,
+                     *       "provider": null,
+                     *       "service": null,
+                     *       "periods": [
+                     *         {
+                     *           "start_at": "2026-04-01",
+                     *           "end_at": null,
+                     *           "amount": "9876.54321",
+                     *           "amount_type": "percent"
+                     *         }
+                     *       ],
+                     *       "created_by_token": "usr_cc82bf4cf16d5452",
+                     *       "created_at": "2026-07-28T15:37:50Z",
+                     *       "updated_at": "2026-07-28T15:37:50Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ScenarioModel"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getScenarioModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scenario_model_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return a ScenarioModel. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "frcst_mdl_a7684dd8104260da",
+                     *       "title": "Hiring Plan",
+                     *       "priority": 2,
+                     *       "workspace_token": null,
+                     *       "provider": null,
+                     *       "service": null,
+                     *       "periods": [
+                     *         {
+                     *           "start_at": "2026-01-01",
+                     *           "end_at": "2026-03-31",
+                     *           "amount": "1250.75",
+                     *           "amount_type": "dollar"
+                     *         }
+                     *       ],
+                     *       "created_by_token": "usr_2943707386442e61",
+                     *       "created_at": "2026-07-28T15:37:49Z",
+                     *       "updated_at": "2026-07-28T15:37:49Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ScenarioModel"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateScenarioModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scenario_model_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateScenarioModel"];
+            };
+        };
+        responses: {
+            /** @description Update a ScenarioModel. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "frcst_mdl_09c6dc8b48640f37",
+                     *       "title": "Updated Hiring Plan",
+                     *       "priority": 2,
+                     *       "workspace_token": null,
+                     *       "provider": null,
+                     *       "service": null,
+                     *       "periods": [
+                     *         {
+                     *           "start_at": "2026-01-01",
+                     *           "end_at": "2026-03-31",
+                     *           "amount": "1250.75",
+                     *           "amount_type": "dollar"
+                     *         }
+                     *       ],
+                     *       "created_by_token": "usr_f26745be72a42d31",
+                     *       "created_at": "2026-07-28T15:37:52Z",
+                     *       "updated_at": "2026-07-28T15:37:52Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ScenarioModel"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteScenarioModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scenario_model_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete a ScenarioModel. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioModel"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
