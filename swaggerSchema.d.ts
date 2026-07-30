@@ -6282,14 +6282,14 @@ export interface components {
             title: string;
             scenario_model_tokens?: string[];
             business_metric_token?: string | null;
-            set_as_default?: boolean;
+            set_as_default?: boolean | null;
         };
         /** @description Update a scenario-model ReportForecast. */
         updateReportForecast: {
             title?: string;
             scenario_model_tokens?: string[];
             business_metric_token?: string | null;
-            set_as_default?: boolean;
+            set_as_default?: boolean | null;
         };
         /** @description ResourceReportColumns model */
         ResourceReportColumns: {
@@ -6952,6 +6952,10 @@ export interface components {
              * @example bsnss_mtrc_abc123
              */
             business_metric_token?: string | null;
+            /** @description The business metric label key used for this virtual tag value. */
+            label_key?: string | null;
+            /** @description Optional business metric label values. An empty array includes every value for the label key. */
+            label_values?: string[] | null;
             cost_metric?: components["schemas"]["VirtualTagConfigValueCostMetric"];
             /** @description The display name for this allocation value. */
             display_name?: string | null;
@@ -7057,6 +7061,10 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The business metric label key used for this virtual tag value. */
+                label_key?: string;
+                /** @description Optional business metric label values. An empty array includes every value for the label key. */
+                label_values?: string[];
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
@@ -7114,6 +7122,10 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The business metric label key used for this virtual tag value. */
+                label_key?: string;
+                /** @description Optional business metric label values. An empty array includes every value for the label key. */
+                label_values?: string[];
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
@@ -7184,6 +7196,10 @@ export interface components {
                 name?: string;
                 /** @description The token of an associated business metric. */
                 business_metric_token?: string;
+                /** @description The business metric label key used for this virtual tag value. */
+                label_key?: string;
+                /** @description Optional business metric label values. An empty array includes every value for the label key. */
+                label_values?: string[];
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
