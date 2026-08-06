@@ -1319,6 +1319,30 @@ export type UpdateAsyncVirtualTagConfigResponse = ResponseBodyForPathAndMethod<`
  */
 export type GetAsyncVirtualTagConfigStatusResponse = ResponseBodyForPathAndMethod<`/v2/virtual_tag_configs/async/${NoSlashString}`, "GET">;
 /**
+ * Create a VirtualTagConfigValue.
+ */
+export type CreateVirtualTagConfigValueRequest = RequestBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values`, "POST">;
+/**
+ * Response type for Create virtual tag config value
+ */
+export type CreateVirtualTagConfigValueResponse = ResponseBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values`, "POST">;
+/**
+ * Response type for Get virtual tag config value by token
+ */
+export type GetVirtualTagConfigValueResponse = ResponseBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values/${NoSlashString}`, "GET">;
+/**
+ * Response type for Delete virtual tag config value
+ */
+export type DeleteVirtualTagConfigValueResponse = ResponseBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values/${NoSlashString}`, "DELETE">;
+/**
+ * Update a VirtualTagConfigValue.
+ */
+export type UpdateVirtualTagConfigValueRequest = RequestBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values/${NoSlashString}`, "PATCH">;
+/**
+ * Response type for Update virtual tag config value
+ */
+export type UpdateVirtualTagConfigValueResponse = ResponseBodyForPathAndMethod<`/v2/virtual_tag_configs/${NoSlashString}/values/${NoSlashString}`, "PATCH">;
+/**
  * Return all Workspaces that the current API token has access to.
  */
 export type GetWorkspacesRequest = RequestBodyForPathAndMethod<"/v2/workspaces", "GET">;
@@ -4118,6 +4142,50 @@ class VirtualTagConfigsApi<NeverThrow extends boolean> {
             `/v2/virtual_tag_configs/async/${pathEncode(requestId)}`,
             "GET",
             {},
+        );
+    }
+
+/**
+ * Create a VirtualTagConfigValue.
+ */
+    createValue(virtualTagConfigToken: string, body: CreateVirtualTagConfigValueRequest) {
+        return this.client.request(
+            `/v2/virtual_tag_configs/${pathEncode(virtualTagConfigToken)}/values`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a VirtualTagConfigValue.
+ */
+    getValue(virtualTagConfigToken: string, virtualTagConfigValueToken: string) {
+        return this.client.request(
+            `/v2/virtual_tag_configs/${pathEncode(virtualTagConfigToken)}/values/${pathEncode(virtualTagConfigValueToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Delete a VirtualTagConfigValue.
+ */
+    deleteValue(virtualTagConfigToken: string, virtualTagConfigValueToken: string) {
+        return this.client.request(
+            `/v2/virtual_tag_configs/${pathEncode(virtualTagConfigToken)}/values/${pathEncode(virtualTagConfigValueToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
+ * Update a VirtualTagConfigValue.
+ */
+    updateValue(virtualTagConfigToken: string, virtualTagConfigValueToken: string, body: UpdateVirtualTagConfigValueRequest) {
+        return this.client.request(
+            `/v2/virtual_tag_configs/${pathEncode(virtualTagConfigToken)}/values/${pathEncode(virtualTagConfigValueToken)}`,
+            "PATCH",
+            body,
         );
     }
 

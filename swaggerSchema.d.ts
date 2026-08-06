@@ -2620,6 +2620,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/virtual_tag_configs/{virtual_tag_config_token}/values": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create virtual tag config value
+         * @description Create a VirtualTagConfigValue.
+         */
+        post: operations["createVirtualTagConfigValue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/virtual_tag_configs/{virtual_tag_config_token}/values/{virtual_tag_config_value_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get virtual tag config value by token
+         * @description Return a VirtualTagConfigValue.
+         */
+        get: operations["getVirtualTagConfigValue"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete virtual tag config value
+         * @description Delete a VirtualTagConfigValue.
+         */
+        delete: operations["deleteVirtualTagConfigValue"];
+        options?: never;
+        head?: never;
+        /**
+         * Update virtual tag config value
+         * @description Update a VirtualTagConfigValue.
+         */
+        patch: operations["updateVirtualTagConfigValue"];
+        trace?: never;
+    };
     "/workspaces": {
         parameters: {
             query?: never;
@@ -6914,7 +6962,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2026-01-01
+             * @example 2026-02-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -6936,7 +6984,13 @@ export interface components {
              */
             filter: string | null;
         };
+        /** @description VirtualTagConfigValue model */
         VirtualTagConfigValue: {
+            /**
+             * @description The token of the Value.
+             * @example vtag_val_1234
+             */
+            token: string;
             /**
              * @description The filter VQL for the Value.
              * @example costs.provider = 'aws' AND costs.service = 'Amazon Simple Storage Service'
@@ -7227,6 +7281,84 @@ export interface components {
                     /** @description Inclusive end date (YYYY-MM-DD), or null for unbounded. */
                     end_date?: string;
                 }[];
+            }[];
+        };
+        /** @description Create a VirtualTagConfigValue. */
+        createVirtualTagConfigValue: {
+            /** @description The filter query language to apply to the value. Additional documentation available at https://docs.vantage.sh/vql. */
+            filter: string;
+            /** @description The name of the value. */
+            name?: string;
+            /** @description The token of an associated business metric. */
+            business_metric_token?: string;
+            /** @description The business metric label key used for this virtual tag value. */
+            label_key?: string;
+            /** @description Business metric label values. An empty array includes every value for the label key. */
+            label_values?: string[];
+            /** @description The display name for a cost metric or percentage allocation value. */
+            display_name?: string | null;
+            label_transforms?: {
+                /** @enum {string} */
+                type: "split" | "format";
+                delimiter?: string | null;
+                /** Format: int32 */
+                index?: number | null;
+                template?: string | null;
+            }[];
+            cost_metric?: {
+                filter: string;
+                aggregation: {
+                    tag: string;
+                };
+            };
+            percentages?: {
+                value: string;
+                /** Format: float */
+                pct: number;
+            }[];
+            /** @description Date ranges restricting when this value applies. */
+            date_ranges?: {
+                start_date?: string | null;
+                end_date?: string | null;
+            }[];
+        };
+        /** @description Update a VirtualTagConfigValue. */
+        updateVirtualTagConfigValue: {
+            /** @description The filter query language to apply to the value. Additional documentation available at https://docs.vantage.sh/vql. */
+            filter?: string;
+            /** @description The name of the value. */
+            name?: string;
+            /** @description The token of an associated business metric. */
+            business_metric_token?: string;
+            /** @description The business metric label key used for this virtual tag value. */
+            label_key?: string;
+            /** @description Business metric label values. An empty array includes every value for the label key. */
+            label_values?: string[];
+            /** @description The display name for a cost metric or percentage allocation value. */
+            display_name?: string | null;
+            label_transforms?: {
+                /** @enum {string} */
+                type: "split" | "format";
+                delimiter?: string | null;
+                /** Format: int32 */
+                index?: number | null;
+                template?: string | null;
+            }[];
+            cost_metric?: {
+                filter: string;
+                aggregation: {
+                    tag: string;
+                };
+            };
+            percentages?: {
+                value: string;
+                /** Format: float */
+                pct: number;
+            }[];
+            /** @description Date ranges restricting when this value applies. */
+            date_ranges?: {
+                start_date?: string | null;
+                end_date?: string | null;
             }[];
         };
         /** @description Workspaces model */
@@ -17550,6 +17682,7 @@ export interface operations {
                      *           "collapsed_tag_keys": [],
                      *           "values": [
                      *             {
+                     *               "token": "vtag_val_0000000000000003",
                      *               "filter": "(costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud' AND costs.account_id IN ('1234', '5678'))",
                      *               "name": "Growth",
                      *               "label_transforms": [],
@@ -17557,6 +17690,7 @@ export interface operations {
                      *               "date_ranges": []
                      *             },
                      *             {
+                     *               "token": "vtag_val_0000000000000004",
                      *               "filter": "(costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')",
                      *               "name": "API",
                      *               "label_transforms": [],
@@ -17564,6 +17698,7 @@ export interface operations {
                      *               "date_ranges": []
                      *             },
                      *             {
+                     *               "token": "vtag_val_0000000000000005",
                      *               "filter": "(costs.provider = 'aws' AND costs.service = 'AmazonEC2')",
                      *               "business_metric_token": "bsnss_mtrc_60e1ffb95a9a00f0",
                      *               "label_transforms": [],
@@ -17571,6 +17706,7 @@ export interface operations {
                      *               "date_ranges": []
                      *             },
                      *             {
+                     *               "token": "vtag_val_0000000000000006",
                      *               "filter": "(costs.provider = 'aws' AND costs.service != 'Amazon Elastic Compute Cloud')",
                      *               "cost_metric": {
                      *                 "filter": "costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud'",
@@ -17583,6 +17719,7 @@ export interface operations {
                      *               "date_ranges": []
                      *             },
                      *             {
+                     *               "token": "vtag_val_0000000000000007",
                      *               "filter": "(costs.provider = 'azure' AND costs.service = 'Azure Compute')",
                      *               "label_transforms": [],
                      *               "percentages": [
@@ -17635,6 +17772,7 @@ export interface operations {
                      *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
+                     *           "token": "vtag_val_0000000000000001",
                      *           "filter": "costs.provider = 'aws' AND\ncosts.service = 'Amazon Elastic Compute Cloud' AND\ncosts.account_id IN ('1234', '5678')\n",
                      *           "name": "EXPC-1234",
                      *           "label_transforms": [],
@@ -17647,6 +17785,7 @@ export interface operations {
                      *           ]
                      *         },
                      *         {
+                     *           "token": "vtag_val_0000000000000002",
                      *           "filter": "(\n  (costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR\n  (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')\n)\n",
                      *           "name": "EXPC-9876",
                      *           "label_transforms": [],
@@ -17723,6 +17862,7 @@ export interface operations {
                      *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
+                     *           "token": "vtag_val_0000000000000001",
                      *           "filter": "(costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud') AND (costs.provider = 'aws' AND costs.account_id IN ('1234', '5678'))",
                      *           "name": "Growth",
                      *           "label_transforms": [],
@@ -17735,6 +17875,7 @@ export interface operations {
                      *           ]
                      *         },
                      *         {
+                     *           "token": "vtag_val_0000000000000002",
                      *           "filter": "(costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR (costs.provider = 'gcp' AND costs.service = 'Google Compute Engine')",
                      *           "name": "API",
                      *           "label_transforms": [],
@@ -17788,6 +17929,7 @@ export interface operations {
                      *       "collapsed_tag_keys": [],
                      *       "values": [
                      *         {
+                     *           "token": "vtag_val_0000000000000001",
                      *           "filter": "costs.provider = 'aws' AND costs.service = 'Amazon Elastic Compute Cloud' AND\ncosts.account_id IN ('1234', '5678')\n",
                      *           "name": "marketing",
                      *           "label_transforms": [],
@@ -17800,6 +17942,7 @@ export interface operations {
                      *           ]
                      *         },
                      *         {
+                     *           "token": "vtag_val_0000000000000002",
                      *           "filter": "((costs.provider = 'aws' AND costs.account_id IN ('1234', '5678')) OR\n(costs.provider = 'gcp' AND costs.service = 'Google Compute Engine'))\n",
                      *           "name": "third-party integrations",
                      *           "label_transforms": [],
@@ -18052,6 +18195,237 @@ export interface operations {
             };
             /** @description NotFound */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createVirtualTagConfigValue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                virtual_tag_config_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createVirtualTagConfigValue"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "vtag_val_d104b11fc34ef7f3",
+                     *       "filter": "costs.provider = 'aws'",
+                     *       "name": "First",
+                     *       "label_transforms": [],
+                     *       "percentages": [],
+                     *       "date_ranges": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["VirtualTagConfigValue"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getVirtualTagConfigValue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                virtual_tag_config_token: string;
+                virtual_tag_config_value_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "vtag_val_d104b11fc34ef7f3",
+                     *       "filter": "costs.provider = 'aws'",
+                     *       "name": "First",
+                     *       "label_transforms": [],
+                     *       "percentages": [],
+                     *       "date_ranges": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["VirtualTagConfigValue"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteVirtualTagConfigValue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                virtual_tag_config_token: string;
+                virtual_tag_config_value_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateVirtualTagConfigValue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                virtual_tag_config_token: string;
+                virtual_tag_config_value_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateVirtualTagConfigValue"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "vtag_val_d104b11fc34ef7f3",
+                     *       "filter": "costs.provider = 'aws'",
+                     *       "name": "First",
+                     *       "label_transforms": [],
+                     *       "percentages": [],
+                     *       "date_ranges": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["VirtualTagConfigValue"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
