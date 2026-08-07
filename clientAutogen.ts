@@ -294,7 +294,7 @@ export type GetBusinessMetricValuesRequest = RequestBodyForPathAndMethod<`/v2/bu
  */
 export type GetBusinessMetricValuesResponse = ResponseBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "GET">;
 /**
- * Deletes Business Metric values (historical or forecasted unit metrics).
+ * Deletes Business Metric values (historical or forecasted unit metrics). BusinessMetrics whose values are stored in ClickHouse only support deleting every historical value or every forecasted value, so supplying start_date, end_date, or label returns 422.
  */
 export type DeleteBusinessMetricValuesRequest = RequestBodyForPathAndMethod<`/v2/business_metrics/${NoSlashString}/values`, "DELETE">;
 /**
@@ -361,6 +361,10 @@ export type GetCostAlertEventsResponse = ResponseBodyForPathAndMethod<`/v2/cost_
  * Response type for Get cost alert event by token
  */
 export type GetCostAlertEventResponse = ResponseBodyForPathAndMethod<`/v2/cost_alerts/${NoSlashString}/events/${NoSlashString}`, "GET">;
+/**
+ * List all Cost Alerts
+ */
+export type GetCostAlertsRequest = RequestBodyForPathAndMethod<"/v2/cost_alerts", "GET">;
 /**
  * Response type for Get all cost alerts
  */
@@ -2267,7 +2271,7 @@ class BusinessMetricsApi<NeverThrow extends boolean> {
     }
 
 /**
- * Deletes Business Metric values (historical or forecasted unit metrics).
+ * Deletes Business Metric values (historical or forecasted unit metrics). BusinessMetrics whose values are stored in ClickHouse only support deleting every historical value or every forecasted value, so supplying start_date, end_date, or label returns 422.
  */
     deleteValues(businessMetricToken: string, body?: DeleteBusinessMetricValuesRequest) {
         return this.client.request(
@@ -2363,6 +2367,17 @@ class CanvasesApi<NeverThrow extends boolean> {
 
 class CostAlertsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * List all Cost Alerts
+ */
+    list(body?: GetCostAlertsRequest) {
+        return this.client.request(
+            `/v2/cost_alerts`,
+            "GET",
+            body,
+        );
+    }
 
 /**
  * Create a new Cost Alert
