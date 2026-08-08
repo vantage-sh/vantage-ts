@@ -483,7 +483,7 @@ export interface paths {
         post?: never;
         /**
          * Delete business metric values
-         * @description Deletes Business Metric values (historical or forecasted unit metrics).
+         * @description Deletes Business Metric values (historical or forecasted unit metrics). BusinessMetrics whose values are stored in ClickHouse only support deleting every historical value or every forecasted value, so supplying start_date, end_date, or label returns 422.
          */
         delete: operations["deleteBusinessMetricValues"];
         options?: never;
@@ -7881,6 +7881,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Filter by Cost Report token. */
+                cost_report_token?: string;
             };
             header?: never;
             path?: never;
@@ -8687,6 +8691,10 @@ export interface operations {
                 page?: number;
                 /** @description The number of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Filter by budget token. */
+                budget_token?: string;
             };
             header?: never;
             path?: never;
@@ -8837,6 +8845,10 @@ export interface operations {
                 page?: number;
                 /** @description The number of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search budgets by name. */
+                q?: string;
+                /** @description The workspace token of the budgets to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -9184,6 +9196,8 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 5000. */
                 limit?: number;
+                /** @description Search business metrics by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -9835,6 +9849,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Search canvases by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -10103,7 +10121,12 @@ export interface operations {
     };
     getCostAlerts: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Search cost alerts by title. */
+                q?: string;
+                /** @description The workspace token of the cost alerts to return. */
+                workspace_token?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -10421,6 +10444,10 @@ export interface operations {
                 limit?: number;
                 /** @description The token for the Folder you would like to fetch Reports from. */
                 folder_token?: string;
+                /** @description Search cost reports by title. */
+                q?: string;
+                /** @description The workspace token of the cost reports to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -11108,6 +11135,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search dashboards by title. */
+                q?: string;
+                /** @description The workspace token of the dashboards to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -11603,6 +11634,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search financial commitment reports by title. */
+                q?: string;
+                /** @description The workspace token of the financial commitment reports to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -11905,6 +11940,10 @@ export interface operations {
                 limit?: number;
                 /** @description Filter by folder type. */
                 type?: "CostFolder" | "ProviderResourceFolder";
+                /** @description Search folders by title. */
+                q?: string;
+                /** @description The workspace token of the folders to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -12890,6 +12929,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Search Kubernetes efficiency reports by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -13676,6 +13719,8 @@ export interface operations {
             query?: {
                 /** @description A search query to filter NetworkFlowReports by title. */
                 q?: string;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
                 /** @description The page of results to return. */
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
@@ -14496,6 +14541,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Search recommendation views by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -15060,6 +15109,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Search report notifications by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -15374,6 +15427,10 @@ export interface operations {
                 page?: number;
                 /** @description The number of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description A search query to filter ResourceReports by title. */
+                q?: string;
             };
             header?: never;
             path?: never;
@@ -15861,6 +15918,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search saved filters by title. */
+                q?: string;
+                /** @description The workspace token of the saved filters to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -16381,6 +16442,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search segments by title. */
+                q?: string;
+                /** @description The workspace token of the segments to return. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -16839,6 +16904,10 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search teams by name. */
+                q?: string;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
             };
             header?: never;
             path?: never;
@@ -18442,6 +18511,8 @@ export interface operations {
                 page?: number;
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
+                /** @description Search workspaces by name. */
+                q?: string;
             };
             header?: never;
             path?: never;
