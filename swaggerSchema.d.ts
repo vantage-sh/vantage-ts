@@ -2964,6 +2964,8 @@ export interface components {
         Annotation: {
             /** @description The unique token identifying the Annotation. */
             token: string;
+            /** @description The title of the Annotation. */
+            title: string;
             /** @description The tokens of the Reports associated with the Annotation. */
             report_tokens: string[];
             /**
@@ -2976,8 +2978,10 @@ export interface components {
         };
         /** @description Create an Annotation. */
         createAnnotation: {
-            /** @description The token of the Report to annotate. */
-            report_token: string;
+            /** @description The tokens of the Reports to annotate. */
+            report_tokens: string[];
+            /** @description The title of the Annotation. Defaults to a title generated from the first Report and date. */
+            title?: string;
             /**
              * Format: date
              * @description The date of the Annotation. ISO 8601 formatted.
@@ -2988,6 +2992,8 @@ export interface components {
         };
         /** @description Update an Annotation. */
         updateAnnotation: {
+            /** @description The title of the Annotation. */
+            title?: string;
             /**
              * Format: date
              * @description The date of the Annotation. ISO 8601 formatted.
@@ -2995,8 +3001,8 @@ export interface components {
             date?: string;
             /** @description The message of the Annotation. */
             message?: string;
-            /** @description The token of the Report to associate with the Annotation. */
-            report_token?: string;
+            /** @description The tokens of the Reports to associate with the Annotation. */
+            report_tokens?: string[];
         };
         /** @description AuditLogs model */
         AuditLogs: {
@@ -8284,9 +8290,11 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "issue_48d85b4762f81e32",
+                     *       "token": "issue_4b05d8f17aea0580",
+                     *       "title": "Infrastructure migration completed",
                      *       "report_tokens": [
-                     *         "rprt_07bb55af406f4f1c"
+                     *         "rprt_5b72ee3954cf82e9",
+                     *         "rprt_3ec37e01a019b9a6"
                      *       ],
                      *       "date": "2026-08-12",
                      *       "message": "Infrastructure migration completed"
@@ -8357,9 +8365,11 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "issue_996f5b716c78700d",
+                     *       "token": "issue_f05d884fed1221e5",
+                     *       "title": "Migration rescheduled",
                      *       "report_tokens": [
-                     *         "rprt_2fdce6f6febafd16"
+                     *         "rprt_7ed0e557ae72559d",
+                     *         "rprt_3f5eebef4caea173"
                      *       ],
                      *       "date": "2026-08-14",
                      *       "message": "Infrastructure migration rescheduled"
