@@ -6764,9 +6764,9 @@ export interface components {
             tag_key?: string;
             tag_keys?: string[];
             /** @description Whether the Tag is hidden from the Vantage UI. */
-            hidden?: boolean;
+            hidden?: boolean | null;
             /** @description Whether the Tag is marked as preferred in the Vantage UI. */
-            preferred?: boolean;
+            preferred?: boolean | null;
         };
         /** @description Teams model */
         Teams: {
