@@ -50,6 +50,14 @@ export type UpdateAccessGrantResponse = ResponseBodyForPathAndMethod<`/v2/access
  */
 export type DeleteAccessGrantResponse = ResponseBodyForPathAndMethod<`/v2/access_grants/${NoSlashString}`, "DELETE">;
 /**
+ * Return all Annotations.
+ */
+export type GetAnnotationsRequest = RequestBodyForPathAndMethod<"/v2/annotations", "GET">;
+/**
+ * Response type for Get all annotations
+ */
+export type GetAnnotationsResponse = ResponseBodyForPathAndMethod<"/v2/annotations", "GET">;
+/**
  * Return all Anomaly Alerts that the current API token has access to.
  */
 export type GetAnomalyAlertsRequest = RequestBodyForPathAndMethod<"/v2/anomaly_alerts", "GET">;
@@ -1398,6 +1406,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     protected override routeEdgecases: ReadonlyMap<string, string> = new Map([["POST /v2/costs/data_exports", "location"], ["POST /v2/kubernetes_efficiency_reports/data_exports", "location"], ["POST /v2/unit_costs/data_exports", "location"], ["GET /v2/virtual_tag_configs/async/", "boolean"]]);
 
     private _accessGrants?: AccessGrantsApi<NeverThrow>;
+    private _annotations?: AnnotationsApi<NeverThrow>;
     private _anomalyAlerts?: AnomalyAlertsApi<NeverThrow>;
     private _anomalyNotifications?: AnomalyNotificationsApi<NeverThrow>;
     private _auditLogs?: AuditLogsApi<NeverThrow>;
@@ -1450,6 +1459,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._accessGrants = new AccessGrantsApi(this);
         }
         return this._accessGrants;
+    }
+
+    get annotations(): AnnotationsApi<NeverThrow> {
+        if (!this._annotations) {
+            this._annotations = new AnnotationsApi(this);
+        }
+        return this._annotations;
     }
 
     get anomalyAlerts(): AnomalyAlertsApi<NeverThrow> {
@@ -1831,6 +1847,22 @@ class AccessGrantsApi<NeverThrow extends boolean> {
             `/v2/access_grants/${pathEncode(accessGrantToken)}`,
             "DELETE",
             {},
+        );
+    }
+
+}
+
+class AnnotationsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all Annotations.
+ */
+    list(body?: GetAnnotationsRequest) {
+        return this.client.request(
+            `/v2/annotations`,
+            "GET",
+            body,
         );
     }
 
