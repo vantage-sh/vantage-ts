@@ -51,6 +51,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/annotations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all annotations
+         * @description Return all Annotations.
+         */
+        get: operations["getAnnotations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/anomaly_alerts": {
         parameters: {
             query?: never;
@@ -2889,6 +2909,24 @@ export interface components {
             user_tokens?: string[];
             /** @description The Slack/MS Teams channels that receive the notification. */
             recipient_channels?: string[];
+        };
+        /** @description Annotations model */
+        Annotations: {
+            links?: components["schemas"]["Links"];
+            annotations: components["schemas"]["Annotation"][];
+        };
+        Annotation: {
+            /** @description The unique token identifying the Annotation. */
+            token: string;
+            /** @description The tokens of the Reports associated with the Annotation. */
+            report_tokens: string[];
+            /**
+             * @description The date of the Annotation. ISO 8601 formatted.
+             * @example 2026-08-12
+             */
+            date: string | null;
+            /** @description The message of the Annotation. */
+            message: string | null;
         };
         /** @description AuditLogs model */
         AuditLogs: {
@@ -7672,6 +7710,62 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getAnnotations: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 5000. */
+                limit?: number;
+                /** @description Filter by Report token. */
+                report_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/annotations",
+                     *         "first": "https://api.vantage.sh/v2/annotations?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/annotations?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "annotations": [
+                     *         {
+                     *           "token": "issue_0857d3a1b8e72eb5",
+                     *           "report_tokens": [
+                     *             "rprt_5104f09dfdd8f77c",
+                     *             "rprt_a50b98b5775aa3b1"
+                     *           ],
+                     *           "date": "2026-08-12",
+                     *           "message": "Infrastructure migration"
+                     *         },
+                     *         {
+                     *           "token": "issue_facf24a6691013de",
+                     *           "report_tokens": [
+                     *             "rprt_b298e35a97aadda5"
+                     *           ],
+                     *           "date": "2026-08-10",
+                     *           "message": "Pricing update"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotations"];
                 };
             };
         };
