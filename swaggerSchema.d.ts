@@ -2995,6 +2995,8 @@ export interface components {
             date?: string;
             /** @description The message of the Annotation. */
             message?: string;
+            /** @description The token of the Report to associate with the Annotation. */
+            report_token?: string;
         };
         /** @description AuditLogs model */
         AuditLogs: {
@@ -8357,8 +8359,7 @@ export interface operations {
                      * @example {
                      *       "token": "issue_996f5b716c78700d",
                      *       "report_tokens": [
-                     *         "rprt_2fdce6f6febafd16",
-                     *         "rprt_592c1cf5c8bb76d2"
+                     *         "rprt_2fdce6f6febafd16"
                      *       ],
                      *       "date": "2026-08-14",
                      *       "message": "Infrastructure migration rescheduled"
