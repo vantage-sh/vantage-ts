@@ -58,6 +58,26 @@ export type GetAnnotationsRequest = RequestBodyForPathAndMethod<"/v2/annotations
  */
 export type GetAnnotationsResponse = ResponseBodyForPathAndMethod<"/v2/annotations", "GET">;
 /**
+ * Create an Annotation.
+ */
+export type CreateAnnotationRequest = RequestBodyForPathAndMethod<"/v2/annotations", "POST">;
+/**
+ * Response type for Create an annotation
+ */
+export type CreateAnnotationResponse = ResponseBodyForPathAndMethod<"/v2/annotations", "POST">;
+/**
+ * Update an Annotation.
+ */
+export type UpdateAnnotationRequest = RequestBodyForPathAndMethod<`/v2/annotations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update an annotation
+ */
+export type UpdateAnnotationResponse = ResponseBodyForPathAndMethod<`/v2/annotations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete an annotation
+ */
+export type DeleteAnnotationResponse = ResponseBodyForPathAndMethod<`/v2/annotations/${NoSlashString}`, "DELETE">;
+/**
  * Return all Anomaly Alerts that the current API token has access to.
  */
 export type GetAnomalyAlertsRequest = RequestBodyForPathAndMethod<"/v2/anomaly_alerts", "GET">;
@@ -1863,6 +1883,39 @@ class AnnotationsApi<NeverThrow extends boolean> {
             `/v2/annotations`,
             "GET",
             body,
+        );
+    }
+
+/**
+ * Create an Annotation.
+ */
+    create(body: CreateAnnotationRequest) {
+        return this.client.request(
+            `/v2/annotations`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Update an Annotation.
+ */
+    update(annotationToken: string, body: UpdateAnnotationRequest) {
+        return this.client.request(
+            `/v2/annotations/${pathEncode(annotationToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete an Annotation.
+ */
+    delete(annotationToken: string) {
+        return this.client.request(
+            `/v2/annotations/${pathEncode(annotationToken)}`,
+            "DELETE",
+            {},
         );
     }
 

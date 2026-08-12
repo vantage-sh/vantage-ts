@@ -64,8 +64,36 @@ export interface paths {
          */
         get: operations["getAnnotations"];
         put?: never;
-        post?: never;
+        /**
+         * Create an annotation
+         * @description Create an Annotation.
+         */
+        post: operations["createAnnotation"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/annotations/{annotation_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update an annotation
+         * @description Update an Annotation.
+         */
+        put: operations["updateAnnotation"];
+        post?: never;
+        /**
+         * Delete an annotation
+         * @description Delete an Annotation.
+         */
+        delete: operations["deleteAnnotation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2915,9 +2943,12 @@ export interface components {
             links?: components["schemas"]["Links"];
             annotations: components["schemas"]["Annotation"][];
         };
+        /** @description Annotation model */
         Annotation: {
             /** @description The unique token identifying the Annotation. */
             token: string;
+            /** @description The title of the Annotation. */
+            title: string;
             /** @description The tokens of the Reports associated with the Annotation. */
             report_tokens: string[];
             /**
@@ -2927,6 +2958,34 @@ export interface components {
             date: string | null;
             /** @description The message of the Annotation. */
             message: string | null;
+        };
+        /** @description Create an Annotation. */
+        createAnnotation: {
+            /** @description The tokens of the Reports to annotate. */
+            report_tokens: string[];
+            /** @description The title of the Annotation. Defaults to a title generated from the first Report and date. */
+            title?: string;
+            /**
+             * Format: date
+             * @description The date of the Annotation. ISO 8601 formatted.
+             */
+            date: string;
+            /** @description The message of the Annotation. */
+            message: string;
+        };
+        /** @description Update an Annotation. */
+        updateAnnotation: {
+            /** @description The title of the Annotation. */
+            title?: string;
+            /**
+             * Format: date
+             * @description The date of the Annotation. ISO 8601 formatted.
+             */
+            date?: string;
+            /** @description The message of the Annotation. */
+            message?: string;
+            /** @description The tokens of the Reports to associate with the Annotation. */
+            report_tokens?: string[];
         };
         /** @description AuditLogs model */
         AuditLogs: {
@@ -6764,9 +6823,9 @@ export interface components {
             tag_key?: string;
             tag_keys?: string[];
             /** @description Whether the Tag is hidden from the Vantage UI. */
-            hidden?: boolean;
+            hidden?: boolean | null;
             /** @description Whether the Tag is marked as preferred in the Vantage UI. */
-            preferred?: boolean;
+            preferred?: boolean | null;
         };
         /** @description Teams model */
         Teams: {
@@ -7748,18 +7807,20 @@ export interface operations {
                      *       },
                      *       "annotations": [
                      *         {
-                     *           "token": "issue_0857d3a1b8e72eb5",
+                     *           "token": "issue_946526bd88c296c6",
+                     *           "title": "Down-sized",
                      *           "report_tokens": [
-                     *             "rprt_5104f09dfdd8f77c",
-                     *             "rprt_a50b98b5775aa3b1"
+                     *             "rprt_b03547330d3808a0",
+                     *             "rprt_c4c97225bf1fa392"
                      *           ],
                      *           "date": "2026-08-12",
                      *           "message": "Infrastructure migration"
                      *         },
                      *         {
-                     *           "token": "issue_facf24a6691013de",
+                     *           "token": "issue_56063755b6a82997",
+                     *           "title": "Persistent",
                      *           "report_tokens": [
-                     *             "rprt_b298e35a97aadda5"
+                     *             "rprt_5649e387dc43ca2d"
                      *           ],
                      *           "date": "2026-08-10",
                      *           "message": "Pricing update"
@@ -7768,6 +7829,194 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["Annotations"];
+                };
+            };
+        };
+    };
+    createAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAnnotation"];
+            };
+        };
+        responses: {
+            /** @description Annotation created successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "issue_4b05d8f17aea0580",
+                     *       "title": "Infrastructure migration completed",
+                     *       "report_tokens": [
+                     *         "rprt_5b72ee3954cf82e9",
+                     *         "rprt_3ec37e01a019b9a6"
+                     *       ],
+                     *       "date": "2026-08-12",
+                     *       "message": "Infrastructure migration completed"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The token of the Annotation. */
+                annotation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateAnnotation"];
+            };
+        };
+        responses: {
+            /** @description Annotation updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "issue_f05d884fed1221e5",
+                     *       "title": "Migration rescheduled",
+                     *       "report_tokens": [
+                     *         "rprt_7ed0e557ae72559d",
+                     *         "rprt_3f5eebef4caea173"
+                     *       ],
+                     *       "date": "2026-08-14",
+                     *       "message": "Infrastructure migration rescheduled"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The token of the Annotation. */
+                annotation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Annotation deleted successfully. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
         };
