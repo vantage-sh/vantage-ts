@@ -6764,7 +6764,9 @@ export interface components {
             tag_key?: string;
             tag_keys?: string[];
             /** @description Whether the Tag is hidden from the Vantage UI. */
-            hidden: boolean;
+            hidden?: boolean;
+            /** @description Whether the Tag is marked as preferred in the Vantage UI. */
+            preferred?: boolean;
         };
         /** @description Teams model */
         Teams: {
@@ -10216,6 +10218,10 @@ export interface operations {
     getCostAlerts: {
         parameters: {
             query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 5000. */
+                limit?: number;
                 /** @description Search cost alerts by title. */
                 q?: string;
                 /** @description The workspace token of the cost alerts to return. */
