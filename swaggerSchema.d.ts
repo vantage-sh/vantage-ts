@@ -51,26 +51,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/annotations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all annotations
-         * @description Return all Annotations.
-         */
-        get: operations["getAnnotations"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/anomaly_alerts": {
         parameters: {
             query?: never;
@@ -162,6 +142,54 @@ export interface paths {
          * @description Delete an Anomaly Notification.
          */
         delete: operations["deleteAnomalyNotification"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/annotations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all annotations
+         * @description Return all Annotations.
+         */
+        get: operations["getAnnotations"];
+        put?: never;
+        /**
+         * Create an annotation
+         * @description Create an Annotation.
+         */
+        post: operations["createAnnotation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/annotations/{annotation_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update an annotation
+         * @description Update an Annotation.
+         */
+        put: operations["updateAnnotation"];
+        post?: never;
+        /**
+         * Delete an annotation
+         * @description Delete an Annotation.
+         */
+        delete: operations["deleteAnnotation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -695,26 +723,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cost_providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost providers
-         * @description List CostProviders available to query in a given Workspace.
-         */
-        get: operations["getCostProviders"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/cost_provider_accounts": {
         parameters: {
             query?: never;
@@ -839,26 +847,6 @@ export interface paths {
          * @description Return all Costs for a CostReport or VQL filter.
          */
         get: operations["getCosts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cost_services": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get cost services
-         * @description List CostServices available to query in a given Workspace.
-         */
-        get: operations["getCostServices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1591,6 +1579,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/cost_providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost providers
+         * @description List CostProviders available to query in a given Workspace.
+         */
+        get: operations["getCostProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cost_services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cost services
+         * @description List CostServices available to query in a given Workspace.
+         */
+        get: operations["getCostServices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user_feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit user feedback
+         * @description Provide UserFeedback for our product and features.
+         */
+        post: operations["createUserFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/network_flow_logs": {
         parameters: {
             query?: never;
@@ -1658,23 +1706,6 @@ export interface paths {
          * @description Delete a NetworkFlowReport.
          */
         delete: operations["deleteNetworkFlowReport"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/ping": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-        get: operations["ping"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1912,58 +1943,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/report_forecasts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all report forecasts
-         * @description Return all scenario-model ReportForecasts for a CostReport.
-         */
-        get: operations["getReportForecasts"];
-        put?: never;
-        /**
-         * Create report forecast
-         * @description Create a scenario-model ReportForecast.
-         */
-        post: operations["createReportForecast"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/report_forecasts/{report_forecast_token}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get report forecast by token
-         * @description Return a scenario-model ReportForecast.
-         */
-        get: operations["getReportForecast"];
-        /**
-         * Update report forecast
-         * @description Update a scenario-model ReportForecast.
-         */
-        put: operations["updateReportForecast"];
-        post?: never;
-        /**
-         * Delete report forecast
-         * @description Delete a scenario-model ReportForecast.
-         */
-        delete: operations["deleteReportForecast"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/report_notifications": {
         parameters: {
             query?: never;
@@ -2011,6 +1990,58 @@ export interface paths {
          * @description Delete a ReportNotification.
          */
         delete: operations["deleteReportNotification"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/report_forecasts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all report forecasts
+         * @description Return all scenario-model ReportForecasts for a CostReport.
+         */
+        get: operations["getReportForecasts"];
+        put?: never;
+        /**
+         * Create report forecast
+         * @description Create a scenario-model ReportForecast.
+         */
+        post: operations["createReportForecast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/report_forecasts/{report_forecast_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get report forecast by token
+         * @description Return a scenario-model ReportForecast.
+         */
+        get: operations["getReportForecast"];
+        /**
+         * Update report forecast
+         * @description Update a scenario-model ReportForecast.
+         */
+        put: operations["updateReportForecast"];
+        post?: never;
+        /**
+         * Delete report forecast
+         * @description Delete a scenario-model ReportForecast.
+         */
+        delete: operations["deleteReportForecast"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2464,26 +2495,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user_feedback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Submit user feedback
-         * @description Provide UserFeedback for our product and features.
-         */
-        post: operations["createUserFeedback"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/users": {
         parameters: {
             query?: never;
@@ -2740,6 +2751,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+        get: operations["ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oas_v3.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description This is an OpenAPI specification endpoint. It can be used to access a compliant OpenAPI specification for Vantage's API. */
+        get: operations["getOpenAPISpecifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, any>;
 export interface components {
@@ -2915,6 +2960,7 @@ export interface components {
             links?: components["schemas"]["Links"];
             annotations: components["schemas"]["Annotation"][];
         };
+        /** @description Annotation model */
         Annotation: {
             /** @description The unique token identifying the Annotation. */
             token: string;
@@ -2927,6 +2973,28 @@ export interface components {
             date: string | null;
             /** @description The message of the Annotation. */
             message: string | null;
+        };
+        /** @description Create an Annotation. */
+        createAnnotation: {
+            /** @description The token of the Report to annotate. */
+            report_token: string;
+            /**
+             * Format: date
+             * @description The date of the Annotation. ISO 8601 formatted.
+             */
+            date: string;
+            /** @description The message of the Annotation. */
+            message: string;
+        };
+        /** @description Update an Annotation. */
+        updateAnnotation: {
+            /**
+             * Format: date
+             * @description The date of the Annotation. ISO 8601 formatted.
+             */
+            date?: string;
+            /** @description The message of the Annotation. */
+            message?: string;
         };
         /** @description AuditLogs model */
         AuditLogs: {
@@ -7716,62 +7784,6 @@ export interface operations {
             };
         };
     };
-    getAnnotations: {
-        parameters: {
-            query?: {
-                /** @description The page of results to return. */
-                page?: number;
-                /** @description The number of results to return. The maximum is 5000. */
-                limit?: number;
-                /** @description Filter by Report token. */
-                report_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "links": {
-                     *         "self": "https://api.vantage.sh/v2/annotations",
-                     *         "first": "https://api.vantage.sh/v2/annotations?page=1",
-                     *         "next": null,
-                     *         "last": "https://api.vantage.sh/v2/annotations?page=1",
-                     *         "prev": null
-                     *       },
-                     *       "annotations": [
-                     *         {
-                     *           "token": "issue_0857d3a1b8e72eb5",
-                     *           "report_tokens": [
-                     *             "rprt_5104f09dfdd8f77c",
-                     *             "rprt_a50b98b5775aa3b1"
-                     *           ],
-                     *           "date": "2026-08-12",
-                     *           "message": "Infrastructure migration"
-                     *         },
-                     *         {
-                     *           "token": "issue_facf24a6691013de",
-                     *           "report_tokens": [
-                     *             "rprt_b298e35a97aadda5"
-                     *           ],
-                     *           "date": "2026-08-10",
-                     *           "message": "Pricing update"
-                     *         }
-                     *       ]
-                     *     }
-                     */
-                    "application/json": components["schemas"]["Annotations"];
-                };
-            };
-        };
-    };
     getAnomalyAlerts: {
         parameters: {
             query?: {
@@ -8180,6 +8192,247 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AnomalyNotification"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getAnnotations: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 5000. */
+                limit?: number;
+                /** @description Filter by Report token. */
+                report_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/annotations",
+                     *         "first": "https://api.vantage.sh/v2/annotations?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/annotations?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "annotations": [
+                     *         {
+                     *           "token": "issue_0857d3a1b8e72eb5",
+                     *           "report_tokens": [
+                     *             "rprt_5104f09dfdd8f77c",
+                     *             "rprt_a50b98b5775aa3b1"
+                     *           ],
+                     *           "date": "2026-08-12",
+                     *           "message": "Infrastructure migration"
+                     *         },
+                     *         {
+                     *           "token": "issue_facf24a6691013de",
+                     *           "report_tokens": [
+                     *             "rprt_b298e35a97aadda5"
+                     *           ],
+                     *           "date": "2026-08-10",
+                     *           "message": "Pricing update"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotations"];
+                };
+            };
+        };
+    };
+    createAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAnnotation"];
+            };
+        };
+        responses: {
+            /** @description Annotation created successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "issue_48d85b4762f81e32",
+                     *       "report_tokens": [
+                     *         "rprt_07bb55af406f4f1c"
+                     *       ],
+                     *       "date": "2026-08-12",
+                     *       "message": "Infrastructure migration completed"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The token of the Annotation. */
+                annotation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateAnnotation"];
+            };
+        };
+        responses: {
+            /** @description Annotation updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "issue_996f5b716c78700d",
+                     *       "report_tokens": [
+                     *         "rprt_2fdce6f6febafd16",
+                     *         "rprt_592c1cf5c8bb76d2"
+                     *       ],
+                     *       "date": "2026-08-14",
+                     *       "message": "Infrastructure migration rescheduled"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteAnnotation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The token of the Annotation. */
+                annotation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Annotation deleted successfully. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Annotation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
@@ -10465,29 +10718,6 @@ export interface operations {
             };
         };
     };
-    getCostProviders: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of connected CostProviders. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostProviders"];
-                };
-            };
-        };
-    };
     getCostProviderAccounts: {
         parameters: {
             query?: {
@@ -11201,29 +11431,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
-    getCostServices: {
-        parameters: {
-            query?: {
-                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
-                workspace_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of CostServices, used to query costs using VQL. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CostServices"];
                 };
             };
         };
@@ -13710,6 +13917,94 @@ export interface operations {
             };
         };
     };
+    getCostProviders: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostProviders for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of connected CostProviders. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostProviders"];
+                };
+            };
+        };
+    };
+    getCostServices: {
+        parameters: {
+            query?: {
+                /** @description The token of the Workspace to list CostServices for. Required if the API token is associated with multiple Workspaces. */
+                workspace_token?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of CostServices, used to query costs using VQL. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostServices"];
+                };
+            };
+        };
+    };
+    createUserFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createUserFeedback"];
+            };
+        };
+        responses: {
+            /** @description Provide UserFeedback for our product and features. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserFeedback"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getNetworkFlowLogs: {
         parameters: {
             query?: {
@@ -14062,24 +14357,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
-            };
-        };
-    };
-    ping: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -14923,6 +15200,237 @@ export interface operations {
             };
         };
     };
+    getReportNotifications: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+                /** @description Filter by workspace token. */
+                workspace_token?: string;
+                /** @description Search report notifications by title. */
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/report_notifications",
+                     *         "first": "https://api.vantage.sh/v2/report_notifications?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/report_notifications?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "report_notifications": [
+                     *         {
+                     *           "token": "rprt_ntfctn_7c09ca27d07d8d1e",
+                     *           "title": "Test Notification",
+                     *           "cost_report_token": "rprt_ba0a5a5201390d72",
+                     *           "user_tokens": [
+                     *             "usr_27edb13f3beac3cb"
+                     *           ],
+                     *           "frequency": "weekly",
+                     *           "change": "percentage"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportNotifications"];
+                };
+            };
+        };
+    };
+    createReportNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createReportNotification"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_ntfctn_8ce31b43a149cd2e",
+                     *       "title": "New Report Notification",
+                     *       "cost_report_token": "rprt_933010600676b02f",
+                     *       "user_tokens": [
+                     *         "usr_45e7d17e9f402226"
+                     *       ],
+                     *       "frequency": "daily",
+                     *       "change": "percentage"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportNotification"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getReportNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_ntfctn_21b4287a212406b1",
+                     *       "title": "Test Notification",
+                     *       "cost_report_token": "rprt_d084c84455edc606",
+                     *       "user_tokens": [
+                     *         "usr_56d53f802edba3e6"
+                     *       ],
+                     *       "frequency": "weekly",
+                     *       "change": "percentage"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportNotification"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateReportNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateReportNotification"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprt_ntfctn_b36b208a90ee87f6",
+                     *       "title": "Updated Report Notification",
+                     *       "cost_report_token": "rprt_07b88c04aa6bed8c",
+                     *       "user_tokens": [
+                     *         "usr_35ed19fadcfed8c9"
+                     *       ],
+                     *       "frequency": "weekly",
+                     *       "change": "dollars"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ReportNotification"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteReportNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportNotification"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getReportForecasts: {
         parameters: {
             query: {
@@ -15189,237 +15697,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description NotFound */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
-    getReportNotifications: {
-        parameters: {
-            query?: {
-                /** @description The page of results to return. */
-                page?: number;
-                /** @description The amount of results to return. The maximum is 1000. */
-                limit?: number;
-                /** @description Filter by workspace token. */
-                workspace_token?: string;
-                /** @description Search report notifications by title. */
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "links": {
-                     *         "self": "https://api.vantage.sh/v2/report_notifications",
-                     *         "first": "https://api.vantage.sh/v2/report_notifications?page=1",
-                     *         "next": null,
-                     *         "last": "https://api.vantage.sh/v2/report_notifications?page=1",
-                     *         "prev": null
-                     *       },
-                     *       "report_notifications": [
-                     *         {
-                     *           "token": "rprt_ntfctn_7c09ca27d07d8d1e",
-                     *           "title": "Test Notification",
-                     *           "cost_report_token": "rprt_ba0a5a5201390d72",
-                     *           "user_tokens": [
-                     *             "usr_27edb13f3beac3cb"
-                     *           ],
-                     *           "frequency": "weekly",
-                     *           "change": "percentage"
-                     *         }
-                     *       ]
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ReportNotifications"];
-                };
-            };
-        };
-    };
-    createReportNotification: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["createReportNotification"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "token": "rprt_ntfctn_8ce31b43a149cd2e",
-                     *       "title": "New Report Notification",
-                     *       "cost_report_token": "rprt_933010600676b02f",
-                     *       "user_tokens": [
-                     *         "usr_45e7d17e9f402226"
-                     *       ],
-                     *       "frequency": "daily",
-                     *       "change": "percentage"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ReportNotification"];
-                };
-            };
-            /** @description BadRequest */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description UnprocessableEntity */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
-    getReportNotification: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                report_notification_token: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "token": "rprt_ntfctn_21b4287a212406b1",
-                     *       "title": "Test Notification",
-                     *       "cost_report_token": "rprt_d084c84455edc606",
-                     *       "user_tokens": [
-                     *         "usr_56d53f802edba3e6"
-                     *       ],
-                     *       "frequency": "weekly",
-                     *       "change": "percentage"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ReportNotification"];
-                };
-            };
-            /** @description NotFound */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
-    updateReportNotification: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                report_notification_token: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["updateReportNotification"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "token": "rprt_ntfctn_b36b208a90ee87f6",
-                     *       "title": "Updated Report Notification",
-                     *       "cost_report_token": "rprt_07b88c04aa6bed8c",
-                     *       "user_tokens": [
-                     *         "usr_35ed19fadcfed8c9"
-                     *       ],
-                     *       "frequency": "weekly",
-                     *       "change": "dollars"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ReportNotification"];
-                };
-            };
-            /** @description BadRequest */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description NotFound */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
-    deleteReportNotification: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                report_notification_token: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReportNotification"];
                 };
             };
             /** @description NotFound */
@@ -17638,48 +17915,6 @@ export interface operations {
             };
         };
     };
-    createUserFeedback: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["createUserFeedback"];
-            };
-        };
-        responses: {
-            /** @description Provide UserFeedback for our product and features. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserFeedback"];
-                };
-            };
-            /** @description BadRequest */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-            /** @description UnprocessableEntity */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Errors"];
-                };
-            };
-        };
-    };
     getUsers: {
         parameters: {
             query?: {
@@ -18823,6 +19058,42 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Errors"];
                 };
+            };
+        };
+    };
+    ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description This is a health check endpoint that can be used to determine Vantage API healthiness. It will return 200 if everything is running smoothly. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getOpenAPISpecifications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description This is an OpenAPI specification endpoint. It can be used to access a compliant OpenAPI specification for Vantage's API. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
