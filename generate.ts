@@ -87,11 +87,16 @@ function formatConstArray(values: string[]): string {
 }
 
 function requireStringEnum(values: unknown[] | undefined, label: string): string[] {
-  if (!Array.isArray(values) || values.length === 0 || values.some((value) => typeof value !== "string")) {
+  if (!Array.isArray(values) || values.length === 0) {
     throw new Error(`Could not find a string enum for ${label} in the OpenAPI schema`);
   }
 
-  return values;
+  const stringValues = values.filter((value): value is string => typeof value === "string");
+  if (stringValues.length !== values.length) {
+    throw new Error(`Could not find a string enum for ${label} in the OpenAPI schema`);
+  }
+
+  return stringValues;
 }
 
 function getSchemaPropertyEnum(schema: OpenAPI3, schemaName: string, propertyName: string): string[] {
