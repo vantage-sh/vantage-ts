@@ -2907,8 +2907,10 @@ export interface components {
              * @description The threshold amount that must be met for the notification to fire.
              */
             threshold: number;
-            /** @description The tokens of the users that receive the notification. */
+            /** @description The tokens of organization users that receive the notification. Freeform verified-domain emails are not included; see recipient_emails. */
             user_tokens: string[];
+            /** @description The email addresses that receive the notification, including organization users and verified-domain addresses. */
+            recipient_emails: string[];
             /** @description The channels that the notification is sent to. */
             recipient_channels: string[];
         };
@@ -2923,6 +2925,8 @@ export interface components {
             threshold?: number;
             /** @description The tokens of the Users that receive the notification. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The Slack/MS Teams channels that receive the notification. */
             recipient_channels?: string[];
         };
@@ -2935,6 +2939,8 @@ export interface components {
             threshold?: number;
             /** @description The tokens of the users that receive the notification. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The Slack/MS Teams channels that receive the notification. */
             recipient_channels?: string[];
         };
@@ -2981,7 +2987,7 @@ export interface components {
              * Format: date
              * @description The date of the Annotation. ISO 8601 formatted.
              */
-            date?: string;
+            date?: string | null;
             /** @description The message of the Annotation. */
             message?: string;
             /** @description The tokens of the Reports to associate with the Annotation. */
@@ -3488,8 +3494,10 @@ export interface components {
             workspace_token: string | null;
             /** @description The token for the User who created this BudgetAlert. */
             user_token?: string | null;
-            /** @description The Users that receive the alert. */
+            /** @description The tokens of organization users that receive the alert. Freeform verified-domain emails are not included; see recipient_emails. */
             user_tokens: string[];
+            /** @description The email addresses that receive the alert, including organization users and verified-domain addresses. */
+            recipient_emails: string[];
             /**
              * Format: int32
              * @description The number of days from the start or end of the month to trigger the alert if the threshold is reached.
@@ -3525,6 +3533,8 @@ export interface components {
             threshold: number;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached.  For the full month, pass an empty value. */
             duration_in_days: string;
             /** @description The period tracked on the alert. Used with duration_in_days to determine the time window of the alert. Defaults to start_of_the_month if not passed. Possible values: start_of_the_month, end_of_the_month. */
@@ -3543,6 +3553,8 @@ export interface components {
             threshold?: number;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached. For the full month, pass an empty value. */
             duration_in_days?: string;
             /** @description The period tracked on the alert. Used with duration_in_days to determine the time window of the alert. Defaults to start_of_the_month if not passed. Possible values: start_of_the_month, end_of_the_month. */
@@ -4145,7 +4157,7 @@ export interface components {
             workspace_token: string;
             /** @description The tokens of the reports to alert on. */
             report_tokens: string[];
-            /** @description The email recipients for the Cost Alert. */
+            /** @description The email recipients for the Cost Alert. Accepts organization users and emails on verified IdP domains. */
             email_recipients?: string[];
             /** @description The Slack channels that will receive the alert. */
             slack_channels?: string[];
@@ -4161,7 +4173,7 @@ export interface components {
         updateCostAlert: {
             /** @description The title of the Cost Alert. */
             title?: string;
-            /** @description The email recipients for the Cost Alert. */
+            /** @description The email recipients for the Cost Alert. Accepts organization users and emails on verified IdP domains. */
             email_recipients?: string[];
             /** @description The period of time used to compare costs. Options are 'day', 'week', 'month', 'quarter'. */
             interval?: string;
@@ -4408,7 +4420,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -4813,7 +4825,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -5002,7 +5014,7 @@ export interface components {
             start_date?: string;
             /** @description The end date for the date range for costs in the Dashboard. ISO 8601 Formatted. Incompatible with 'date_interval' parameter. */
             end_date?: string;
-            /** @description The token of the Workspace the Dashboard belongs to. Required if the API token is associated with multiple Workspaces. */
+            /** @description The token of the Workspace the Dashboard belongs to. Required when updating widgets if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
         };
         /** @description DataExport model */
@@ -6355,8 +6367,10 @@ export interface components {
              * @example rprt_abcd1234
              */
             cost_report_token: string;
-            /** @description The Users that receive the notification. */
+            /** @description The tokens of organization users that receive the notification. Freeform verified-domain emails are not included; see recipient_emails. */
             user_tokens: string[];
+            /** @description The email addresses that receive the notification, including organization users and verified-domain addresses. */
+            recipient_emails: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels: string[];
             /**
@@ -6382,6 +6396,8 @@ export interface components {
             workspace_token?: string;
             /** @description The Users that receive the notification. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels?: string[];
             /** @description The frequency the ReportNotification is sent. Possible values: daily, weekly, monthly. */
@@ -6397,6 +6413,8 @@ export interface components {
             cost_report_token?: string;
             /** @description The Users that receive the notification. */
             user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            recipient_emails?: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels?: string[];
             /** @description The frequency the ReportNotification is sent. Possible values: daily, weekly, monthly. */
@@ -7057,6 +7075,10 @@ export interface components {
              * @example Cost Center
              */
             key: string;
+            /** @description Whether the VirtualTagConfig key is hidden from the Vantage UI. */
+            hidden: boolean;
+            /** @description Whether the VirtualTagConfig key is marked as preferred in the Vantage UI. */
+            preferred: boolean;
             /** @description Whether the VirtualTagConfig can override a provider-supplied tag on a matching Cost. */
             overridable: boolean;
             /**
@@ -10743,7 +10765,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -11171,7 +11193,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -12508,7 +12530,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -17041,7 +17063,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -17179,7 +17201,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
