@@ -4686,11 +4686,11 @@ export interface components {
             filter?: string;
             /** @description The token of the Workspace to query costs from. Ignored if 'cost_report_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
-            /** @description First date you would like to filter costs from. ISO 8601 formatted. */
+            /** @description First date you would like to filter costs from. ISO 8601 formatted. When omitted with cost_report_token, the report's saved start date is used. */
             start_date?: string;
-            /** @description Last date you would like to filter costs to. ISO 8601 formatted. */
+            /** @description Last date you would like to filter costs to. ISO 8601 formatted. When omitted with cost_report_token, the report's saved end date is used. */
             end_date?: string;
-            /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+            /** @description Group the results by specific field(s). When omitted with cost_report_token, the report's saved groupings are used; otherwise defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string[];
             /**
              * @description The date bin of the costs. Defaults to the report's default or day.
@@ -4874,6 +4874,21 @@ export interface components {
              * @example DataTransfer-Regional-Bytes
              */
             cost_subcategory?: string | null;
+            /**
+             * @description The charge type for the cost.
+             * @example Usage
+             */
+            charge_type?: string | null;
+            /**
+             * @description Whether the cost has tags.
+             * @example true
+             */
+            tagged?: boolean | null;
+            /**
+             * @description The unit used to measure usage.
+             * @example GB
+             */
+            usage_unit?: string | null;
             /**
              * @description The segment name for segment report costs.
              * @example Engineering
@@ -11345,11 +11360,11 @@ export interface operations {
                 filter?: string;
                 /** @description The token of the Workspace to query costs from. Ignored if 'cost_report_token' is set. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
-                /** @description First date you would like to filter costs from. ISO 8601 formatted. */
+                /** @description First date you would like to filter costs from. ISO 8601 formatted. When omitted with cost_report_token, the report's saved start date is used. */
                 start_date?: string;
-                /** @description Last date you would like to filter costs to. ISO 8601 formatted. */
+                /** @description Last date you would like to filter costs to. ISO 8601 formatted. When omitted with cost_report_token, the report's saved end date is used. */
                 end_date?: string;
-                /** @description Group the results by specific field(s). Defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
+                /** @description Group the results by specific field(s). When omitted with cost_report_token, the report's saved groupings are used; otherwise defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
                 groupings?: string[];
                 /** @description Whether to order costs by date in an ascending or descending manner. */
                 order?: "asc" | "desc";
