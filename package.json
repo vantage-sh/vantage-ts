@@ -23,7 +23,7 @@
         "url": "git+https://github.com/vantage-sh/vantage-ts.git"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.2.5",
+        "@biomejs/biome": "2.5.5",
         "@types/node": "^26.0.1",
         "dotenv": "^17.4.2",
         "openapi-typescript": "^7.10.1",
