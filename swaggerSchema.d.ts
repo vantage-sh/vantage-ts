@@ -3592,10 +3592,29 @@ export interface components {
             budget_alert_tokens: string[];
             /** @description The tokens of the child Budgets associated with the hierarchical Budget. */
             child_budget_tokens: string[];
+            period_cadence: components["schemas"]["PeriodCadence"];
             /** @description The budget periods associated with the Budget. */
             periods: components["schemas"]["BudgetPeriod"][];
             /** @description The historical performance of the Budget. */
             performance?: components["schemas"]["BudgetPerformance"][];
+        };
+        PeriodCadence: {
+            /**
+             * @description The anchor date for budget period intervals. ISO 8601 date (YYYY-MM-DD).
+             * @example 2026-01-01
+             */
+            starts_at: string | null;
+            /**
+             * Format: int32
+             * @description The number of interval units per budget period.
+             * @example 1
+             */
+            interval_count: number;
+            /**
+             * @description The unit for budget period intervals. One of: day, week, month, year.
+             * @example month
+             */
+            interval_unit: string;
         };
         BudgetPeriod: {
             /**
@@ -3641,6 +3660,24 @@ export interface components {
             cost_report_token?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. */
             child_budget_tokens?: string[];
+            /** @description The interval cadence for budget periods. Requires the flexible_budget_periods feature. */
+            period_cadence?: {
+                /**
+                 * Format: date
+                 * @description The anchor date for budget period intervals.
+                 */
+                starts_at?: string | null;
+                /**
+                 * Format: int32
+                 * @description The number of interval units per budget period.
+                 */
+                interval_count?: number;
+                /**
+                 * @description The unit for budget period intervals. One of: day, week, month, year.
+                 * @enum {string}
+                 */
+                interval_unit?: "day" | "week" | "month" | "year";
+            };
             /** @description The periods for the Budget. The start_at and end_at must be iso8601 formatted e.g. YYYY-MM-DD. Ignored for hierarchical Budgets. */
             periods?: {
                 /**
@@ -3668,6 +3705,24 @@ export interface components {
             cost_report_token?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. */
             child_budget_tokens?: string[];
+            /** @description The interval cadence for budget periods. Requires the flexible_budget_periods feature. */
+            period_cadence?: {
+                /**
+                 * Format: date
+                 * @description The anchor date for budget period intervals.
+                 */
+                starts_at?: string | null;
+                /**
+                 * Format: int32
+                 * @description The number of interval units per budget period.
+                 */
+                interval_count?: number;
+                /**
+                 * @description The unit for budget period intervals. One of: day, week, month, year.
+                 * @enum {string}
+                 */
+                interval_unit?: "day" | "week" | "month" | "year";
+            };
             /** @description The periods for the Budget. The start_at and end_at must be iso8601 formatted e.g. YYYY-MM-DD. Ignored for hierarchical Budgets. */
             periods?: {
                 /**
@@ -5439,6 +5494,8 @@ export interface components {
             app_id: string;
             /** @description Service Principal Password. */
             password: string;
+            /** @description Microsoft Customer Agreement (MCA) or Enterprise Agreement (EA) billing account ID. Must not contain whitespace. */
+            billing_account_id?: string;
         };
         /** @description Update an Integration. */
         updateIntegration: {
@@ -9262,6 +9319,12 @@ export interface operations {
                      *           "cost_report_token": "rprt_92062240b4ffda91",
                      *           "created_at": "2024-07-11T20:22:49Z",
                      *           "budget_alert_tokens": [],
+                     *           "child_budget_tokens": [],
+                     *           "period_cadence": {
+                     *             "starts_at": null,
+                     *             "interval_count": 1,
+                     *             "interval_unit": "month"
+                     *           },
                      *           "periods": [
                      *             {
                      *               "start_at": "2024-07-01",
@@ -9313,6 +9376,12 @@ export interface operations {
                      *       "cost_report_token": null,
                      *       "created_at": "2024-07-11T20:22:52Z",
                      *       "budget_alert_tokens": [],
+                     *       "child_budget_tokens": [],
+                     *       "period_cadence": {
+                     *         "starts_at": null,
+                     *         "interval_count": 1,
+                     *         "interval_unit": "month"
+                     *       },
                      *       "periods": [
                      *         {
                      *           "start_at": "2024-01-01",
@@ -9406,6 +9475,12 @@ export interface operations {
                      *       "cost_report_token": "rprt_9ee9f29893956951",
                      *       "created_at": "2024-07-11T20:22:41Z",
                      *       "budget_alert_tokens": [],
+                     *       "child_budget_tokens": [],
+                     *       "period_cadence": {
+                     *         "starts_at": null,
+                     *         "interval_count": 1,
+                     *         "interval_unit": "month"
+                     *       },
                      *       "periods": [
                      *         {
                      *           "start_at": "2024-07-01",
@@ -9466,6 +9541,12 @@ export interface operations {
                      *       "cost_report_token": "rprt_07325bc3667263b7",
                      *       "created_at": "2024-07-11T20:22:48Z",
                      *       "budget_alert_tokens": [],
+                     *       "child_budget_tokens": [],
+                     *       "period_cadence": {
+                     *         "starts_at": null,
+                     *         "interval_count": 1,
+                     *         "interval_unit": "month"
+                     *       },
                      *       "periods": [
                      *         {
                      *           "start_at": "2023-01-01",
