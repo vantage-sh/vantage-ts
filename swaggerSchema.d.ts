@@ -3531,6 +3531,8 @@ export interface components {
              * @description The threshold amount that must be met for the alert to fire.
              */
             threshold: number;
+            /** @description The token of the Workspace to add the BudgetAlert to. Required if the API token is associated with multiple Workspaces. */
+            workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
             /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
@@ -3551,12 +3553,14 @@ export interface components {
              * @description The threshold amount that must be met for the alert to fire.
              */
             threshold?: number;
+            /** @description The token of the Workspace the BudgetAlert belongs to. Required if the API token is associated with multiple Workspaces. */
+            workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
             /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
             recipient_emails?: string[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached. For the full month, pass an empty value. */
-            duration_in_days?: string;
+            duration_in_days?: string | null;
             /** @description The period tracked on the alert. Used with duration_in_days to determine the time window of the alert. Defaults to start_of_the_month if not passed. Possible values: start_of_the_month, end_of_the_month. */
             period_to_track?: string;
             /** @description The channels receiving the alerts. Requires an integration provider to be connected. */
@@ -3603,7 +3607,7 @@ export interface components {
              * @description The anchor date for budget period intervals. ISO 8601 date (YYYY-MM-DD).
              * @example 2026-01-01
              */
-            starts_at: string | null;
+            starts_at?: string | null;
             /**
              * Format: int32
              * @description The number of interval units per budget period.
@@ -3664,9 +3668,9 @@ export interface components {
             period_cadence?: {
                 /**
                  * Format: date
-                 * @description The anchor date for budget period intervals.
+                 * @description The anchor date for budget period intervals. Send null to clear.
                  */
-                starts_at?: string | null;
+                starts_at: string | null;
                 /**
                  * Format: int32
                  * @description The number of interval units per budget period.
@@ -3705,13 +3709,13 @@ export interface components {
             cost_report_token?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. */
             child_budget_tokens?: string[];
-            /** @description The interval cadence for budget periods. Requires the flexible_budget_periods feature. */
+            /** @description The interval cadence for budget periods. Changing cadence after creation is rejected. */
             period_cadence?: {
                 /**
                  * Format: date
-                 * @description The anchor date for budget period intervals.
+                 * @description The anchor date for budget period intervals. Send null to clear.
                  */
-                starts_at?: string | null;
+                starts_at: string | null;
                 /**
                  * Format: int32
                  * @description The number of interval units per budget period.
@@ -9234,6 +9238,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BudgetAlert"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
