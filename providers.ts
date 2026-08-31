@@ -46,6 +46,7 @@ export const VANTAGE_PROVIDERS = [
   "digital_ocean",
   "together_ai",
   "coreweave",
+  "devin",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];
