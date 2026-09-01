@@ -1059,6 +1059,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/financial_commitment_reports/{financial_commitment_report_token}/costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get costs for financial commitment report
+         * @description Return costs for a FinancialCommitmentReport.
+         */
+        get: operations["getFinancialCommitmentReportCosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/financial_commitments": {
         parameters: {
             query?: never;
@@ -5180,6 +5200,103 @@ export interface components {
             /** @description The filter applied to the FinancialCommitmentReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
         };
+        /** @description FinancialCommitmentReportCosts model */
+        FinancialCommitmentReportCosts: {
+            links?: components["schemas"]["Links"];
+            total_amount: components["schemas"]["CostPartial"];
+            total_gross_amount: components["schemas"]["CostPartial"];
+            costs: components["schemas"]["FinancialCommitmentReportCost"][];
+        };
+        FinancialCommitmentReportCost: {
+            /**
+             * @description The date the cost was accrued. ISO 8601 Formatted.
+             * @example 2024-03-01T00:00:00Z
+             */
+            accrued_at: string;
+            /**
+             * @description The net (discounted) cost amount.
+             * @example 100.00
+             */
+            amount: string;
+            /**
+             * @description The gross cost amount before discounts.
+             * @example 150.00
+             */
+            gross_amount: string;
+            /**
+             * @description The on-demand usage cost amount.
+             * @example 50.00
+             */
+            on_demand_amount: string;
+            /**
+             * @description The gross amount of costs covered by commitments.
+             * @example 100.00
+             */
+            covered_gross_amount: string;
+            /**
+             * @description The currency of the cost.
+             * @example USD
+             */
+            currency: string;
+            /**
+             * @description The type of cost.
+             * @example SavingsPlanCoveredUsage
+             */
+            cost_type?: string | null;
+            /**
+             * @description The type of financial commitment.
+             * @example savings_plan
+             */
+            commitment_type?: string | null;
+            /**
+             * @description The identifier of the financial commitment.
+             * @example sp-1234567890abcdef0
+             */
+            commitment_id?: string | null;
+            /**
+             * @description The service which incurred the cost.
+             * @example Amazon Elastic Compute Cloud - Compute
+             */
+            service?: string | null;
+            /**
+             * @description The resource account ID which incurred the cost.
+             * @example 123456789012
+             */
+            resource_account_id?: string | null;
+            /**
+             * @description The billing account ID which incurred the cost.
+             * @example 123456789012
+             */
+            provider_account_id?: string | null;
+            /**
+             * @description The region which incurred the cost.
+             * @example us-east-1
+             */
+            region?: string | null;
+            /**
+             * @description The category for the cost.
+             * @example Data Transfer
+             */
+            cost_category?: string | null;
+            /**
+             * @description The subcategory for the cost.
+             * @example DataTransfer-Regional-Bytes
+             */
+            cost_subcategory?: string | null;
+            /**
+             * @description The instance type which incurred the cost.
+             * @example m5.xlarge
+             */
+            instance_type?: string | null;
+            /**
+             * @description The tag attached to the cost that was incurred.
+             *     DEPRECATED: does not support multiple tags.
+             * @example production
+             */
+            tag?: string | null;
+            /** @description The tag pairs attached to the cost that was incurred. */
+            tags?: string[] | null;
+        };
         /** @description Create a FinancialCommitmentReport. */
         createFinancialCommitmentReport: {
             /** @description The Workspace in which the FinancialCommitmentReport will be created. */
@@ -5215,7 +5332,7 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag, tag:<label_name>. */
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
             groupings?: string[];
         };
         /** @description Update a FinancialCommitmentReport. */
@@ -5251,7 +5368,7 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag, tag:<label_name>. */
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
             groupings?: string[];
         };
         /** @description FinancialCommitments model */
@@ -7159,7 +7276,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2026-02-01
+             * @example 2026-03-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -12357,6 +12474,88 @@ export interface operations {
             };
             /** @description NotFound */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getFinancialCommitmentReportCosts: {
+        parameters: {
+            query?: {
+                /**
+                 * @description First date you would like to filter costs from. YYYY-MM-DD formatted.
+                 * @example 2024-03-01
+                 */
+                start_date?: string;
+                /**
+                 * @description Last date you would like to filter costs to. YYYY-MM-DD formatted.
+                 * @example 2024-03-31
+                 */
+                end_date?: string;
+                /** @description The date bin of the costs. Defaults to the report's configured date bucket. Hourly costs are limited to 14 days. */
+                date_bin?: "hour" | "day" | "week" | "month" | "quarter";
+                /** @description Group the results by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
+                groupings?: string[];
+                /** @description The VQL filter to apply to the costs. Overrides the report's saved filter. */
+                filter?: string;
+                /** @description The scope for the costs. Possible values: discountable, all. */
+                on_demand_costs_scope?: "discountable" | "all";
+                /** @description Whether to order costs by date in an ascending or descending manner. */
+                order?: "asc" | "desc";
+                /** @description The amount of results to return. The maximum is 5000. */
+                limit?: number;
+                /** @description The page of results to return. */
+                page?: number;
+            };
+            header?: never;
+            path: {
+                financial_commitment_report_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialCommitmentReportCosts"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description PaymentRequired */
+            402: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

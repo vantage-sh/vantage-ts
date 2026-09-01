@@ -586,6 +586,14 @@ export type UpdateFinancialCommitmentReportResponse = ResponseBodyForPathAndMeth
  */
 export type DeleteFinancialCommitmentReportResponse = ResponseBodyForPathAndMethod<`/v2/financial_commitment_reports/${NoSlashString}`, "DELETE">;
 /**
+ * Return costs for a FinancialCommitmentReport.
+ */
+export type GetFinancialCommitmentReportCostsRequest = RequestBodyForPathAndMethod<`/v2/financial_commitment_reports/${NoSlashString}/costs`, "GET">;
+/**
+ * Response type for Get costs for financial commitment report
+ */
+export type GetFinancialCommitmentReportCostsResponse = ResponseBodyForPathAndMethod<`/v2/financial_commitment_reports/${NoSlashString}/costs`, "GET">;
+/**
  * Return all FinancialCommitments.
  */
 export type GetFinancialCommitmentsRequest = RequestBodyForPathAndMethod<"/v2/financial_commitments", "GET">;
@@ -2836,6 +2844,17 @@ class FinancialCommitmentReportsApi<NeverThrow extends boolean> {
             `/v2/financial_commitment_reports/${pathEncode(financialCommitmentReportToken)}`,
             "DELETE",
             {},
+        );
+    }
+
+/**
+ * Return costs for a FinancialCommitmentReport.
+ */
+    getCosts(financialCommitmentReportToken: string, body?: GetFinancialCommitmentReportCostsRequest) {
+        return this.client.request(
+            `/v2/financial_commitment_reports/${pathEncode(financialCommitmentReportToken)}/costs`,
+            "GET",
+            body,
         );
     }
 
