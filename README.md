@@ -192,23 +192,6 @@ const report = await client.request(
 );
 ```
 
-### Non-empty Strings
-
-Dynamic financial commitment and Kubernetes efficiency grouping keys must contain at least one
-non-whitespace character. Use `createNonEmptyString` to validate and brand an arbitrary string before
-interpolating it into a grouping:
-
-```typescript
-import { createNonEmptyString } from "@vantage-sh/vantage-client";
-
-const key = createNonEmptyString(userProvidedKey);
-const tagGrouping = `tag:${key}` as const;
-const labelGrouping = `label:${key}` as const;
-```
-
-`createNonEmptyString` throws a `TypeError` for empty or whitespace-only input. Use `isNonEmptyString`
-when a boolean check or type guard is more convenient.
-
 ## Development
 
 ### Generate the latest API changes
