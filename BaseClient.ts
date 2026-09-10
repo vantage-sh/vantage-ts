@@ -1,13 +1,6 @@
 import type { paths } from "./swaggerSchema";
 import type { PathResponseEdgecases } from "./clientAutogen";
-
-/** A string that is guaranteed to not contain slashes. Can be generated with {@link pathEncode} */
-export type NoSlashString = string & { readonly __noSlash: unique symbol };
-
-/** Encodes a path segment then returns a type that guarantees to TS it does not contain slashes. */
-export function pathEncode(value: string) {
-  return encodeURIComponent(value) as NoSlashString;
-}
+import type { NoSlashString } from "./stringTypes";
 
 type UnBracket<S extends string> = S extends `${infer X}{${string}}${infer Z}`
   ? UnBracket<`${X}${NoSlashString}${Z}`>

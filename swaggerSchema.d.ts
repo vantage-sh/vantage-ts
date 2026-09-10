@@ -1,3 +1,5 @@
+import type { NonEmptyString } from "./stringTypes";
+
 export interface paths {
     "/access_grants": {
         parameters: {
@@ -5339,7 +5341,7 @@ export interface components {
              */
             on_demand_costs_scope?: "discountable" | "all";
             /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${string}`)[];
+            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description Update a FinancialCommitmentReport. */
         updateFinancialCommitmentReport: {
@@ -5375,7 +5377,7 @@ export interface components {
              */
             on_demand_costs_scope?: "discountable" | "all";
             /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${string}`)[];
+            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description FinancialCommitments model */
         FinancialCommitments: {
@@ -5801,7 +5803,7 @@ export interface components {
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
             /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
         };
         /** @description Update a KubernetesEfficiencyReport. */
         updateKubernetesEfficiencyReport: {
@@ -5835,7 +5837,7 @@ export interface components {
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
             /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
         };
         /** @description ManagedAccounts model */
         ManagedAccounts: {
@@ -13732,7 +13734,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Group the results by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-                groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+                groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
             };
             header?: never;
             path?: never;

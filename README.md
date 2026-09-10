@@ -179,7 +179,7 @@ if (error) {
 
 ### Path Encoding
 
-Use `pathEncode` to safely encode dynamic path segments:
+Use `pathEncode` to safely encode dynamic path segments. It returns a branded `NoSlashString`:
 
 ```typescript
 import { pathEncode } from "@vantage-sh/vantage-client";
@@ -191,6 +191,23 @@ const report = await client.request(
   undefined
 );
 ```
+
+### Non-empty Strings
+
+Dynamic financial commitment and Kubernetes efficiency grouping keys must contain at least one
+non-whitespace character. Use `createNonEmptyString` to validate and brand an arbitrary string before
+interpolating it into a grouping:
+
+```typescript
+import { createNonEmptyString } from "@vantage-sh/vantage-client";
+
+const key = createNonEmptyString(userProvidedKey);
+const tagGrouping = `tag:${key}` as const;
+const labelGrouping = `label:${key}` as const;
+```
+
+`createNonEmptyString` throws a `TypeError` for empty or whitespace-only input. Use `isNonEmptyString`
+when a boolean check or type guard is more convenient.
 
 ## Development
 
@@ -245,6 +262,7 @@ The SDK exports several utility types for advanced use:
 | `RequestBodyForPathAndMethod<P, M>` | Request body type for a path/method |
 | `ResponseBodyForPathAndMethod<P, M>` | Response body type for a path/method |
 | `NoSlashString` | Branded type for safely encoded path segments |
+| `NonEmptyString` | Branded type containing at least one non-whitespace character |
 
 ## Testing
 

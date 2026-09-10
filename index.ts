@@ -3,11 +3,16 @@ export {
   type RequestBodyForPathAndMethod,
   type ResponseBodyForPathAndMethod,
   type SupportedMethods,
-  type NoSlashString,
-  pathEncode,
   VantageAPIError,
 } from "./BaseClient";
 export { VANTAGE_PROVIDERS, type VantageProvider } from "./providers";
+export {
+  createNonEmptyString,
+  isNonEmptyString,
+  type NonEmptyString,
+  type NoSlashString,
+  pathEncode,
+} from "./stringTypes";
 export {
   VANTAGE_CHART_TYPES,
   VANTAGE_COST_AGGREGATIONS,
