@@ -3684,7 +3684,7 @@ export interface components {
             cost_report_token?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. */
             child_budget_tokens?: string[];
-            /** @description The interval cadence for budget periods. Requires the flexible_budget_periods feature. */
+            /** @description The interval cadence for budget periods. */
             period_cadence?: {
                 /**
                  * Format: date
@@ -4883,8 +4883,8 @@ export interface components {
         Cost: {
             links?: components["schemas"]["Links"];
             /**
-             * @description The date the cost was accrued. ISO 8601 Formatted.
-             * @example 2023-09-05+00:00
+             * @description The date that the cost was accrued. ISO 8601 Formatted. Hourly date_bin responses include the hour (e.g. 2023-09-05T13:00:00Z); other bins are date-only.
+             * @example 2023-09-05T00:00:00Z
              */
             accrued_at: string;
             /**
@@ -5316,13 +5316,13 @@ export interface components {
              * @description The start date of the FinancialCommitmentReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
              * @example 2024-03-01
              */
-            start_date?: string;
+            start_date?: string | null;
             /**
              * Format: date
              * @description The end date of the FinancialCommitmentReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
              * @example 2024-03-01
              */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * @description The date interval of the FinancialCommitmentReport. Unless 'custom' is used, this is incompatible with 'start_date' and 'end_date' parameters. Defaults to 'last_3_months'.
              * @enum {string}
@@ -5338,8 +5338,8 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: string[];
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
+            groupings?: (string & (("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type") | string))[];
         };
         /** @description Update a FinancialCommitmentReport. */
         updateFinancialCommitmentReport: {
@@ -5352,13 +5352,13 @@ export interface components {
              * @description The start date of the FinancialCommitmentReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
              * @example 2024-03-01
              */
-            start_date?: string;
+            start_date?: string | null;
             /**
              * Format: date
              * @description The end date of the FinancialCommitmentReport. YYYY-MM-DD formatted. Incompatible with 'date_interval' parameter.
              * @example 2024-03-01
              */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * @description The date interval of the FinancialCommitmentReport. Unless 'custom' is used, this is incompatible with 'start_date' and 'end_date' parameters. Defaults to 'last_3_months'.
              * @enum {string}
@@ -5374,8 +5374,8 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: string[];
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
+            groupings?: (string & (("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type") | string))[];
         };
         /** @description FinancialCommitments model */
         FinancialCommitments: {
@@ -5742,7 +5742,7 @@ export interface components {
             /** @description How costs are aggregated by. Possible values: idle_cost, amount, cost_efficiency. */
             aggregated_by: string;
             /**
-             * @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>.
+             * @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>.
              * @example cluster_id, namespace
              */
             groupings: string | null;
@@ -5779,12 +5779,12 @@ export interface components {
              * Format: date
              * @description The start date of the KubernetesEfficiencyReport. ISO 8601 Formatted. Incompatible with 'date_interval' parameter.
              */
-            start_date?: string;
+            start_date?: string | null;
             /**
              * Format: date
              * @description The end date of the KubernetesEfficiencyReport. ISO 8601 Formatted. Incompatible with 'date_interval' parameter.
              */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * @description The date interval of the KubernetesEfficiencyReport. Incompatible with 'start_date' and 'end_date' parameters. Defaults to 'this_month' if start_date and end_date are not provided.
              * @enum {string}
@@ -5800,8 +5800,8 @@ export interface components {
              * @enum {string}
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
-            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
-            groupings?: string[];
+            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
+            groupings?: (string & (("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod") | string))[];
         };
         /** @description Update a KubernetesEfficiencyReport. */
         updateKubernetesEfficiencyReport: {
@@ -5813,12 +5813,12 @@ export interface components {
              * Format: date
              * @description The start date of the KubernetesEfficiencyReport. ISO 8601 Formatted. Incompatible with 'date_interval' parameter.
              */
-            start_date?: string;
+            start_date?: string | null;
             /**
              * Format: date
              * @description The end date of the KubernetesEfficiencyReport. ISO 8601 Formatted. Incompatible with 'date_interval' parameter.
              */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * @description The date interval of the KubernetesEfficiencyReport. Incompatible with 'start_date' and 'end_date' parameters. Defaults to 'this_month' if start_date and end_date are not provided.
              * @enum {string}
@@ -5834,8 +5834,8 @@ export interface components {
              * @enum {string}
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
-            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
-            groupings?: string[];
+            /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
+            groupings?: (string & (("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod") | string))[];
         };
         /** @description ManagedAccounts model */
         ManagedAccounts: {
@@ -8681,7 +8681,7 @@ export interface operations {
                 /** @description Filter by source. */
                 source?: "console" | "api" | "finops_agent";
                 /** @description Filter by object type. */
-                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment" | "segment";
+                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment" | "segment" | "access_policy";
                 /** @description Filter by audit log token. */
                 token?: string;
                 /** @description Filter by object token (auditable_token). */
@@ -13731,8 +13731,8 @@ export interface operations {
     createKubernetesEfficiencyReportExport: {
         parameters: {
             query?: {
-                /** @description Group the results by specific field(s). Valid groupings: cluster_id, namespace, region, labeled, category, pod, label, label:<label_name>. */
-                groupings?: string[];
+                /** @description Group the results by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
+                groupings?: (string & (("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod") | string))[];
             };
             header?: never;
             path?: never;
