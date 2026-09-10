@@ -48,3 +48,46 @@ export type VantageNetworkFlowDirection = (typeof VANTAGE_NETWORK_FLOW_DIRECTION
 export const VANTAGE_NETWORK_FLOW_WEIGHTS = ["costs", "bytes"] as const;
 
 export type VantageNetworkFlowWeight = (typeof VANTAGE_NETWORK_FLOW_WEIGHTS)[number];
+
+/** Built-in grouping dimensions supported by Vantage Financial Commitment reports. */
+export const VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS = [
+  "cost_type",
+  "commitment_type",
+  "commitment_id",
+  "service",
+  "resource_account_id",
+  "provider_account_id",
+  "region",
+  "cost_category",
+  "cost_sub_category",
+  "instance_type",
+] as const;
+
+export type VantageFinancialCommitmentGrouping =
+  | (typeof VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS)[number]
+  | `tag:${string}`;
+
+/** Built-in grouping dimensions supported by Vantage Kubernetes Efficiency reports. */
+export const VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS = [
+  "cluster_id",
+  "namespace",
+  "region",
+  "labeled",
+  "category",
+  "pod",
+] as const;
+
+export type VantageKubernetesEfficiencyGrouping =
+  | (typeof VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS)[number]
+  | `label:${string}`;
+
+/** Object types supported by the Vantage audit log filter. */
+export const VANTAGE_AUDIT_LOG_OBJECT_TYPES = [
+  "virtual_tag",
+  "cost_report",
+  "recommendation_commitment",
+  "segment",
+  "access_policy",
+] as const;
+
+export type VantageAuditLogObjectType = (typeof VANTAGE_AUDIT_LOG_OBJECT_TYPES)[number];
