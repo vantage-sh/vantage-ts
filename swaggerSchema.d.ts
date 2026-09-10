@@ -3599,6 +3599,14 @@ export interface components {
              * @example Acme123 Budget
              */
             name: string | null;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @example cost
+             * @enum {string}
+             */
+            type: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. */
+            unit?: string | null;
             /** @description The token for the Workspace the Budget is a part of. */
             workspace_token: string;
             /** @description The token for the User who created this Budget. */
@@ -3682,6 +3690,13 @@ export interface components {
             workspace_token?: string;
             /** @description The CostReport token. Ignored for hierarchical Budgets. */
             cost_report_token?: string;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @enum {string}
+             */
+            type?: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. */
+            unit?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. */
             child_budget_tokens?: string[];
             /** @description The interval cadence for budget periods. */
@@ -3727,6 +3742,13 @@ export interface components {
             name?: string;
             /** @description The CostReport token. Ignored for hierarchical Budgets. */
             cost_report_token?: string;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @enum {string}
+             */
+            type?: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. Send null to clear. */
+            unit?: string | null;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. Omitted on update to leave the current child list unchanged. */
             child_budget_tokens?: string[];
             /** @description The interval cadence for budget periods. Changing cadence after creation is rejected. */
