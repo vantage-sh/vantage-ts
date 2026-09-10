@@ -179,7 +179,7 @@ if (error) {
 
 ### Path Encoding
 
-Use `pathEncode` to safely encode dynamic path segments:
+Use `pathEncode` to safely encode dynamic path segments. It returns a branded `NoSlashString`:
 
 ```typescript
 import { pathEncode } from "@vantage-sh/vantage-client";
@@ -245,6 +245,7 @@ The SDK exports several utility types for advanced use:
 | `RequestBodyForPathAndMethod<P, M>` | Request body type for a path/method |
 | `ResponseBodyForPathAndMethod<P, M>` | Response body type for a path/method |
 | `NoSlashString` | Branded type for safely encoded path segments |
+| `NonEmptyString` | Branded type containing at least one non-whitespace character |
 
 ## Testing
 

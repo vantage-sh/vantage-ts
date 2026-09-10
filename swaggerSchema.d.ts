@@ -1,3 +1,5 @@
+import type { NonEmptyString } from "./stringTypes";
+
 export interface paths {
     "/access_grants": {
         parameters: {
@@ -3599,6 +3601,14 @@ export interface components {
              * @example Acme123 Budget
              */
             name: string | null;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @example cost
+             * @enum {string}
+             */
+            type: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. */
+            unit?: string | null;
             /** @description The token for the Workspace the Budget is a part of. */
             workspace_token: string;
             /** @description The token for the User who created this Budget. */
@@ -3682,6 +3692,13 @@ export interface components {
             workspace_token?: string;
             /** @description The CostReport token. Ignored for hierarchical Budgets. */
             cost_report_token?: string;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @enum {string}
+             */
+            type?: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. */
+            unit?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. */
             child_budget_tokens?: string[];
             /** @description The interval cadence for budget periods. */
@@ -3727,6 +3744,13 @@ export interface components {
             name?: string;
             /** @description The CostReport token. Ignored for hierarchical Budgets. */
             cost_report_token?: string;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @enum {string}
+             */
+            type?: "cost" | "usage";
+            /** @description The usage unit for usage Budgets. Send null to clear. */
+            unit?: string | null;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. Omitted on update to leave the current child list unchanged. */
             child_budget_tokens?: string[];
             /** @description The interval cadence for budget periods. Changing cadence after creation is rejected. */
@@ -5339,7 +5363,7 @@ export interface components {
              */
             on_demand_costs_scope?: "discountable" | "all";
             /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${string}`)[];
+            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description Update a FinancialCommitmentReport. */
         updateFinancialCommitmentReport: {
@@ -5375,7 +5399,7 @@ export interface components {
              */
             on_demand_costs_scope?: "discountable" | "all";
             /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${string}`)[];
+            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description FinancialCommitments model */
         FinancialCommitments: {
@@ -5801,7 +5825,7 @@ export interface components {
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
             /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
         };
         /** @description Update a KubernetesEfficiencyReport. */
         updateKubernetesEfficiencyReport: {
@@ -5835,7 +5859,7 @@ export interface components {
              */
             date_bucket?: "day" | "week" | "month" | "quarter";
             /** @description Grouping values for aggregating costs on the KubernetesEfficiencyReport. Group by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+            groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
         };
         /** @description ManagedAccounts model */
         ManagedAccounts: {
@@ -13732,7 +13756,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Group the results by up to 100 fields. Valid groupings: cluster_id, namespace, region, labeled, category, pod, label:<label_name>. */
-                groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${string}`)[];
+                groupings?: ("cluster_id" | "namespace" | "region" | "labeled" | "category" | "pod" | `label:${NonEmptyString}`)[];
             };
             header?: never;
             path?: never;

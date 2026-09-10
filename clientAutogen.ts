@@ -3,11 +3,10 @@
 
 import {
     BaseClient,
-    pathEncode,
-    type NoSlashString,
     type RequestBodyForPathAndMethod,
     type ResponseBodyForPathAndMethod,
 } from "./BaseClient";
+import { pathEncode, type NoSlashString } from "./stringTypes";
 
 export interface PathResponseEdgecases {
     "POST /v2/costs/data_exports": string;
