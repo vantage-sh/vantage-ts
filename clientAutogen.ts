@@ -49,6 +49,38 @@ export type UpdateAccessGrantResponse = ResponseBodyForPathAndMethod<`/v2/access
  */
 export type DeleteAccessGrantResponse = ResponseBodyForPathAndMethod<`/v2/access_grants/${NoSlashString}`, "DELETE">;
 /**
+ * Return all Access Policies for the current account.
+ */
+export type GetAccessPoliciesRequest = RequestBodyForPathAndMethod<"/v2/access_policies", "GET">;
+/**
+ * Response type for Get all access policies
+ */
+export type GetAccessPoliciesResponse = ResponseBodyForPathAndMethod<"/v2/access_policies", "GET">;
+/**
+ * Create an Access Policy.
+ */
+export type CreateAccessPolicyRequest = RequestBodyForPathAndMethod<"/v2/access_policies", "POST">;
+/**
+ * Response type for Create access policy
+ */
+export type CreateAccessPolicyResponse = ResponseBodyForPathAndMethod<"/v2/access_policies", "POST">;
+/**
+ * Update an Access Policy.
+ */
+export type UpdateAccessPolicyRequest = RequestBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update access policy
+ */
+export type UpdateAccessPolicyResponse = ResponseBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "PUT">;
+/**
+ * Delete an Access Policy.
+ */
+export type DeleteAccessPolicyRequest = RequestBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "DELETE">;
+/**
+ * Response type for Delete access policy
+ */
+export type DeleteAccessPolicyResponse = ResponseBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "DELETE">;
+/**
  * Return all Annotations.
  */
 export type GetAnnotationsRequest = RequestBodyForPathAndMethod<"/v2/annotations", "GET">;
@@ -1433,6 +1465,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     protected override routeEdgecases: ReadonlyMap<string, string> = new Map([["POST /v2/costs/data_exports", "location"], ["POST /v2/kubernetes_efficiency_reports/data_exports", "location"], ["POST /v2/unit_costs/data_exports", "location"], ["GET /v2/virtual_tag_configs/async/", "boolean"]]);
 
     private _accessGrants?: AccessGrantsApi<NeverThrow>;
+    private _accessPolicies?: AccessPoliciesApi<NeverThrow>;
     private _annotations?: AnnotationsApi<NeverThrow>;
     private _anomalyAlerts?: AnomalyAlertsApi<NeverThrow>;
     private _anomalyNotifications?: AnomalyNotificationsApi<NeverThrow>;
@@ -1486,6 +1519,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._accessGrants = new AccessGrantsApi(this);
         }
         return this._accessGrants;
+    }
+
+    get accessPolicies(): AccessPoliciesApi<NeverThrow> {
+        if (!this._accessPolicies) {
+            this._accessPolicies = new AccessPoliciesApi(this);
+        }
+        return this._accessPolicies;
     }
 
     get annotations(): AnnotationsApi<NeverThrow> {
@@ -1874,6 +1914,55 @@ class AccessGrantsApi<NeverThrow extends boolean> {
             `/v2/access_grants/${pathEncode(accessGrantToken)}`,
             "DELETE",
             {},
+        );
+    }
+
+}
+
+class AccessPoliciesApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all Access Policies for the current account.
+ */
+    list(body?: GetAccessPoliciesRequest) {
+        return this.client.request(
+            `/v2/access_policies`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create an Access Policy.
+ */
+    create(body: CreateAccessPolicyRequest) {
+        return this.client.request(
+            `/v2/access_policies`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Update an Access Policy.
+ */
+    update(accessPolicyToken: string, body: UpdateAccessPolicyRequest) {
+        return this.client.request(
+            `/v2/access_policies/${pathEncode(accessPolicyToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete an Access Policy.
+ */
+    delete(accessPolicyToken: string, body: DeleteAccessPolicyRequest) {
+        return this.client.request(
+            `/v2/access_policies/${pathEncode(accessPolicyToken)}`,
+            "DELETE",
+            body,
         );
     }
 
