@@ -73,10 +73,6 @@ export type UpdateAccessPolicyRequest = RequestBodyForPathAndMethod<`/v2/access_
  */
 export type UpdateAccessPolicyResponse = ResponseBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "PUT">;
 /**
- * Delete an Access Policy.
- */
-export type DeleteAccessPolicyRequest = RequestBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "DELETE">;
-/**
  * Response type for Delete access policy
  */
 export type DeleteAccessPolicyResponse = ResponseBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "DELETE">;
@@ -1958,11 +1954,11 @@ class AccessPoliciesApi<NeverThrow extends boolean> {
 /**
  * Delete an Access Policy.
  */
-    delete(accessPolicyToken: string, body: DeleteAccessPolicyRequest) {
+    delete(accessPolicyToken: string) {
         return this.client.request(
             `/v2/access_policies/${pathEncode(accessPolicyToken)}`,
             "DELETE",
-            body,
+            {},
         );
     }
 

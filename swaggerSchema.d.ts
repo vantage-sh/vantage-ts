@@ -3023,30 +3023,6 @@ export interface components {
              */
             team_tokens?: string[];
         };
-        /** @description Delete an Access Policy. */
-        deleteAccessPolicy: {
-            /** @description The title of the AccessPolicy. */
-            title?: string;
-            /**
-             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
-             * @example {
-             *       "api_version": "v1",
-             *       "policy": {
-             *         "filter": "(vantage.provider = 'aws')"
-             *       }
-             *     }
-             */
-            policy?: Record<string, any>;
-            /** @description The description of the AccessPolicy. */
-            description?: string | null;
-            /**
-             * @description The tokens for Teams this AccessPolicy is assigned to.
-             * @example [
-             *       "team_abcd1234"
-             *     ]
-             */
-            team_tokens?: string[];
-        };
         /** @description AnomalyAlerts model */
         AnomalyAlerts: {
             links?: components["schemas"]["Links"];
@@ -3874,6 +3850,14 @@ export interface components {
              * @example 100.00
              */
             amount: string;
+            /**
+             * @description The type of Budget. One of: cost, usage.
+             * @example cost
+             * @enum {string}
+             */
+            type: "cost" | "usage";
+            /** @description The usage unit for usage Budget performance amounts. */
+            unit?: string | null;
         };
         /** @description Create a Budget. */
         createBudget: {
@@ -6183,6 +6167,8 @@ export interface components {
             default_dashboard_token?: string | null;
             workspaces: components["schemas"]["Workspace"][];
             bearer_token: components["schemas"]["BearerToken"];
+            /** @description True when the authenticated User or Token has the Owner role on the Account. */
+            is_account_owner: boolean;
         };
         /** @description Workspace model */
         Workspace: {
@@ -8424,29 +8410,14 @@ export interface operations {
     };
     deleteAccessPolicy: {
         parameters: {
-            query: {
-                /**
-                 * @description The AccessPolicy document version.
-                 * @example v1
-                 */
-                "policy[api_version]": "v1";
-                /**
-                 * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
-                 * @example (vantage.provider = 'aws')
-                 */
-                "policy[policy][filter]": string;
-            };
+            query?: never;
             header?: never;
             path: {
                 access_policy_token: string;
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "*/*": components["schemas"]["deleteAccessPolicy"];
-            };
-        };
+        requestBody?: never;
         responses: {
             204: {
                 headers: {
