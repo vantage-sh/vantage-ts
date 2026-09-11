@@ -53,6 +53,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/access_policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all access policies
+         * @description Return all Access Policies for the current account.
+         */
+        get: operations["getAccessPolicies"];
+        put?: never;
+        /**
+         * Create access policy
+         * @description Create an Access Policy.
+         */
+        post: operations["createAccessPolicy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/access_policies/{access_policy_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update access policy
+         * @description Update an Access Policy.
+         */
+        put: operations["updateAccessPolicy"];
+        post?: never;
+        /**
+         * Delete access policy
+         * @description Delete an Access Policy.
+         */
+        delete: operations["deleteAccessPolicy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/annotations": {
         parameters: {
             query?: never;
@@ -2856,6 +2904,149 @@ export interface components {
              */
             access: "denied" | "allowed";
         };
+        /** @description AccessPolicies model */
+        AccessPolicies: {
+            links?: components["schemas"]["Links"];
+            access_policies: components["schemas"]["AccessPolicy"][];
+        };
+        /** @description AccessPolicy model */
+        AccessPolicy: {
+            token: string;
+            /**
+             * @description The title of the AccessPolicy.
+             * @example Engineering costs
+             */
+            title: string;
+            /**
+             * @description The description of the AccessPolicy.
+             * @example Limits cost visibility to the Engineering team.
+             */
+            description: string | null;
+            /**
+             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
+             * @example {
+             *       "api_version": "v1",
+             *       "policy": {
+             *         "filter": "(vantage.provider = 'aws')"
+             *       }
+             *     }
+             */
+            policy: Record<string, any>;
+            /** @description The tokens for Teams this AccessPolicy is assigned to. */
+            team_tokens: string[];
+            /**
+             * @description The token for the User who created the AccessPolicy.
+             * @example usr_abcd1234
+             */
+            created_by: string | null;
+            /**
+             * @description The date and time, in UTC, the AccessPolicy was created. ISO 8601 Formatted.
+             * @example 2024-01-18T17:39:37Z
+             */
+            created_at: string;
+        };
+        /** @description Create an Access Policy. */
+        createAccessPolicy: {
+            /** @description The title of the AccessPolicy. */
+            title: string;
+            /**
+             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
+             * @example {
+             *       "api_version": "v1",
+             *       "policy": {
+             *         "filter": "(vantage.provider = 'aws')"
+             *       }
+             *     }
+             */
+            policy: {
+                /**
+                 * @description The AccessPolicy document version.
+                 * @example v1
+                 * @enum {string}
+                 */
+                api_version: "v1";
+                /** @description The AccessPolicy rules for this version. */
+                policy: {
+                    /**
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+                     * @example (vantage.provider = 'aws')
+                     */
+                    filter: string;
+                };
+            };
+            /** @description The description of the AccessPolicy. */
+            description?: string | null;
+            /**
+             * @description The tokens for Teams this AccessPolicy is assigned to.
+             * @example [
+             *       "team_abcd1234"
+             *     ]
+             */
+            team_tokens?: string[];
+        };
+        /** @description Update an Access Policy. */
+        updateAccessPolicy: {
+            /** @description The title of the AccessPolicy. */
+            title?: string;
+            /**
+             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
+             * @example {
+             *       "api_version": "v1",
+             *       "policy": {
+             *         "filter": "(vantage.provider = 'aws')"
+             *       }
+             *     }
+             */
+            policy?: {
+                /**
+                 * @description The AccessPolicy document version.
+                 * @example v1
+                 * @enum {string}
+                 */
+                api_version: "v1";
+                /** @description The AccessPolicy rules for this version. */
+                policy: {
+                    /**
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+                     * @example (vantage.provider = 'aws')
+                     */
+                    filter: string;
+                };
+            };
+            /** @description The description of the AccessPolicy. */
+            description?: string | null;
+            /**
+             * @description The tokens for Teams this AccessPolicy is assigned to.
+             * @example [
+             *       "team_abcd1234"
+             *     ]
+             */
+            team_tokens?: string[];
+        };
+        /** @description Delete an Access Policy. */
+        deleteAccessPolicy: {
+            /** @description The title of the AccessPolicy. */
+            title?: string;
+            /**
+             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
+             * @example {
+             *       "api_version": "v1",
+             *       "policy": {
+             *         "filter": "(vantage.provider = 'aws')"
+             *       }
+             *     }
+             */
+            policy?: Record<string, any>;
+            /** @description The description of the AccessPolicy. */
+            description?: string | null;
+            /**
+             * @description The tokens for Teams this AccessPolicy is assigned to.
+             * @example [
+             *       "team_abcd1234"
+             *     ]
+             */
+            team_tokens?: string[];
+        };
         /** @description AnomalyAlerts model */
         AnomalyAlerts: {
             links?: components["schemas"]["Links"];
@@ -5572,6 +5763,8 @@ export interface components {
             created_at: string;
             /** @description The tokens for any Managed Accounts that are associated with the Integration. */
             managed_account_tokens: string[];
+            /** @description Tokens of the data integrations that enrich this integration's costs. Empty when enrichment is not connected. */
+            enriched_by: string[];
         };
         /** @description Create a Custom Provider Integration */
         createCustomProviderIntegration: {
@@ -8007,6 +8200,269 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AccessGrant"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getAccessPolicies: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/access_policies",
+                     *         "first": "https://api.vantage.sh/v2/access_policies?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/access_policies?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "access_policies": [
+                     *         {
+                     *           "token": "accss_plcy_c40f15062b6d5c37",
+                     *           "title": "Engineering costs",
+                     *           "description": "Limits cost visibility to the Engineering team.",
+                     *           "policy": {
+                     *             "api_version": "v1",
+                     *             "policy": {
+                     *               "filter": "(vantage.provider = 'aws')"
+                     *             }
+                     *           },
+                     *           "team_tokens": [
+                     *             "team_fd5c524ba104712b"
+                     *           ],
+                     *           "created_by": "usr_eb8ce6bdc1fa31d5",
+                     *           "created_at": "2024-01-18T17:39:37Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["AccessPolicies"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createAccessPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAccessPolicy"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_plcy_c40f15062b6d5c37",
+                     *       "title": "Engineering costs",
+                     *       "description": "Limits cost visibility to the Engineering team.",
+                     *       "policy": {
+                     *         "api_version": "v1",
+                     *         "policy": {
+                     *           "filter": "(vantage.provider = 'aws')"
+                     *         }
+                     *       },
+                     *       "team_tokens": [
+                     *         "team_fd5c524ba104712b"
+                     *       ],
+                     *       "created_by": "usr_eb8ce6bdc1fa31d5",
+                     *       "created_at": "2024-01-18T17:39:37Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["AccessPolicy"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateAccessPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                access_policy_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateAccessPolicy"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_plcy_c40f15062b6d5c37",
+                     *       "title": "Engineering GCP costs",
+                     *       "description": "Limits cost visibility to the Engineering team.",
+                     *       "policy": {
+                     *         "api_version": "v1",
+                     *         "policy": {
+                     *           "filter": "(vantage.provider = 'gcp')"
+                     *         }
+                     *       },
+                     *       "team_tokens": [
+                     *         "team_fd5c524ba104712b"
+                     *       ],
+                     *       "created_by": "usr_eb8ce6bdc1fa31d5",
+                     *       "created_at": "2024-01-18T17:39:37Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["AccessPolicy"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteAccessPolicy: {
+        parameters: {
+            query: {
+                /**
+                 * @description The AccessPolicy document version.
+                 * @example v1
+                 */
+                "policy[api_version]": "v1";
+                /**
+                 * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+                 * @example (vantage.provider = 'aws')
+                 */
+                "policy[policy][filter]": string;
+            };
+            header?: never;
+            path: {
+                access_policy_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "*/*": components["schemas"]["deleteAccessPolicy"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccessPolicy"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
@@ -12915,7 +13371,8 @@ export interface operations {
                      *             "wrkspc_838cb4508ead3f6d"
                      *           ],
                      *           "created_at": "2024-07-29T21:41:49Z",
-                     *           "managed_account_tokens": []
+                     *           "managed_account_tokens": [],
+                     *           "enriched_by": []
                      *         }
                      *       ]
                      *     }
@@ -12954,7 +13411,8 @@ export interface operations {
                      *       "created_at": "2024-07-29T21:41:49Z",
                      *       "managed_account_tokens": [
                      *         "acct_1a2b3c4d5e6f7890"
-                     *       ]
+                     *       ],
+                     *       "enriched_by": []
                      *     }
                      */
                     "application/json": components["schemas"]["Integration"];
@@ -13002,7 +13460,8 @@ export interface operations {
                      *         "wrkspc_6bffe31969c9f385"
                      *       ],
                      *       "created_at": "2024-07-29T21:41:44Z",
-                     *       "managed_account_tokens": []
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
                      *     }
                      */
                     "application/json": components["schemas"]["Integration"];
@@ -13085,7 +13544,8 @@ export interface operations {
                      *       "last_updated": null,
                      *       "workspace_tokens": [],
                      *       "created_at": "2024-08-27T22:22:24Z",
-                     *       "managed_account_tokens": []
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
                      *     }
                      */
                     "application/json": components["schemas"]["Integration"];
@@ -13313,7 +13773,8 @@ export interface operations {
                      *       "last_updated": null,
                      *       "workspace_tokens": [],
                      *       "created_at": "2024-07-29T21:41:46Z",
-                     *       "managed_account_tokens": []
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
                      *     }
                      */
                     "application/json": components["schemas"]["Integration"];
@@ -13357,7 +13818,8 @@ export interface operations {
                      *       "last_updated": null,
                      *       "workspace_tokens": [],
                      *       "created_at": "2024-07-29T21:41:48Z",
-                     *       "managed_account_tokens": []
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
                      *     }
                      */
                     "application/json": components["schemas"]["Integration"];
