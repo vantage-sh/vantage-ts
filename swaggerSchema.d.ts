@@ -2922,16 +2922,7 @@ export interface components {
              * @example Limits cost visibility to the Engineering team.
              */
             description: string | null;
-            /**
-             * @description The AccessPolicy definition as a v1 document with vantage.* VQL.
-             * @example {
-             *       "api_version": "v1",
-             *       "policy": {
-             *         "filter": "(vantage.provider = 'aws')"
-             *       }
-             *     }
-             */
-            policy: Record<string, any>;
+            policy: components["schemas"]["AccessPolicyDocument"];
             /** @description The tokens for Teams this AccessPolicy is assigned to. */
             team_tokens: string[];
             /**
@@ -2944,6 +2935,22 @@ export interface components {
              * @example 2024-01-18T17:39:37Z
              */
             created_at: string;
+        };
+        AccessPolicyDocument: {
+            /**
+             * @description The AccessPolicy document version.
+             * @example v1
+             * @enum {string}
+             */
+            api_version: "v1";
+            policy: components["schemas"]["AccessPolicyRules"];
+        };
+        AccessPolicyRules: {
+            /**
+             * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+             * @example (vantage.provider = 'aws')
+             */
+            filter: string;
         };
         /** @description Create an Access Policy. */
         createAccessPolicy: {
