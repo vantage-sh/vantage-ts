@@ -861,6 +861,18 @@ export type CreateSsoConnectionForManagedAccountResponse = ResponseBodyForPathAn
  */
 export type DeleteSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "DELETE">;
 /**
+ * Response type for Get managed account integration
+ */
+export type GetManagedAccountIntegrationResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "GET">;
+/**
+ * Replaces the provider account identifiers a delegated Integration imports. An empty array applies no filter, so every provider account the Access Credential can see is imported. Identifiers are only accepted for providers that support scoping a delegation; Azure CSP is the only one today, where they are Azure subscription ids. Stop delegating an Integration by removing its token from access_credential_tokens on the Managed Account.
+ */
+export type UpdateManagedAccountIntegrationRequest = RequestBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update managed account integration
+ */
+export type UpdateManagedAccountIntegrationResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "PUT">;
+/**
  * Response type for Get authenticated user info
  */
 export type GetMeResponse = ResponseBodyForPathAndMethod<"/v2/me", "GET">;
@@ -3387,6 +3399,28 @@ class ManagedAccountsApi<NeverThrow extends boolean> {
             `/v2/managed_accounts/${pathEncode(managedAccountToken)}/sso_connection`,
             "DELETE",
             {},
+        );
+    }
+
+/**
+ * Returns the Integration delegated to this Managed Account from the Access Credential named in the path, along with the provider account identifiers it imports. Delegate an Access Credential to a Managed Account with access_credential_tokens before calling this.
+ */
+    getIntegration(managedAccountToken: string, accessCredentialToken: string) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/integrations/${pathEncode(accessCredentialToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Replaces the provider account identifiers a delegated Integration imports. An empty array applies no filter, so every provider account the Access Credential can see is imported. Identifiers are only accepted for providers that support scoping a delegation; Azure CSP is the only one today, where they are Azure subscription ids. Stop delegating an Integration by removing its token from access_credential_tokens on the Managed Account.
+ */
+    updateIntegration(managedAccountToken: string, accessCredentialToken: string, body: UpdateManagedAccountIntegrationRequest) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/integrations/${pathEncode(accessCredentialToken)}`,
+            "PUT",
+            body,
         );
     }
 
