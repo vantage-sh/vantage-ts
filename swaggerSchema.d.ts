@@ -1665,6 +1665,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/managed_accounts/{managed_account_token}/integrations/{access_credential_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get managed account integration
+         * @description Returns the Integration delegated to this Managed Account from the Access Credential named in the path, along with the provider account identifiers it imports. Delegate an Access Credential to a Managed Account with access_credential_tokens before calling this.
+         */
+        get: operations["getManagedAccountIntegration"];
+        /**
+         * Update managed account integration
+         * @description Replaces the provider account identifiers a delegated Integration imports. An empty array applies no filter, so every provider account the Access Credential can see is imported. Identifiers are only accepted for providers that support scoping a delegation; Azure CSP is the only one today, where they are Azure subscription ids. Stop delegating an Integration by removing its token from access_credential_tokens on the Managed Account.
+         */
+        put: operations["updateManagedAccountIntegration"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me": {
         parameters: {
             query?: never;
@@ -3103,9 +3127,9 @@ export interface components {
              * @description The threshold amount that must be met for the notification to fire.
              */
             threshold: number;
-            /** @description The tokens of organization users that receive the notification. Freeform verified-domain emails are not included; see recipient_emails. */
+            /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
             user_tokens: string[];
-            /** @description The email addresses that receive the notification, including organization users and verified-domain addresses. */
+            /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
             recipient_emails: string[];
             /** @description The channels that the notification is sent to. */
             recipient_channels: string[];
@@ -3121,7 +3145,7 @@ export interface components {
             threshold?: number;
             /** @description The tokens of the Users that receive the notification. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The Slack/MS Teams channels that receive the notification. */
             recipient_channels?: string[];
@@ -3135,7 +3159,7 @@ export interface components {
             threshold?: number;
             /** @description The tokens of the users that receive the notification. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The Slack/MS Teams channels that receive the notification. */
             recipient_channels?: string[];
@@ -3690,9 +3714,9 @@ export interface components {
             workspace_token: string | null;
             /** @description The token for the User who created this BudgetAlert. */
             user_token?: string | null;
-            /** @description The tokens of organization users that receive the alert. Freeform verified-domain emails are not included; see recipient_emails. */
+            /** @description The tokens of organization users that receive the alert. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
             user_tokens: string[];
-            /** @description The email addresses that receive the alert, including organization users and verified-domain addresses. */
+            /** @description The email addresses that receive the alert, including organization users, SSO-domain addresses, and approved third-party addresses. */
             recipient_emails: string[];
             /**
              * Format: int32
@@ -3731,7 +3755,7 @@ export interface components {
             workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the alert. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached.  For the full month, pass an empty value. */
             duration_in_days: string;
@@ -3753,7 +3777,7 @@ export interface components {
             workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the alert. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the alert. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached. For the full month, pass an empty value. */
             duration_in_days?: string | null;
@@ -4442,7 +4466,7 @@ export interface components {
             workspace_token: string;
             /** @description The tokens of the reports to alert on. */
             report_tokens: string[];
-            /** @description The email recipients for the Cost Alert. Accepts organization users and emails on verified IdP domains. */
+            /** @description The email recipients for the Cost Alert. Accepts organization users, SSO-domain emails, and approved third-party service emails. */
             email_recipients?: string[];
             /** @description The Slack channels that will receive the alert. */
             slack_channels?: string[];
@@ -4458,7 +4482,7 @@ export interface components {
         updateCostAlert: {
             /** @description The title of the Cost Alert. */
             title?: string;
-            /** @description The email recipients for the Cost Alert. Accepts organization users and emails on verified IdP domains. */
+            /** @description The email recipients for the Cost Alert. Accepts organization users, SSO-domain emails, and approved third-party service emails. */
             email_recipients?: string[];
             /** @description The period of time used to compare costs. Options are 'day', 'week', 'month', 'quarter'. */
             interval?: string;
@@ -4705,7 +4729,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -5110,7 +5134,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -6167,6 +6191,26 @@ export interface components {
             /** @description Additional email domains to associate with this SSO configuration. Replaces existing additional domains. The account's SSO domain is always preserved. */
             additional_domains?: string[];
         };
+        /** @description ManagedAccountIntegration model */
+        ManagedAccountIntegration: {
+            /**
+             * @description The token of the parent Access Credential that is delegated to this Managed Account.
+             * @example accss_crdntl_3971e6f022b4e39b
+             */
+            access_credential_token: string;
+            /**
+             * @description The key of the Provider for the delegated Integration.
+             * @example azure_csp
+             */
+            provider: string;
+            /** @description The provider account identifiers this delegated Integration imports. For Azure CSP these are Azure subscription ids. An empty array means no filter is applied, so every provider account the credential can see is imported. Providers that do not support scoping always report an empty array. */
+            provider_account_identifiers: string[];
+        };
+        /** @description Update a delegated Integration on a Managed Account. */
+        updateManagedAccountIntegration: {
+            /** @description The provider account identifiers this delegated Integration should import, replacing the current list. For Azure CSP these are Azure subscription ids. An empty array applies no filter. */
+            provider_account_identifiers: string[];
+        };
         /** @description Me model */
         Me: {
             default_workspace_token: string | null;
@@ -6776,9 +6820,9 @@ export interface components {
              * @example rprt_abcd1234
              */
             cost_report_token: string;
-            /** @description The tokens of organization users that receive the notification. Freeform verified-domain emails are not included; see recipient_emails. */
+            /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
             user_tokens: string[];
-            /** @description The email addresses that receive the notification, including organization users and verified-domain addresses. */
+            /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
             recipient_emails: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels: string[];
@@ -6805,7 +6849,7 @@ export interface components {
             workspace_token?: string;
             /** @description The Users that receive the notification. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels?: string[];
@@ -6822,7 +6866,7 @@ export interface components {
             cost_report_token?: string;
             /** @description The Users that receive the notification. */
             user_tokens?: string[];
-            /** @description Email addresses that receive the notification. Must be organization users or addresses on a verified domain. */
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
             recipient_emails?: string[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
             recipient_channels?: string[];
@@ -7399,9 +7443,9 @@ export interface components {
             /**
              * @description The calculation type applied to produce this result.
              * @example unit_cost
-             * @enum {string|null}
+             * @enum {string}
              */
-            calculation_type?: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric" | null;
+            calculation_type: "unit_cost" | "gross_margin" | "usage_unit_cost" | "raw_business_metric";
             /**
              * @description The amount of the unit cost. For raw_business_metric types, this equals the business_metric_amount.
              * @example 4.25
@@ -11461,7 +11505,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -11891,7 +11935,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -13310,7 +13354,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -14693,6 +14737,101 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ManagedAccount"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getManagedAccountIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                managed_account_token: string;
+                access_credential_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "access_credential_token": "accss_crdntl_6df397820fc3c769",
+                     *       "provider": "azure_csp",
+                     *       "provider_account_identifiers": [
+                     *         "8c1f7a0e-1f2b-4c2b-9f3d-5a6b7c8d9e01",
+                     *         "b2d4e6f8-90ab-4cde-8123-456789abcdef"
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ManagedAccountIntegration"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateManagedAccountIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                managed_account_token: string;
+                access_credential_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateManagedAccountIntegration"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "access_credential_token": "accss_crdntl_64f3820a9d3eacf1",
+                     *       "provider": "azure_csp",
+                     *       "provider_account_identifiers": [
+                     *         "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                     *         "8c1f7a0e-1f2b-4c2b-9f3d-5a6b7c8d9e01"
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ManagedAccountIntegration"];
                 };
             };
             /** @description BadRequest */
@@ -17849,7 +17988,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -17987,7 +18126,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
