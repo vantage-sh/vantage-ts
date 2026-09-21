@@ -809,6 +809,14 @@ export type UpdateKubernetesEfficiencyReportResponse = ResponseBodyForPathAndMet
  */
 export type DeleteKubernetesEfficiencyReportResponse = ResponseBodyForPathAndMethod<`/v2/kubernetes_efficiency_reports/${NoSlashString}`, "DELETE">;
 /**
+ * Return costs for a KubernetesEfficiencyReport.
+ */
+export type GetKubernetesEfficiencyReportCostsRequest = RequestBodyForPathAndMethod<`/v2/kubernetes_efficiency_reports/${NoSlashString}/costs`, "GET">;
+/**
+ * Response type for Get costs for Kubernetes efficiency report
+ */
+export type GetKubernetesEfficiencyReportCostsResponse = ResponseBodyForPathAndMethod<`/v2/kubernetes_efficiency_reports/${NoSlashString}/costs`, "GET">;
+/**
  * Returns a list of managed accounts.
  */
 export type GetManagedAccountsRequest = RequestBodyForPathAndMethod<"/v2/managed_accounts", "GET">;
@@ -860,6 +868,18 @@ export type CreateSsoConnectionForManagedAccountResponse = ResponseBodyForPathAn
  * Response type for Delete SSO connection for managed account
  */
 export type DeleteSsoConnectionForManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/sso_connection`, "DELETE">;
+/**
+ * Response type for Get managed account integration
+ */
+export type GetManagedAccountIntegrationResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "GET">;
+/**
+ * Replaces the provider account identifiers a delegated Integration imports. An empty array applies no filter, so every provider account the Access Credential can see is imported. Identifiers are only accepted for providers that support scoping a delegation; Azure CSP is the only one today, where they are Azure subscription ids. Stop delegating an Integration by removing its token from access_credential_tokens on the Managed Account.
+ */
+export type UpdateManagedAccountIntegrationRequest = RequestBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update managed account integration
+ */
+export type UpdateManagedAccountIntegrationResponse = ResponseBodyForPathAndMethod<`/v2/managed_accounts/${NoSlashString}/integrations/${NoSlashString}`, "PUT">;
 /**
  * Response type for Get authenticated user info
  */
@@ -3297,6 +3317,17 @@ class KubernetesEfficiencyReportsApi<NeverThrow extends boolean> {
         );
     }
 
+/**
+ * Return costs for a KubernetesEfficiencyReport.
+ */
+    getCosts(kubernetesEfficiencyReportToken: string, body?: GetKubernetesEfficiencyReportCostsRequest) {
+        return this.client.request(
+            `/v2/kubernetes_efficiency_reports/${pathEncode(kubernetesEfficiencyReportToken)}/costs`,
+            "GET",
+            body,
+        );
+    }
+
 }
 
 class ManagedAccountsApi<NeverThrow extends boolean> {
@@ -3387,6 +3418,28 @@ class ManagedAccountsApi<NeverThrow extends boolean> {
             `/v2/managed_accounts/${pathEncode(managedAccountToken)}/sso_connection`,
             "DELETE",
             {},
+        );
+    }
+
+/**
+ * Returns the Integration delegated to this Managed Account from the Access Credential named in the path, along with the provider account identifiers it imports. Delegate an Access Credential to a Managed Account with access_credential_tokens before calling this.
+ */
+    getIntegration(managedAccountToken: string, accessCredentialToken: string) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/integrations/${pathEncode(accessCredentialToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Replaces the provider account identifiers a delegated Integration imports. An empty array applies no filter, so every provider account the Access Credential can see is imported. Identifiers are only accepted for providers that support scoping a delegation; Azure CSP is the only one today, where they are Azure subscription ids. Stop delegating an Integration by removing its token from access_credential_tokens on the Managed Account.
+ */
+    updateIntegration(managedAccountToken: string, accessCredentialToken: string, body: UpdateManagedAccountIntegrationRequest) {
+        return this.client.request(
+            `/v2/managed_accounts/${pathEncode(managedAccountToken)}/integrations/${pathEncode(accessCredentialToken)}`,
+            "PUT",
+            body,
         );
     }
 

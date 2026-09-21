@@ -48,6 +48,7 @@ export const VANTAGE_PROVIDERS = [
   "coreweave",
   "devin",
   "openrouter",
+  "deepgram",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];
