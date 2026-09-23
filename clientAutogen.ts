@@ -745,6 +745,14 @@ export type CreateAzureIntegrationRequest = RequestBodyForPathAndMethod<"/v2/int
  */
 export type CreateAzureIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/azure", "POST">;
 /**
+ * Create a Twilio Integration
+ */
+export type CreateTwilioIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
+/**
+ * Response type for Create Twilio integration
+ */
+export type CreateTwilioIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
+/**
  * Returns a list of invoices (MSP invoicing required).
  */
 export type GetInvoicesRequest = RequestBodyForPathAndMethod<"/v2/invoices", "GET">;
@@ -3214,6 +3222,17 @@ class IntegrationsApi<NeverThrow extends boolean> {
     createAzureIntegration(body: CreateAzureIntegrationRequest) {
         return this.client.request(
             `/v2/integrations/azure`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create a Twilio Integration
+ */
+    createTwilioIntegration(body: CreateTwilioIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/twilio`,
             "POST",
             body,
         );

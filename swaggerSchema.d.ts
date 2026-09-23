@@ -1429,6 +1429,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/integrations/twilio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Twilio integration
+         * @description Create a Twilio Integration
+         */
+        post: operations["createTwilioIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoices": {
         parameters: {
             query?: never;
@@ -6049,6 +6069,21 @@ export interface components {
             password: string;
             /** @description Microsoft Customer Agreement (MCA) or Enterprise Agreement (EA) billing account ID. Must not contain whitespace. */
             billing_account_id?: string;
+        };
+        /** @description Create a Twilio Integration */
+        createTwilioIntegration: {
+            /** @description Twilio API key SID. */
+            api_key: string;
+            /** @description Twilio API key secret. */
+            api_secret: string;
+            /** @description Twilio account SID. */
+            account_sid: string;
+            /** @description Name for this Twilio account in Vantage. */
+            friendly_account_name: string;
+            /** @description Description of the integration. */
+            description: string;
+            /** @description When true, api_key and api_secret are an OAuth client id and secret. */
+            is_oauth?: boolean;
         };
         /** @description Update an Integration. */
         updateIntegration: {
@@ -14250,6 +14285,51 @@ export interface operations {
                      *       "provider": "azure",
                      *       "account_identifier": "fake-tenant",
                      *       "status": "imported",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2024-07-29T21:41:48Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createTwilioIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createTwilioIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_6eddcfaa81f7303f",
+                     *       "provider": "twilio",
+                     *       "account_identifier": "Primary Twilio account",
+                     *       "status": "pending",
                      *       "last_updated": null,
                      *       "workspace_tokens": [],
                      *       "created_at": "2024-07-29T21:41:48Z",
