@@ -565,6 +565,26 @@ export type DeleteDashboardResponse = ResponseBodyForPathAndMethod<`/v2/dashboar
  */
 export type GetDataExportResponse = ResponseBodyForPathAndMethod<`/v2/data_exports/${NoSlashString}`, "GET">;
 /**
+ * Return all EnrichmentSources.
+ */
+export type GetEnrichmentSourcesRequest = RequestBodyForPathAndMethod<"/v2/enrichment_sources", "GET">;
+/**
+ * Response type for Get all enrichment sources
+ */
+export type GetEnrichmentSourcesResponse = ResponseBodyForPathAndMethod<"/v2/enrichment_sources", "GET">;
+/**
+ * Response type for Get enrichment source by token
+ */
+export type GetEnrichmentSourceResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}`, "GET">;
+/**
+ * Return enrichment statistics.
+ */
+export type GetEnrichmentStatisticsRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/statistics`, "GET">;
+/**
+ * Response type for Get enrichment statistics
+ */
+export type GetEnrichmentStatisticsResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/statistics`, "GET">;
+/**
  * Return all Exchange Rates.
  */
 export type GetExchangeRatesRequest = RequestBodyForPathAndMethod<"/v2/exchange_rates", "GET">;
@@ -1500,6 +1520,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costServices?: CostServicesApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
     private _dataExports?: DataExportsApi<NeverThrow>;
+    private _enrichmentSources?: EnrichmentSourcesApi<NeverThrow>;
     private _exchangeRates?: ExchangeRatesApi<NeverThrow>;
     private _financialCommitmentReports?: FinancialCommitmentReportsApi<NeverThrow>;
     private _financialCommitments?: FinancialCommitmentsApi<NeverThrow>;
@@ -1668,6 +1689,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._dataExports = new DataExportsApi(this);
         }
         return this._dataExports;
+    }
+
+    get enrichmentSources(): EnrichmentSourcesApi<NeverThrow> {
+        if (!this._enrichmentSources) {
+            this._enrichmentSources = new EnrichmentSourcesApi(this);
+        }
+        return this._enrichmentSources;
     }
 
     get exchangeRates(): ExchangeRatesApi<NeverThrow> {
@@ -2861,6 +2889,44 @@ class DataExportsApi<NeverThrow extends boolean> {
             `/v2/data_exports/${pathEncode(dataExportToken)}`,
             "GET",
             {},
+        );
+    }
+
+}
+
+class EnrichmentSourcesApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all EnrichmentSources.
+ */
+    list(body?: GetEnrichmentSourcesRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Return an EnrichmentSource.
+ */
+    get(enrichmentSourceToken: string) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Return enrichment statistics.
+ */
+    getEnrichmentStatistics(enrichmentSourceToken: string, body?: GetEnrichmentStatisticsRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}/statistics`,
+            "GET",
+            body,
         );
     }
 
