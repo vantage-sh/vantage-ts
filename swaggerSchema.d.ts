@@ -1017,6 +1017,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrichment_sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all enrichment sources
+         * @description Return all EnrichmentSources.
+         */
+        get: operations["getEnrichmentSources"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrichment_sources/{enrichment_source_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get enrichment source by token
+         * @description Return an EnrichmentSource.
+         */
+        get: operations["getEnrichmentSource"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrichment_sources/{enrichment_source_token}/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get enrichment statistics
+         * @description Return enrichment statistics.
+         */
+        get: operations["getEnrichmentStatistics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/exchange_rates": {
         parameters: {
             query?: never;
@@ -3892,8 +3952,8 @@ export interface components {
              */
             date: string;
             /**
-             * @description The date and time, in UTC, the Budget was created. ISO 8601 Formatted.
-             * @example 2024-03-19T00:00:00Z
+             * @description Settled spend as a percent of the Budget amount for the month. For example, 114% means spend is 14% over the Budget.
+             * @example 114%
              */
             actual: string;
             /**
@@ -4044,12 +4104,14 @@ export interface components {
              * @example datadog_metrics
              * @enum {string|null}
              */
-            import_type: "datadog_metrics" | "cloudwatch" | "snowflake_metrics" | "metronome_metrics" | "csv" | null;
+            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "csv" | null;
             /** @description The Integration token used to import the BusinessMetric. */
             integration_token: string | null;
             cloudwatch_fields?: components["schemas"]["CloudwatchFields"];
             datadog_metric_fields?: components["schemas"]["DatadogMetricFields"];
+            gcp_bigquery_metric_fields?: components["schemas"]["GcpBigqueryMetricFields"];
             snowflake_metric_fields?: components["schemas"]["SnowflakeMetricFields"];
+            clickhouse_metric_fields?: components["schemas"]["ClickhouseMetricFields"];
         };
         AttachedCostReportForBusinessMetric: {
             /**
@@ -4128,12 +4190,31 @@ export interface components {
              */
             query: string;
         };
+        GcpBigqueryMetricFields: {
+            /**
+             * @description The SQL query used to import GCP BigQuery metrics.
+             * @example SELECT date, value, label FROM `project.dataset.metrics`
+             */
+            sql_query: string;
+            /**
+             * @description The GCP project in which the BigQuery job runs.
+             * @example my-query-project
+             */
+            query_project_id: string;
+        };
         SnowflakeMetricFields: {
             /**
              * @description The SQL query used to import Snowflake metrics.
              * @example SELECT date, value, label FROM my_metrics_table
              */
             sql_query: string;
+        };
+        ClickhouseMetricFields: {
+            /**
+             * @description The UUID of the ClickHouse query endpoint used to import metrics.
+             * @example 7c6a3a87-12fd-41f5-afdf-caa4697a2886
+             */
+            query_endpoint_id: string;
         };
         /** @description BusinessMetricLabels model */
         BusinessMetricLabels: {
@@ -4245,12 +4326,28 @@ export interface components {
                     value?: string;
                 }[];
             };
+            /** @description GCP BigQuery metric configuration fields. */
+            gcp_bigquery_metric_fields?: {
+                /** @description Integration token for the GCP integration from which you would like to fetch metrics. */
+                integration_token?: string;
+                /** @description GCP project in which the BigQuery job should run. */
+                query_project_id?: string;
+                /** @description BigQuery SQL query returning date, value, and optional label columns. */
+                sql_query?: string;
+            };
             /** @description Snowflake metric configuration fields. */
             snowflake_metric_fields?: {
                 /** @description Integration token for the Snowflake integration from which you would like to fetch metrics. */
                 integration_token?: string;
                 /** @description Snowflake SQL query returning date, value, and optional label columns. */
                 sql_query?: string;
+            };
+            /** @description ClickHouse metric configuration fields. */
+            clickhouse_metric_fields?: {
+                /** @description Integration token for the ClickHouse integration from which you would like to fetch metrics. */
+                integration_token?: string;
+                /** @description UUID of the ClickHouse query endpoint used to fetch metrics. */
+                query_endpoint_id?: string;
             };
         };
         /** @description Updates an existing BusinessMetric. */
@@ -5380,6 +5477,83 @@ export interface components {
             completed_at: string | null;
             /** @example 2025-03-20T12:00:00Z */
             valid_until: string | null;
+        };
+        /** @description EnrichmentSources model */
+        EnrichmentSources: {
+            links?: components["schemas"]["Links"];
+            enrichment_sources: components["schemas"]["EnrichmentSource"][];
+        };
+        /** @description EnrichmentSource model */
+        EnrichmentSource: {
+            /** @description The token for the EnrichmentSource. */
+            token: string;
+            /**
+             * @description The enrichment source type.
+             * @example custom_llm_enrichment_source
+             * @enum {string}
+             */
+            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source";
+            /**
+             * @description The display name for the enrichment source type.
+             * @example Custom LLM Enrichment
+             */
+            title: string;
+            /** @description The token for the Integration that owns this EnrichmentSource. */
+            integration_token: string;
+            /** @description Whether the EnrichmentSource is active. */
+            active: boolean;
+            /**
+             * @description The date and time, in UTC, the EnrichmentSource was created. ISO 8601 Formatted.
+             * @example 2026-08-04T00:00:00Z
+             */
+            created_at: string;
+        };
+        /** @description EnrichmentStatistics model */
+        EnrichmentStatistics: {
+            links?: components["schemas"]["Links"];
+            enrichment_statistics: components["schemas"]["EnrichmentStatistic"][];
+        };
+        EnrichmentStatistic: {
+            token: string;
+            /**
+             * @description The key of the provider whose costs were enriched.
+             * @example aws
+             */
+            provider: string;
+            /** @description The account identifier for the integration whose costs were enriched. */
+            account_identifier: string;
+            status: string;
+            status_detail: string | null;
+            status_message: string | null;
+            start_date: string | null;
+            end_date: string | null;
+            /** @description The date and time when Vantage last enriched this billing period. */
+            ingested_at: string | null;
+            /**
+             * Format: float
+             * @description The share of log lines that Vantage read and indexed.
+             */
+            log_scan_acceptance_rate: number | null;
+            /**
+             * Format: float
+             * @description The share of indexed log records that matched cost data.
+             */
+            log_record_match_rate: number | null;
+            /**
+             * Format: float
+             * @description The share of cost rows that received logged usage.
+             */
+            bill_match_rate: number | null;
+            /**
+             * Format: int32
+             * @description The number of rows that Vantage could not assign to one integration.
+             */
+            ambiguous_sibling_rows: number;
+            /**
+             * Format: float
+             * @description The share of indexed tokens that Vantage attached to a cost row.
+             */
+            tokens_kept_rate: number | null;
         };
         /** @description ExchangeRates model */
         ExchangeRates: {
@@ -12715,6 +12889,160 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getEnrichmentSources: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/enrichment_sources?page=1&limit=1",
+                     *         "first": "https://api.vantage.sh/v2/enrichment_sources?page=1&limit=1",
+                     *         "next": "https://api.vantage.sh/v2/enrichment_sources?page=2&limit=1",
+                     *         "last": "https://api.vantage.sh/v2/enrichment_sources?page=2&limit=1",
+                     *         "prev": null
+                     *       },
+                     *       "enrichment_sources": [
+                     *         {
+                     *           "token": "srvc_data_intgrtn_10401e8ad614f27b",
+                     *           "type": "custom_llm_enrichment_source",
+                     *           "title": "Custom LLM Enrichment",
+                     *           "integration_token": "accss_crdntl_99664b33437f4530",
+                     *           "active": true,
+                     *           "created_at": "2026-09-15T20:01:18Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["EnrichmentSources"];
+                };
+            };
+        };
+    };
+    getEnrichmentSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                enrichment_source_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "srvc_data_intgrtn_efd043917857ecef",
+                     *       "type": "custom_llm_enrichment_source",
+                     *       "title": "Custom LLM Enrichment",
+                     *       "integration_token": "accss_crdntl_cf142684c2a1a783",
+                     *       "active": true,
+                     *       "created_at": "2026-09-15T20:01:17Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["EnrichmentSource"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getEnrichmentStatistics: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 1000. */
+                limit?: number;
+                /**
+                 * @description Filter statistics to costs for a specific provider key.
+                 * @example aws
+                 */
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram";
+            };
+            header?: never;
+            path: {
+                enrichment_source_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_2922f00271c7dd5b/statistics?page=1&limit=1",
+                     *         "first": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_2922f00271c7dd5b/statistics?page=1&limit=1",
+                     *         "next": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_2922f00271c7dd5b/statistics?page=2&limit=1",
+                     *         "last": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_2922f00271c7dd5b/statistics?page=2&limit=1",
+                     *         "prev": null
+                     *       },
+                     *       "enrichment_statistics": [
+                     *         {
+                     *           "token": "wrkflw_mnfst_ddf884f31e7edbba",
+                     *           "provider": "aws",
+                     *           "account_identifier": "157844646115",
+                     *           "status": "success",
+                     *           "status_detail": null,
+                     *           "status_message": null,
+                     *           "start_date": "2026-08-01",
+                     *           "end_date": "2026-08-31",
+                     *           "ingested_at": "2026-09-01T12:00:00Z",
+                     *           "log_scan_acceptance_rate": 0.99,
+                     *           "log_record_match_rate": 0.98,
+                     *           "bill_match_rate": 0.97,
+                     *           "ambiguous_sibling_rows": 0,
+                     *           "tokens_kept_rate": 0.96
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["EnrichmentStatistics"];
                 };
             };
             /** @description NotFound */
