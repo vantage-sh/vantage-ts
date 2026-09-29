@@ -54,6 +54,7 @@ export type VantageNetworkFlowWeight = (typeof VANTAGE_NETWORK_FLOW_WEIGHTS)[num
 /** Built-in grouping dimensions supported by Vantage Financial Commitment reports. */
 export const VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS = [
   "cost_type",
+  "provider",
   "commitment_type",
   "commitment_id",
   "service",
