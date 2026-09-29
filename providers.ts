@@ -49,6 +49,7 @@ export const VANTAGE_PROVIDERS = [
   "devin",
   "openrouter",
   "deepgram",
+  "crusoe",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];
