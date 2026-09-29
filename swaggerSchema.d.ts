@@ -5724,6 +5724,11 @@ export interface components {
              */
             cost_type?: string | null;
             /**
+             * @description The cloud provider which incurred the cost.
+             * @example aws
+             */
+            provider?: string | null;
+            /**
              * @description The type of financial commitment.
              * @example savings_plan
              */
@@ -5818,8 +5823,8 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, provider, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
+            groupings?: ("cost_type" | "provider" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description Update a FinancialCommitmentReport. */
         updateFinancialCommitmentReport: {
@@ -5854,8 +5859,8 @@ export interface components {
              * @enum {string}
              */
             on_demand_costs_scope?: "discountable" | "all";
-            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
-            groupings?: ("cost_type" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
+            /** @description Grouping values for aggregating costs on the FinancialCommitmentReport. Group by up to 100 fields. Valid groupings: cost_type, provider, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. */
+            groupings?: ("cost_type" | "provider" | "commitment_type" | "commitment_id" | "service" | "resource_account_id" | "provider_account_id" | "region" | "cost_category" | "cost_sub_category" | "instance_type" | `tag:${NonEmptyString}`)[];
         };
         /** @description FinancialCommitments model */
         FinancialCommitments: {
@@ -13490,7 +13495,7 @@ export interface operations {
                 end_date?: string;
                 /** @description The date bin of the costs. Defaults to the report's configured date bucket. Hourly costs are limited to 14 days. */
                 date_bin?: "hour" | "day" | "week" | "month" | "quarter";
-                /** @description Group the results by up to 100 fields. Valid groupings: cost_type, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. Serialize as a CSV query parameter: groupings=cost_type,service. Repeated parameters (groupings[]=cost_type&groupings[]=service) are also accepted. */
+                /** @description Group the results by up to 100 fields. Valid groupings: cost_type, provider, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. Serialize as a CSV query parameter: groupings=cost_type,service. Repeated parameters (groupings[]=cost_type&groupings[]=service) are also accepted. */
                 groupings?: string[];
                 /** @description The VQL filter to apply to the costs. Overrides the report's saved filter. */
                 filter?: string;
