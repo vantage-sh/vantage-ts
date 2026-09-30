@@ -529,6 +529,22 @@ export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_servi
  */
 export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
 /**
+ * Response type for Get dashboard widget
+ */
+export type GetDashboardWidgetResponse = ResponseBodyForPathAndMethod<`/v2/widgets/${NoSlashString}`, "GET">;
+/**
+ * Response type for Delete dashboard widget
+ */
+export type DeleteDashboardWidgetResponse = ResponseBodyForPathAndMethod<`/v2/widgets/${NoSlashString}`, "DELETE">;
+/**
+ * Update a single Dashboard Widget.
+ */
+export type UpdateDashboardWidgetRequest = RequestBodyForPathAndMethod<`/v2/widgets/${NoSlashString}`, "PATCH">;
+/**
+ * Response type for Update dashboard widget
+ */
+export type UpdateDashboardWidgetResponse = ResponseBodyForPathAndMethod<`/v2/widgets/${NoSlashString}`, "PATCH">;
+/**
  * Return all Dashboards.
  */
 export type GetDashboardsRequest = RequestBodyForPathAndMethod<"/v2/dashboards", "GET">;
@@ -1526,6 +1542,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
     private _costServices?: CostServicesApi<NeverThrow>;
+    private _widgets?: WidgetsApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
     private _dataExports?: DataExportsApi<NeverThrow>;
     private _enrichmentSources?: EnrichmentSourcesApi<NeverThrow>;
@@ -1683,6 +1700,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costServices = new CostServicesApi(this);
         }
         return this._costServices;
+    }
+
+    get widgets(): WidgetsApi<NeverThrow> {
+        if (!this._widgets) {
+            this._widgets = new WidgetsApi(this);
+        }
+        return this._widgets;
     }
 
     get dashboards(): DashboardsApi<NeverThrow> {
@@ -2821,6 +2845,44 @@ class CostServicesApi<NeverThrow extends boolean> {
             `/v2/cost_services`,
             "GET",
             body,
+        );
+    }
+
+}
+
+class WidgetsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return a Dashboard Widget.
+ */
+    get(widgetToken: string) {
+        return this.client.request(
+            `/v2/widgets/${pathEncode(widgetToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a single Dashboard Widget.
+ */
+    update(widgetToken: string, body: UpdateDashboardWidgetRequest) {
+        return this.client.request(
+            `/v2/widgets/${pathEncode(widgetToken)}`,
+            "PATCH",
+            body,
+        );
+    }
+
+/**
+ * Delete a Dashboard Widget.
+ */
+    delete(widgetToken: string) {
+        return this.client.request(
+            `/v2/widgets/${pathEncode(widgetToken)}`,
+            "DELETE",
+            {},
         );
     }
 
