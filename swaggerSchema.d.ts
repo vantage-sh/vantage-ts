@@ -945,6 +945,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/widgets/{widget_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get dashboard widget
+         * @description Return a Dashboard Widget.
+         */
+        get: operations["getDashboardWidget"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete dashboard widget
+         * @description Delete a Dashboard Widget.
+         */
+        delete: operations["deleteDashboardWidget"];
+        options?: never;
+        head?: never;
+        /**
+         * Update dashboard widget
+         * @description Update a single Dashboard Widget.
+         */
+        patch: operations["updateDashboardWidget"];
+        trace?: never;
+    };
     "/dashboards": {
         parameters: {
             query?: never;
@@ -5341,6 +5369,55 @@ export interface components {
              */
             segment?: string | null;
         };
+        /** @description DashboardWidget model */
+        DashboardWidget: {
+            /**
+             * @description The token of the Dashboard Widget.
+             * @example dshbrd_wdgt_a12b3c
+             */
+            token: string;
+            /** @example rprt_a12b3c */
+            widgetable_token: string | null;
+            /**
+             * @description The title of the Widget.
+             * @example My Widget
+             */
+            title: string;
+            settings: components["schemas"]["DashboardWidgetSettings"];
+        };
+        DashboardWidgetSettings: {
+            /** @enum {string} */
+            display_type: "table" | "chart" | "kpi";
+            /**
+             * @description The aggregation used when display_type is kpi.
+             * @enum {string|null}
+             */
+            kpi_calculation?: "sum" | "average" | null;
+            /**
+             * @description The metric represented by the KPI.
+             * @enum {string|null}
+             */
+            kpi_type?: "cost" | "usage" | "count" | "business_metric" | null;
+            /** @description The usage unit represented by the KPI. */
+            kpi_usage_unit?: string | null;
+        };
+        /** @description Update a single Dashboard Widget. */
+        updateDashboardWidget: {
+            /** @description The token of the Resource represented by the Widget. */
+            widgetable_token?: string;
+            /** @description The title of the Widget. */
+            title?: string;
+            /** @description The settings for the DashboardWidget. */
+            settings?: {
+                /** @enum {string} */
+                display_type?: "table" | "chart" | "kpi";
+                /** @enum {string} */
+                kpi_calculation?: "sum" | "average";
+                /** @enum {string} */
+                kpi_type?: "cost" | "usage" | "count" | "business_metric";
+                kpi_usage_unit?: string;
+            };
+        };
         /** @description Dashboards model */
         Dashboards: {
             links?: components["schemas"]["Links"];
@@ -5393,32 +5470,6 @@ export interface components {
              * @example wrkspc_abcd1234567890
              */
             workspace_token: string;
-        };
-        DashboardWidget: {
-            /** @example rprt_a12b3c */
-            widgetable_token: string;
-            /**
-             * @description The title of the Widget.
-             * @example My Widget
-             */
-            title: string;
-            settings: components["schemas"]["DashboardWidgetSettings"];
-        };
-        DashboardWidgetSettings: {
-            /** @enum {string} */
-            display_type: "table" | "chart" | "kpi";
-            /**
-             * @description The aggregation used when display_type is kpi.
-             * @enum {string|null}
-             */
-            kpi_calculation?: "sum" | "average" | null;
-            /**
-             * @description The metric represented by the KPI.
-             * @enum {string|null}
-             */
-            kpi_type?: "cost" | "usage" | "count" | "business_metric" | null;
-            /** @description The usage unit represented by the KPI. */
-            kpi_usage_unit?: string | null;
         };
         /** @description Create a Dashboard. */
         createDashboard: {
@@ -7919,6 +7970,20 @@ export interface components {
             label_key?: string | null;
             /** @description Optional business metric label values. An empty array includes every value for the label key. */
             label_values?: string[] | null;
+            /**
+             * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives.
+             * @example {
+             *       "app": [
+             *         "consumer"
+             *       ],
+             *       "team": [
+             *         "payments"
+             *       ]
+             *     }
+             */
+            label_filters?: {
+                [key: string]: string[];
+            } | null;
             cost_metric?: components["schemas"]["VirtualTagConfigValueCostMetric"];
             /** @description The display name for this allocation value. */
             display_name?: string | null;
@@ -8028,6 +8093,20 @@ export interface components {
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
                 label_values?: string[];
+                /**
+                 * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
+                 * @example {
+                 *       "app": [
+                 *         "consumer"
+                 *       ],
+                 *       "team": [
+                 *         "payments"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
@@ -8089,6 +8168,20 @@ export interface components {
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
                 label_values?: string[];
+                /**
+                 * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
+                 * @example {
+                 *       "app": [
+                 *         "consumer"
+                 *       ],
+                 *       "team": [
+                 *         "payments"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
@@ -8163,6 +8256,20 @@ export interface components {
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
                 label_values?: string[];
+                /**
+                 * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
+                 * @example {
+                 *       "app": [
+                 *         "consumer"
+                 *       ],
+                 *       "team": [
+                 *         "payments"
+                 *       ]
+                 *     }
+                 */
+                label_filters?: {
+                    [key: string]: string[];
+                } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
                 label_transforms?: {
@@ -8204,6 +8311,20 @@ export interface components {
             label_key?: string;
             /** @description Business metric label values. An empty array includes every value for the label key. */
             label_values?: string[];
+            /**
+             * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Null and an empty object leave stored filters unchanged.
+             * @example {
+             *       "app": [
+             *         "consumer"
+             *       ],
+             *       "team": [
+             *         "payments"
+             *       ]
+             *     }
+             */
+            label_filters?: {
+                [key: string]: string[];
+            } | null;
             /** @description The display name for a cost metric or percentage allocation value. */
             display_name?: string | null;
             label_transforms?: {
@@ -8243,6 +8364,20 @@ export interface components {
             label_key?: string;
             /** @description Business metric label values. An empty array includes every value for the label key. */
             label_values?: string[];
+            /**
+             * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Null and an empty object leave stored filters unchanged.
+             * @example {
+             *       "app": [
+             *         "consumer"
+             *       ],
+             *       "team": [
+             *         "payments"
+             *       ]
+             *     }
+             */
+            label_filters?: {
+                [key: string]: string[];
+            } | null;
             /** @description The display name for a cost metric or percentage allocation value. */
             display_name?: string | null;
             label_transforms?: {
@@ -12572,6 +12707,150 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CostServices"];
+                };
+            };
+        };
+    };
+    getDashboardWidget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                widget_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "dshbrd_wdgt_7dbd9db50235ed51",
+                     *       "widgetable_token": "rprt_eafcc345b830ac61",
+                     *       "title": "Widget",
+                     *       "settings": {
+                     *         "display_type": "chart"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardWidget"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteDashboardWidget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                widget_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardWidget"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateDashboardWidget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                widget_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateDashboardWidget"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "dshbrd_wdgt_dd4c00d17728937e",
+                     *       "widgetable_token": "rprt_6c5f862f8ec0f04e",
+                     *       "title": "Updated Widget",
+                     *       "settings": {
+                     *         "display_type": "kpi",
+                     *         "kpi_calculation": "average",
+                     *         "kpi_type": "usage",
+                     *         "kpi_usage_unit": "hours"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardWidget"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
         };
