@@ -529,6 +529,38 @@ export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_servi
  */
 export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
 /**
+ * Return all DashboardNotifications.
+ */
+export type GetDashboardNotificationsRequest = RequestBodyForPathAndMethod<"/v2/dashboard_notifications", "GET">;
+/**
+ * Response type for Get all dashboard notifications
+ */
+export type GetDashboardNotificationsResponse = ResponseBodyForPathAndMethod<"/v2/dashboard_notifications", "GET">;
+/**
+ * Create a DashboardNotification.
+ */
+export type CreateDashboardNotificationRequest = RequestBodyForPathAndMethod<"/v2/dashboard_notifications", "POST">;
+/**
+ * Response type for Create dashboard notification
+ */
+export type CreateDashboardNotificationResponse = ResponseBodyForPathAndMethod<"/v2/dashboard_notifications", "POST">;
+/**
+ * Response type for Get dashboard notification by token
+ */
+export type GetDashboardNotificationResponse = ResponseBodyForPathAndMethod<`/v2/dashboard_notifications/${NoSlashString}`, "GET">;
+/**
+ * Update a DashboardNotification.
+ */
+export type UpdateDashboardNotificationRequest = RequestBodyForPathAndMethod<`/v2/dashboard_notifications/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update dashboard notification
+ */
+export type UpdateDashboardNotificationResponse = ResponseBodyForPathAndMethod<`/v2/dashboard_notifications/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete dashboard notification
+ */
+export type DeleteDashboardNotificationResponse = ResponseBodyForPathAndMethod<`/v2/dashboard_notifications/${NoSlashString}`, "DELETE">;
+/**
  * Response type for Get dashboard widget
  */
 export type GetDashboardWidgetResponse = ResponseBodyForPathAndMethod<`/v2/widgets/${NoSlashString}`, "GET">;
@@ -1542,6 +1574,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
     private _costServices?: CostServicesApi<NeverThrow>;
+    private _dashboardNotifications?: DashboardNotificationsApi<NeverThrow>;
     private _widgets?: WidgetsApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
     private _dataExports?: DataExportsApi<NeverThrow>;
@@ -1700,6 +1733,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costServices = new CostServicesApi(this);
         }
         return this._costServices;
+    }
+
+    get dashboardNotifications(): DashboardNotificationsApi<NeverThrow> {
+        if (!this._dashboardNotifications) {
+            this._dashboardNotifications = new DashboardNotificationsApi(this);
+        }
+        return this._dashboardNotifications;
     }
 
     get widgets(): WidgetsApi<NeverThrow> {
@@ -2845,6 +2885,66 @@ class CostServicesApi<NeverThrow extends boolean> {
             `/v2/cost_services`,
             "GET",
             body,
+        );
+    }
+
+}
+
+class DashboardNotificationsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all DashboardNotifications.
+ */
+    list(body?: GetDashboardNotificationsRequest) {
+        return this.client.request(
+            `/v2/dashboard_notifications`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a DashboardNotification.
+ */
+    create(body: CreateDashboardNotificationRequest) {
+        return this.client.request(
+            `/v2/dashboard_notifications`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a DashboardNotification.
+ */
+    get(dashboardNotificationToken: string) {
+        return this.client.request(
+            `/v2/dashboard_notifications/${pathEncode(dashboardNotificationToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a DashboardNotification.
+ */
+    update(dashboardNotificationToken: string, body: UpdateDashboardNotificationRequest) {
+        return this.client.request(
+            `/v2/dashboard_notifications/${pathEncode(dashboardNotificationToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a DashboardNotification.
+ */
+    delete(dashboardNotificationToken: string) {
+        return this.client.request(
+            `/v2/dashboard_notifications/${pathEncode(dashboardNotificationToken)}`,
+            "DELETE",
+            {},
         );
     }
 
