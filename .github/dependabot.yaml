@@ -3,21 +3,21 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
+    groups:
+      monthly-batch:
+        patterns:
+          - "*"
     cooldown:
-      default-days: 30
+      default-days: 60
+      semver-major-days: 60
+      semver-minor-days: 30
+      semver-patch-days: 7
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
-    cooldown:
-      default-days: 30
-    ignore:
-      - dependency-name: 'actions/checkout'
-        update-types: ['version-update:semver-patch']
-      - dependency-name: 'actions/setup-node'
-        update-types: ['version-update:semver-patch']
-      - dependency-name: 'actions/github-script'
-        update-types: ['version-update:semver-patch']
-      - dependency-name: 'dorny/paths-filter'
-        update-types: ['version-update:semver-patch']
+      interval: 'monthly'
+    groups:
+      monthly-batch:
+        patterns:
+          - "*"
