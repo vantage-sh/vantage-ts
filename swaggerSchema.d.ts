@@ -945,6 +945,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dashboard_notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all dashboard notifications
+         * @description Return all DashboardNotifications.
+         */
+        get: operations["getDashboardNotifications"];
+        put?: never;
+        /**
+         * Create dashboard notification
+         * @description Create a DashboardNotification.
+         */
+        post: operations["createDashboardNotification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard_notifications/{dashboard_notification_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get dashboard notification by token
+         * @description Return a DashboardNotification.
+         */
+        get: operations["getDashboardNotification"];
+        /**
+         * Update dashboard notification
+         * @description Update a DashboardNotification.
+         */
+        put: operations["updateDashboardNotification"];
+        post?: never;
+        /**
+         * Delete dashboard notification
+         * @description Delete a DashboardNotification.
+         */
+        delete: operations["deleteDashboardNotification"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/widgets/{widget_token}": {
         parameters: {
             query?: never;
@@ -4894,7 +4946,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -5299,7 +5351,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -5369,6 +5421,69 @@ export interface components {
              */
             segment?: string | null;
         };
+        /** @description DashboardNotifications model */
+        DashboardNotifications: {
+            links?: components["schemas"]["Links"];
+            dashboard_notifications: components["schemas"]["DashboardNotification"][];
+        };
+        /** @description DashboardNotification model */
+        DashboardNotification: {
+            token: string;
+            /**
+             * @description The title of the DashboardNotification.
+             * @example Weekly Executive Dashboard
+             */
+            title: string;
+            /**
+             * @description The token for the Dashboard the DashboardNotification sends.
+             * @example dshbrd_abcd1234
+             */
+            dashboard_token: string;
+            /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
+            user_tokens: string[];
+            /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
+            recipient_emails: string[];
+            /**
+             * @description The frequency the DashboardNotification is sent.
+             * @example weekly
+             * @enum {string}
+             */
+            frequency: "daily" | "weekly" | "monthly";
+        };
+        /** @description Create a DashboardNotification. */
+        createDashboardNotification: {
+            /** @description The title of the DashboardNotification. */
+            title: string;
+            /** @description The Dashboard token. */
+            dashboard_token: string;
+            /** @description The token of the Workspace to add the DashboardNotification to. Required if the API token is associated with multiple Workspaces. */
+            workspace_token?: string;
+            /** @description The Users that receive the notification. */
+            user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
+            recipient_emails?: string[];
+            /**
+             * @description The frequency the DashboardNotification is sent. Possible values: daily, weekly, monthly.
+             * @enum {string}
+             */
+            frequency: "daily" | "weekly" | "monthly";
+        };
+        /** @description Update a DashboardNotification. */
+        updateDashboardNotification: {
+            /** @description The title of the DashboardNotification. */
+            title?: string;
+            /** @description The Dashboard token. Retargeting requires edit access to the new Dashboard. */
+            dashboard_token?: string;
+            /** @description The Users that receive the notification. */
+            user_tokens?: string[];
+            /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
+            recipient_emails?: string[];
+            /**
+             * @description The frequency the DashboardNotification is sent. Possible values: daily, weekly, monthly.
+             * @enum {string}
+             */
+            frequency?: "daily" | "weekly" | "monthly";
+        };
         /** @description DashboardWidget model */
         DashboardWidget: {
             /**
@@ -5376,14 +5491,24 @@ export interface components {
              * @example dshbrd_wdgt_a12b3c
              */
             token: string;
-            /** @example rprt_a12b3c */
-            widgetable_token: string | null;
+            /**
+             * @description The token of the represented Resource.
+             * @example rprt_a12b3c
+             */
+            widgetable_token?: string;
+            /**
+             * @description The widget type. Present instead of widgetable_token for free text widgets.
+             * @enum {string}
+             */
+            widgetable_type?: "free_text";
             /**
              * @description The title of the Widget.
              * @example My Widget
              */
             title: string;
-            settings: components["schemas"]["DashboardWidgetSettings"];
+            /** @description The rich-text document for a free text widget. */
+            content?: Record<string, any> | null;
+            settings?: components["schemas"]["DashboardWidgetSettings"];
         };
         DashboardWidgetSettings: {
             /** @enum {string} */
@@ -5400,6 +5525,29 @@ export interface components {
             kpi_type?: "cost" | "usage" | "count" | "business_metric" | null;
             /** @description The usage unit represented by the KPI. */
             kpi_usage_unit?: string | null;
+            grid?: components["schemas"]["DashboardWidgetGridLayout"];
+        };
+        DashboardWidgetGridLayout: {
+            /**
+             * Format: int32
+             * @description The zero-based horizontal position in the 12-column grid.
+             */
+            x: number;
+            /**
+             * Format: int32
+             * @description The zero-based vertical position in the grid.
+             */
+            y: number;
+            /**
+             * Format: int32
+             * @description The widget width in grid columns.
+             */
+            w: number;
+            /**
+             * Format: int32
+             * @description The widget height in grid rows.
+             */
+            h: number;
         };
         /** @description Update a single Dashboard Widget. */
         updateDashboardWidget: {
@@ -5432,6 +5580,7 @@ export interface components {
              * @example AWS Dashboard
              */
             title: string;
+            /** @description The widgets displayed in the Dashboard. Report-backed widgets include widgetable_token and settings. Free text widgets include widgetable_type set to free_text and content, omit widgetable_token, and include settings when a grid layout is persisted. */
             widgets: components["schemas"]["DashboardWidget"][];
             /** @description The tokens of the Saved Filters used in the Dashboard. */
             saved_filter_tokens: string[];
@@ -5475,13 +5624,27 @@ export interface components {
         createDashboard: {
             /** @description The title of the Dashboard. */
             title: string;
-            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, FinancialCommitmentReport, RecommendationView, and KPI widgets. */
+            /** @description The widgets to add to the Dashboard. Report-backed widgets use widgetable_token. Free text widgets use widgetable_type set to free_text and require content. */
             widgets?: {
                 /** @description The token of the represented Resource. */
-                widgetable_token: string;
-                /** @description The title of the Widget (defaults to the title of the Resource). */
+                widgetable_token?: string;
+                /**
+                 * @description The widget type. Use free_text for a free text widget.
+                 * @enum {string}
+                 */
+                widgetable_type?: "free_text";
+                /** @description The title of the Widget (defaults to the Resource title, or Free Text for a free text widget). */
                 title?: string;
-                /** @description The settings for the DashboardWidget. */
+                /** @description The required rich-text document for a free text widget. */
+                content?: {
+                    /**
+                     * @description The TipTap document root type.
+                     * @enum {string}
+                     */
+                    type: "doc";
+                    content?: Record<string, any>[];
+                };
+                /** @description The display and grid layout settings for the DashboardWidget. */
                 settings?: {
                     /** @enum {string} */
                     display_type: "table" | "chart" | "kpi";
@@ -5497,6 +5660,29 @@ export interface components {
                     kpi_type?: "cost" | "usage" | "count" | "business_metric";
                     /** @description The usage unit represented when kpi_type is usage. */
                     kpi_usage_unit?: string;
+                    /** @description The widget's size and position in the dashboard's 12-column grid. */
+                    grid?: {
+                        /**
+                         * Format: int32
+                         * @description The zero-based horizontal position.
+                         */
+                        x: number;
+                        /**
+                         * Format: int32
+                         * @description The zero-based vertical position.
+                         */
+                        y: number;
+                        /**
+                         * Format: int32
+                         * @description The widget width in grid columns.
+                         */
+                        w: number;
+                        /**
+                         * Format: int32
+                         * @description The widget height in grid rows.
+                         */
+                        h: number;
+                    };
                 };
             }[];
             /** @description The tokens of the Saved Filters used in the Dashboard. */
@@ -5522,13 +5708,27 @@ export interface components {
         updateDashboard: {
             /** @description The title of the Dashboard. */
             title?: string;
-            /** @description The widgets to add to the Dashboard. Currently supports CostReport, ResourceReport, KubernetesEfficiencyReport, FinancialCommitmentReport, RecommendationView, and KPI widgets. */
+            /** @description The complete replacement list of widgets for the Dashboard. Omit widgets or send null to preserve every existing widget. When provided, include every report-backed and free text widget to keep; an empty array removes all widgets. Report-backed widgets use widgetable_token. Free text widgets use widgetable_type set to free_text and require content. */
             widgets?: {
                 /** @description The token of the represented Resource. */
-                widgetable_token: string;
-                /** @description The title of the Widget (defaults to the title of the Resource). */
+                widgetable_token?: string;
+                /**
+                 * @description The widget type. Use free_text for a free text widget.
+                 * @enum {string}
+                 */
+                widgetable_type?: "free_text";
+                /** @description The title of the Widget (defaults to the Resource title, or Free Text for a free text widget). */
                 title?: string;
-                /** @description The settings for the DashboardWidget. */
+                /** @description The required rich-text document for a free text widget. */
+                content?: {
+                    /**
+                     * @description The TipTap document root type.
+                     * @enum {string}
+                     */
+                    type: "doc";
+                    content?: Record<string, any>[];
+                };
+                /** @description The display and grid layout settings for the DashboardWidget. */
                 settings?: {
                     /** @enum {string} */
                     display_type: "table" | "chart" | "kpi";
@@ -5544,10 +5744,33 @@ export interface components {
                     kpi_type?: "cost" | "usage" | "count" | "business_metric";
                     /** @description The usage unit represented when kpi_type is usage. */
                     kpi_usage_unit?: string;
+                    /** @description The widget's size and position in the dashboard's 12-column grid. */
+                    grid?: {
+                        /**
+                         * Format: int32
+                         * @description The zero-based horizontal position.
+                         */
+                        x: number;
+                        /**
+                         * Format: int32
+                         * @description The zero-based vertical position.
+                         */
+                        y: number;
+                        /**
+                         * Format: int32
+                         * @description The widget width in grid columns.
+                         */
+                        w: number;
+                        /**
+                         * Format: int32
+                         * @description The widget height in grid rows.
+                         */
+                        h: number;
+                    };
                 };
-            }[];
+            }[] | null;
             /** @description The tokens of the Saved Filters used in the Dashboard. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: string[] | null;
             /**
              * @description Determines how to group costs in the Dashboard.
              * @enum {string}
@@ -5555,13 +5778,13 @@ export interface components {
             date_bin?: "cumulative" | "day" | "week" | "month";
             /**
              * @description Determines the date range in the Dashboard. Incompatible with 'start_date' and 'end_date' parameters.
-             * @enum {string}
+             * @enum {string|null}
              */
-            date_interval?: "this_month" | "last_7_days" | "last_30_days" | "last_month" | "last_3_months" | "last_6_months" | "custom" | "last_12_months" | "last_24_months" | "last_36_months" | "next_month" | "next_3_months" | "next_6_months" | "next_12_months" | "year_to_date" | "last_3_days" | "last_14_days" | "";
+            date_interval?: "this_month" | "last_7_days" | "last_30_days" | "last_month" | "last_3_months" | "last_6_months" | "custom" | "last_12_months" | "last_24_months" | "last_36_months" | "next_month" | "next_3_months" | "next_6_months" | "next_12_months" | "year_to_date" | "last_3_days" | "last_14_days" | "" | null;
             /** @description The start date for the date range for costs in the Dashboard. ISO 8601 Formatted. Incompatible with 'date_interval' parameter. */
-            start_date?: string;
+            start_date?: string | null;
             /** @description The end date for the date range for costs in the Dashboard. ISO 8601 Formatted. Incompatible with 'date_interval' parameter. */
-            end_date?: string;
+            end_date?: string | null;
             /** @description The token of the Workspace the Dashboard belongs to. Required when updating widgets if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
         };
@@ -7922,7 +8145,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2026-03-01
+             * @example 2026-04-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -11975,7 +12198,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -12405,7 +12628,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -12711,6 +12934,243 @@ export interface operations {
             };
         };
     };
+    getDashboardNotifications: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+                /** @description Search dashboard notifications by title. */
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/dashboard_notifications",
+                     *         "first": "https://api.vantage.sh/v2/dashboard_notifications?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/dashboard_notifications?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "dashboard_notifications": [
+                     *         {
+                     *           "token": "rprtbl_ntfctn_1a908a98b16b55fa",
+                     *           "title": "Test Reportable Notification",
+                     *           "dashboard_token": "dshbrd_8380739153057287",
+                     *           "user_tokens": [
+                     *             "usr_c1921f57ae247748"
+                     *           ],
+                     *           "recipient_emails": [
+                     *             "latonia.hauck@jaskolski-schneider.net"
+                     *           ],
+                     *           "frequency": "weekly"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardNotifications"];
+                };
+            };
+        };
+    };
+    createDashboardNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createDashboardNotification"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprtbl_ntfctn_99f0bfc16d9fc9e1",
+                     *       "title": "New Dashboard Notification",
+                     *       "dashboard_token": "dshbrd_1bec26b3496e5a8d",
+                     *       "user_tokens": [
+                     *         "usr_224aac415b7969b5"
+                     *       ],
+                     *       "recipient_emails": [
+                     *         "dvm.ebert.solomon@rogahn-yost.com"
+                     *       ],
+                     *       "frequency": "weekly"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardNotification"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getDashboardNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dashboard_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprtbl_ntfctn_bc7a4fc950f77a11",
+                     *       "title": "Test Reportable Notification",
+                     *       "dashboard_token": "dshbrd_9b32b693435031e1",
+                     *       "user_tokens": [
+                     *         "usr_739ae48e2c0498c1"
+                     *       ],
+                     *       "recipient_emails": [
+                     *         "dvm.solomon.ebert@boyle.net"
+                     *       ],
+                     *       "frequency": "weekly"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardNotification"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateDashboardNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dashboard_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateDashboardNotification"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "rprtbl_ntfctn_03535c334325c782",
+                     *       "title": "Renamed Dashboard Notification",
+                     *       "dashboard_token": "dshbrd_52d62ae97be32af4",
+                     *       "user_tokens": [
+                     *         "usr_571b8b27367e70e5"
+                     *       ],
+                     *       "recipient_emails": [
+                     *         "joetta.wehner@boehm-volkman.info"
+                     *       ],
+                     *       "frequency": "weekly"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DashboardNotification"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteDashboardNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dashboard_notification_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardNotification"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
     getDashboardWidget: {
         parameters: {
             query?: never;
@@ -12889,30 +13349,56 @@ export interface operations {
                      *       },
                      *       "dashboards": [
                      *         {
-                     *           "token": "dshbrd_13d78294a06f0f84",
-                     *           "title": "Executive Overview",
+                     *           "token": "dshbrd_8d14cfef5a2c40e8",
+                     *           "title": "Look to Windward",
                      *           "widget_tokens": [
-                     *             "rprt_7c3cb814dfb6d881"
+                     *             "rprt_73eccc0025f6f773"
                      *           ],
                      *           "widgets": [
                      *             {
-                     *               "widgetable_token": "rprt_7c3cb814dfb6d881",
-                     *               "title": "Cost Report",
+                     *               "token": "dshbrd_wdgt_6020cf1db7b2d242",
+                     *               "widgetable_token": "rprt_73eccc0025f6f773",
+                     *               "title": "Widget",
                      *               "settings": {
-                     *                 "display_type": "chart"
+                     *                 "display_type": "chart",
+                     *                 "grid": {
+                     *                   "x": 0,
+                     *                   "y": 0,
+                     *                   "w": 8,
+                     *                   "h": 3
+                     *                 }
+                     *               }
+                     *             },
+                     *             {
+                     *               "token": "dshbrd_wdgt_7e7381069760ad8b",
+                     *               "widgetable_type": "free_text",
+                     *               "title": "Notes",
+                     *               "content": {
+                     *                 "type": "doc",
+                     *                 "content": [
+                     *                   {
+                     *                     "type": "paragraph",
+                     *                     "content": [
+                     *                       {
+                     *                         "text": "Dashboard notes",
+                     *                         "type": "text"
+                     *                       }
+                     *                     ]
+                     *                   }
+                     *                 ]
                      *               }
                      *             }
                      *           ],
                      *           "saved_filter_tokens": [
-                     *             "svd_fltr_3c6f5eb635cf88de"
+                     *             "svd_fltr_5e24314f7112bd8c"
                      *           ],
                      *           "date_bin": null,
                      *           "date_interval": null,
                      *           "start_date": null,
                      *           "end_date": null,
-                     *           "created_at": "2024-12-17T00:44:48Z",
-                     *           "updated_at": "2024-12-17T00:44:48Z",
-                     *           "workspace_token": "wrkspc_ea1a7802e5fe06b3"
+                     *           "created_at": "2026-10-01T18:52:12Z",
+                     *           "updated_at": "2026-10-01T18:52:12Z",
+                     *           "workspace_token": "wrkspc_1b396cf40caa4666"
                      *         }
                      *       ]
                      *     }
@@ -12942,38 +13428,78 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "dshbrd_7e272e8d3de34719",
+                     *       "token": "dshbrd_165e758f38903d96",
                      *       "title": "New Dashboard",
                      *       "widget_tokens": [
-                     *         "fncl_cmnt_rprt_d4743c186c130e30",
-                     *         "kbnts_eff_rprt_892d1566bd543b67",
-                     *         "rprt_750074c1b25b372a"
+                     *         "fncl_cmnt_rprt_9e3d55357851a07e",
+                     *         "kbnts_eff_rprt_dd1de14ecbcc666a",
+                     *         "rprt_470302eee1030d05"
                      *       ],
                      *       "widgets": [
                      *         {
-                     *           "widgetable_token": "fncl_cmnt_rprt_d4743c186c130e30",
+                     *           "token": "dshbrd_wdgt_0f68cc77fa8eefd4",
+                     *           "widgetable_token": "fncl_cmnt_rprt_9e3d55357851a07e",
                      *           "title": "All Financial Commitments",
                      *           "settings": {
-                     *             "display_type": "chart"
+                     *             "display_type": "chart",
+                     *             "grid": {
+                     *               "x": 0,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
                      *           }
                      *         },
                      *         {
-                     *           "widgetable_token": "kbnts_eff_rprt_892d1566bd543b67",
-                     *           "title": "All Kubernetes Nodes Efficiency",
+                     *           "token": "dshbrd_wdgt_424d9a64db2f08ea",
+                     *           "widgetable_token": "kbnts_eff_rprt_dd1de14ecbcc666a",
+                     *           "title": "Quinoa forage kale chips austin hashtag.",
                      *           "settings": {
-                     *             "display_type": "table"
+                     *             "display_type": "table",
+                     *             "grid": {
+                     *               "x": 4,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
                      *           }
                      *         },
                      *         {
-                     *           "widgetable_token": "rprt_750074c1b25b372a",
-                     *           "title": "Azure Cost Report",
+                     *           "token": "dshbrd_wdgt_e0e7053dc5fca7aa",
+                     *           "widgetable_token": "rprt_470302eee1030d05",
+                     *           "title": "Untitled",
                      *           "settings": {
-                     *             "display_type": "chart"
+                     *             "display_type": "chart",
+                     *             "grid": {
+                     *               "x": 8,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
+                     *           }
+                     *         },
+                     *         {
+                     *           "token": "dshbrd_wdgt_95ce398292cc13be",
+                     *           "widgetable_type": "free_text",
+                     *           "title": "Notes",
+                     *           "content": {
+                     *             "type": "doc",
+                     *             "content": [
+                     *               {
+                     *                 "type": "paragraph",
+                     *                 "content": [
+                     *                   {
+                     *                     "type": "text",
+                     *                     "text": "Dashboard notes"
+                     *                   }
+                     *                 ]
+                     *               }
+                     *             ]
                      *           }
                      *         }
                      *       ],
                      *       "saved_filter_tokens": [
-                     *         "svd_fltr_3f45aefa131861ac"
+                     *         "svd_fltr_3b38b91699d21a2e"
                      *       ],
                      *       "date_bin": "week",
                      *       "date_interval": "this_month",
@@ -12981,7 +13507,7 @@ export interface operations {
                      *       "end_date": "2023-08-31",
                      *       "created_at": "2023-08-15T00:00:00Z",
                      *       "updated_at": "2023-08-15T00:00:00Z",
-                     *       "workspace_token": "wrkspc_08e043cc14ced776"
+                     *       "workspace_token": "wrkspc_3159fd6a40906a33"
                      *     }
                      */
                     "application/json": components["schemas"]["Dashboard"];
@@ -13016,41 +13542,56 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "links": {
-                     *         "self": "https://api.vantage.sh/v2/dashboards",
-                     *         "first": "https://api.vantage.sh/v2/dashboards?page=1",
-                     *         "next": null,
-                     *         "last": "https://api.vantage.sh/v2/dashboards?page=1",
-                     *         "prev": null
-                     *       },
-                     *       "dashboards": [
+                     *       "token": "dshbrd_9d0418f598f0dca0",
+                     *       "title": "The Last Enemy",
+                     *       "widget_tokens": [
+                     *         "rprt_16d2587e0b7ae5f1"
+                     *       ],
+                     *       "widgets": [
                      *         {
-                     *           "token": "dshbrd_e7c5b49d826b6f71",
-                     *           "title": "Executive Overview",
-                     *           "widget_tokens": [
-                     *             "rprt_27e80d7a8d3f34e6"
-                     *           ],
-                     *           "widgets": [
-                     *             {
-                     *               "widgetable_token": "rprt_27e80d7a8d3f34e6",
-                     *               "title": "Weekly Sales Report",
-                     *               "settings": {
-                     *                 "display_type": "chart"
-                     *               }
+                     *           "token": "dshbrd_wdgt_05e6b6e7ef123fae",
+                     *           "widgetable_token": "rprt_16d2587e0b7ae5f1",
+                     *           "title": "Widget",
+                     *           "settings": {
+                     *             "display_type": "chart",
+                     *             "grid": {
+                     *               "x": 4,
+                     *               "y": 6,
+                     *               "w": 8,
+                     *               "h": 3
                      *             }
-                     *           ],
-                     *           "saved_filter_tokens": [
-                     *             "svd_fltr_7bb508e881e7fe5f"
-                     *           ],
-                     *           "date_bin": null,
-                     *           "date_interval": null,
-                     *           "start_date": null,
-                     *           "end_date": null,
-                     *           "created_at": "2024-12-17T00:44:48Z",
-                     *           "updated_at": "2024-12-17T00:44:48Z",
-                     *           "workspace_token": "wrkspc_245288e3c3a7377f"
+                     *           }
+                     *         },
+                     *         {
+                     *           "token": "dshbrd_wdgt_dd90882c08aa08e3",
+                     *           "widgetable_type": "free_text",
+                     *           "title": "Notes",
+                     *           "content": {
+                     *             "type": "doc",
+                     *             "content": [
+                     *               {
+                     *                 "type": "paragraph",
+                     *                 "content": [
+                     *                   {
+                     *                     "text": "Dashboard notes",
+                     *                     "type": "text"
+                     *                   }
+                     *                 ]
+                     *               }
+                     *             ]
+                     *           }
                      *         }
-                     *       ]
+                     *       ],
+                     *       "saved_filter_tokens": [
+                     *         "svd_fltr_32d04fca7eedc49a"
+                     *       ],
+                     *       "date_bin": null,
+                     *       "date_interval": null,
+                     *       "start_date": null,
+                     *       "end_date": null,
+                     *       "created_at": "2026-10-01T18:52:11Z",
+                     *       "updated_at": "2026-10-01T18:52:11Z",
+                     *       "workspace_token": "wrkspc_78fbdd2cec362c21"
                      *     }
                      */
                     "application/json": components["schemas"]["Dashboard"];
@@ -13089,46 +13630,86 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "dshbrd_2c942eb3a8d3962a",
+                     *       "token": "dshbrd_dce74ddb4f35ce34",
                      *       "title": "Updated Dashboard",
                      *       "widget_tokens": [
-                     *         "fncl_cmnt_rprt_ea316a453acd20c0",
-                     *         "kbnts_eff_rprt_e3fc91cb63fd5469",
-                     *         "rprt_7b0be9c16c5a6785"
+                     *         "fncl_cmnt_rprt_c554635f950fdd0e",
+                     *         "kbnts_eff_rprt_0a75d149ff088b54",
+                     *         "rprt_2fb7a5357357fe1f"
                      *       ],
                      *       "widgets": [
                      *         {
-                     *           "widgetable_token": "fncl_cmnt_rprt_ea316a453acd20c0",
+                     *           "token": "dshbrd_wdgt_a7764aa942cfe146",
+                     *           "widgetable_token": "fncl_cmnt_rprt_c554635f950fdd0e",
                      *           "title": "All Financial Commitments",
                      *           "settings": {
-                     *             "display_type": "chart"
+                     *             "display_type": "chart",
+                     *             "grid": {
+                     *               "x": 0,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
                      *           }
                      *         },
                      *         {
-                     *           "widgetable_token": "kbnts_eff_rprt_e3fc91cb63fd5469",
-                     *           "title": "Kubernetes Efficiency Report",
+                     *           "token": "dshbrd_wdgt_93dbad3e6144ea7b",
+                     *           "widgetable_token": "kbnts_eff_rprt_0a75d149ff088b54",
+                     *           "title": "Normcore vegan.",
                      *           "settings": {
-                     *             "display_type": "table"
+                     *             "display_type": "table",
+                     *             "grid": {
+                     *               "x": 4,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
                      *           }
                      *         },
                      *         {
-                     *           "widgetable_token": "rprt_7b0be9c16c5a6785",
-                     *           "title": "Azure Report",
+                     *           "token": "dshbrd_wdgt_e23f7ba8d1a528fa",
+                     *           "widgetable_token": "rprt_2fb7a5357357fe1f",
+                     *           "title": "Untitled",
                      *           "settings": {
-                     *             "display_type": "chart"
+                     *             "display_type": "chart",
+                     *             "grid": {
+                     *               "x": 8,
+                     *               "y": 0,
+                     *               "w": 4,
+                     *               "h": 3
+                     *             }
+                     *           }
+                     *         },
+                     *         {
+                     *           "token": "dshbrd_wdgt_665fb511741fc69f",
+                     *           "widgetable_type": "free_text",
+                     *           "title": "Notes",
+                     *           "content": {
+                     *             "type": "doc",
+                     *             "content": [
+                     *               {
+                     *                 "type": "paragraph",
+                     *                 "content": [
+                     *                   {
+                     *                     "type": "text",
+                     *                     "text": "Dashboard notes"
+                     *                   }
+                     *                 ]
+                     *               }
+                     *             ]
                      *           }
                      *         }
                      *       ],
                      *       "saved_filter_tokens": [
-                     *         "svd_fltr_51c106391f7295b7"
+                     *         "svd_fltr_b6dfd1946b1181be"
                      *       ],
                      *       "date_bin": "week",
                      *       "date_interval": "this_month",
                      *       "start_date": "2023-08-01",
                      *       "end_date": "2023-08-31",
-                     *       "created_at": "2024-12-17T00:44:45Z",
+                     *       "created_at": "2026-10-01T18:52:14Z",
                      *       "updated_at": "2023-08-15T00:00:00Z",
-                     *       "workspace_token": "wrkspc_0e5c381029cdc016"
+                     *       "workspace_token": "wrkspc_6d1f4d1fb379b3bc"
                      *     }
                      */
                     "application/json": components["schemas"]["Dashboard"];
@@ -13353,7 +13934,7 @@ export interface operations {
                  * @description Filter statistics to costs for a specific provider key.
                  * @example aws
                  */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
             };
             header?: never;
             path: {
@@ -14122,7 +14703,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -18881,7 +19462,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -19019,7 +19600,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
