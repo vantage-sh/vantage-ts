@@ -5439,6 +5439,11 @@ export interface components {
              * @example dshbrd_abcd1234
              */
             dashboard_token: string;
+            /**
+             * @description The token for the Workspace the DashboardNotification is a part of.
+             * @example wrkspc_abcd1234567890
+             */
+            workspace_token: string;
             /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
             user_tokens: string[];
             /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
@@ -5506,7 +5511,7 @@ export interface components {
              * @example My Widget
              */
             title: string;
-            /** @description The rich-text document for a free text widget. */
+            /** @description Rich-text document for a free text widget, for example {"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Note"}]}]}. */
             content?: Record<string, any> | null;
             settings?: components["schemas"]["DashboardWidgetSettings"];
         };
@@ -5635,10 +5640,10 @@ export interface components {
                 widgetable_type?: "free_text";
                 /** @description The title of the Widget (defaults to the Resource title, or Free Text for a free text widget). */
                 title?: string;
-                /** @description The required rich-text document for a free text widget. */
+                /** @description Rich-text document for a free text widget, for example {"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Note"}]}]}. */
                 content?: {
                     /**
-                     * @description The TipTap document root type.
+                     * @description Document root. Must be doc.
                      * @enum {string}
                      */
                     type: "doc";
@@ -5719,10 +5724,10 @@ export interface components {
                 widgetable_type?: "free_text";
                 /** @description The title of the Widget (defaults to the Resource title, or Free Text for a free text widget). */
                 title?: string;
-                /** @description The required rich-text document for a free text widget. */
+                /** @description Rich-text document for a free text widget, for example {"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Note"}]}]}. */
                 content?: {
                     /**
-                     * @description The TipTap document root type.
+                     * @description Document root. Must be doc.
                      * @enum {string}
                      */
                     type: "doc";
@@ -12966,14 +12971,15 @@ export interface operations {
                      *       },
                      *       "dashboard_notifications": [
                      *         {
-                     *           "token": "rprtbl_ntfctn_1a908a98b16b55fa",
+                     *           "token": "rprtbl_ntfctn_63290c754f7952a7",
                      *           "title": "Test Reportable Notification",
-                     *           "dashboard_token": "dshbrd_8380739153057287",
+                     *           "dashboard_token": "dshbrd_d7f2d3999d3bb676",
+                     *           "workspace_token": "wrkspc_76436cad5fe4cfe7",
                      *           "user_tokens": [
-                     *             "usr_c1921f57ae247748"
+                     *             "usr_64893b0adb058048"
                      *           ],
                      *           "recipient_emails": [
-                     *             "latonia.hauck@jaskolski-schneider.net"
+                     *             "sen.alva.gleichner@wiza.io"
                      *           ],
                      *           "frequency": "weekly"
                      *         }
@@ -13005,14 +13011,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprtbl_ntfctn_99f0bfc16d9fc9e1",
+                     *       "token": "rprtbl_ntfctn_8101849f6488da9c",
                      *       "title": "New Dashboard Notification",
-                     *       "dashboard_token": "dshbrd_1bec26b3496e5a8d",
+                     *       "dashboard_token": "dshbrd_5a407c91e5b5e003",
+                     *       "workspace_token": "wrkspc_004d57b0845051e7",
                      *       "user_tokens": [
-                     *         "usr_224aac415b7969b5"
+                     *         "usr_1eee77aa81f05a73"
                      *       ],
                      *       "recipient_emails": [
-                     *         "dvm.ebert.solomon@rogahn-yost.com"
+                     *         "fr.lonna.bradtke@emmerich.name"
                      *       ],
                      *       "frequency": "weekly"
                      *     }
@@ -13058,14 +13065,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprtbl_ntfctn_bc7a4fc950f77a11",
+                     *       "token": "rprtbl_ntfctn_53618a608c8d3957",
                      *       "title": "Test Reportable Notification",
-                     *       "dashboard_token": "dshbrd_9b32b693435031e1",
+                     *       "dashboard_token": "dshbrd_a98a3a48adee51c4",
+                     *       "workspace_token": "wrkspc_0f1d6a27ec138550",
                      *       "user_tokens": [
-                     *         "usr_739ae48e2c0498c1"
+                     *         "usr_c147b91c7ccdbc9d"
                      *       ],
                      *       "recipient_emails": [
-                     *         "dvm.solomon.ebert@boyle.net"
+                     *         "brakus_iii_xuan@will-jast.net"
                      *       ],
                      *       "frequency": "weekly"
                      *     }
@@ -13106,14 +13114,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rprtbl_ntfctn_03535c334325c782",
+                     *       "token": "rprtbl_ntfctn_d1d284786116c1db",
                      *       "title": "Renamed Dashboard Notification",
-                     *       "dashboard_token": "dshbrd_52d62ae97be32af4",
+                     *       "dashboard_token": "dshbrd_90f42ffa8df85b0a",
+                     *       "workspace_token": "wrkspc_b193018db3bd8297",
                      *       "user_tokens": [
-                     *         "usr_571b8b27367e70e5"
+                     *         "usr_e02c7517318671a4"
                      *       ],
                      *       "recipient_emails": [
-                     *         "joetta.wehner@boehm-volkman.info"
+                     *         "do_alva_gleichner@wiza.io"
                      *       ],
                      *       "frequency": "weekly"
                      *     }
