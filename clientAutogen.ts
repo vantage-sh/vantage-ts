@@ -57,7 +57,7 @@ export type GetAccessPoliciesRequest = RequestBodyForPathAndMethod<"/v2/access_p
  */
 export type GetAccessPoliciesResponse = ResponseBodyForPathAndMethod<"/v2/access_policies", "GET">;
 /**
- * Create an Access Policy.
+ * Create an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
  */
 export type CreateAccessPolicyRequest = RequestBodyForPathAndMethod<"/v2/access_policies", "POST">;
 /**
@@ -65,7 +65,7 @@ export type CreateAccessPolicyRequest = RequestBodyForPathAndMethod<"/v2/access_
  */
 export type CreateAccessPolicyResponse = ResponseBodyForPathAndMethod<"/v2/access_policies", "POST">;
 /**
- * Update an Access Policy.
+ * Update an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
  */
 export type UpdateAccessPolicyRequest = RequestBodyForPathAndMethod<`/v2/access_policies/${NoSlashString}`, "PUT">;
 /**
@@ -697,7 +697,7 @@ export type GetFinancialCommitmentsRequest = RequestBodyForPathAndMethod<"/v2/fi
  */
 export type GetFinancialCommitmentsResponse = ResponseBodyForPathAndMethod<"/v2/financial_commitments", "GET">;
 /**
- * Return all Folders for CostReports.
+ * Return all Folders.
  */
 export type GetFoldersRequest = RequestBodyForPathAndMethod<"/v2/folders", "GET">;
 /**
@@ -705,7 +705,7 @@ export type GetFoldersRequest = RequestBodyForPathAndMethod<"/v2/folders", "GET"
  */
 export type GetFoldersResponse = ResponseBodyForPathAndMethod<"/v2/folders", "GET">;
 /**
- * Create a Folder for CostReports.
+ * Create a Folder.
  */
 export type CreateFolderRequest = RequestBodyForPathAndMethod<"/v2/folders", "POST">;
 /**
@@ -717,7 +717,7 @@ export type CreateFolderResponse = ResponseBodyForPathAndMethod<"/v2/folders", "
  */
 export type GetFolderResponse = ResponseBodyForPathAndMethod<`/v2/folders/${NoSlashString}`, "GET">;
 /**
- * Update a Folder for CostReports.
+ * Update a Folder.
  */
 export type UpdateFolderRequest = RequestBodyForPathAndMethod<`/v2/folders/${NoSlashString}`, "PUT">;
 /**
@@ -2050,7 +2050,7 @@ class AccessPoliciesApi<NeverThrow extends boolean> {
     }
 
 /**
- * Create an Access Policy.
+ * Create an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
  */
     create(body: CreateAccessPolicyRequest) {
         return this.client.request(
@@ -2061,7 +2061,7 @@ class AccessPoliciesApi<NeverThrow extends boolean> {
     }
 
 /**
- * Update an Access Policy.
+ * Update an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
  */
     update(accessPolicyToken: string, body: UpdateAccessPolicyRequest) {
         return this.client.request(
@@ -2072,7 +2072,7 @@ class AccessPoliciesApi<NeverThrow extends boolean> {
     }
 
 /**
- * Delete an Access Policy.
+ * Delete an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
  */
     delete(accessPolicyToken: string) {
         return this.client.request(
@@ -3220,7 +3220,7 @@ class FoldersApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
- * Return all Folders for CostReports.
+ * Return all Folders.
  */
     list(body?: GetFoldersRequest) {
         return this.client.request(
@@ -3231,7 +3231,7 @@ class FoldersApi<NeverThrow extends boolean> {
     }
 
 /**
- * Create a Folder for CostReports.
+ * Create a Folder.
  */
     create(body: CreateFolderRequest) {
         return this.client.request(
@@ -3242,7 +3242,7 @@ class FoldersApi<NeverThrow extends boolean> {
     }
 
 /**
- * Return a specific Folder for CostReports.
+ * Return a specific Folder.
  */
     get(folderToken: string) {
         return this.client.request(
@@ -3253,7 +3253,7 @@ class FoldersApi<NeverThrow extends boolean> {
     }
 
 /**
- * Update a Folder for CostReports.
+ * Update a Folder.
  */
     update(folderToken: string, body: UpdateFolderRequest) {
         return this.client.request(
@@ -3264,7 +3264,7 @@ class FoldersApi<NeverThrow extends boolean> {
     }
 
 /**
- * Delete a Folder for CostReports.
+ * Delete a Folder.
  */
     delete(folderToken: string) {
         return this.client.request(

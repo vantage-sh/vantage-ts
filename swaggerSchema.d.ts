@@ -68,7 +68,7 @@ export interface paths {
         put?: never;
         /**
          * Create access policy
-         * @description Create an Access Policy.
+         * @description Create an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
          */
         post: operations["createAccessPolicy"];
         delete?: never;
@@ -87,13 +87,13 @@ export interface paths {
         get?: never;
         /**
          * Update access policy
-         * @description Update an Access Policy.
+         * @description Update an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
          */
         put: operations["updateAccessPolicy"];
         post?: never;
         /**
          * Delete access policy
-         * @description Delete an Access Policy.
+         * @description Delete an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope.
          */
         delete: operations["deleteAccessPolicy"];
         options?: never;
@@ -1298,13 +1298,13 @@ export interface paths {
         };
         /**
          * Get all folders
-         * @description Return all Folders for CostReports.
+         * @description Return all Folders.
          */
         get: operations["getFolders"];
         put?: never;
         /**
          * Create folder
-         * @description Create a Folder for CostReports.
+         * @description Create a Folder.
          */
         post: operations["createFolder"];
         delete?: never;
@@ -1322,18 +1322,18 @@ export interface paths {
         };
         /**
          * Get folder by token
-         * @description Return a specific Folder for CostReports.
+         * @description Return a specific Folder.
          */
         get: operations["getFolder"];
         /**
          * Update folder
-         * @description Update a Folder for CostReports.
+         * @description Update a Folder.
          */
         put: operations["updateFolder"];
         post?: never;
         /**
          * Delete folder
-         * @description Delete a Folder for CostReports.
+         * @description Delete a Folder.
          */
         delete: operations["deleteFolder"];
         options?: never;
@@ -3156,7 +3156,7 @@ export interface components {
              */
             filter: string;
         };
-        /** @description Create an Access Policy. */
+        /** @description Create an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope. */
         createAccessPolicy: {
             /** @description The title of the AccessPolicy. */
             title: string;
@@ -3179,7 +3179,7 @@ export interface components {
                 /** @description The AccessPolicy rules for this version. */
                 policy: {
                     /**
-                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. An empty filter is unrestricted.
                      * @example (vantage.provider = 'aws')
                      */
                     filter: string;
@@ -3195,7 +3195,7 @@ export interface components {
              */
             team_tokens?: string[];
         };
-        /** @description Update an Access Policy. */
+        /** @description Update an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope. */
         updateAccessPolicy: {
             /** @description The title of the AccessPolicy. */
             title?: string;
@@ -3218,7 +3218,7 @@ export interface components {
                 /** @description The AccessPolicy rules for this version. */
                 policy: {
                     /**
-                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows.
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. An empty filter is unrestricted.
                      * @example (vantage.provider = 'aws')
                      */
                     filter: string;
@@ -4946,7 +4946,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -5351,7 +5351,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -5620,6 +5620,11 @@ export interface components {
              */
             updated_at: string;
             /**
+             * @description The token for the Dashboard Folder containing the Dashboard, if any.
+             * @example fldr_abcd1234567890
+             */
+            folder_token: string | null;
+            /**
              * @description The token for the Workspace the Dashboard is a part of.
              * @example wrkspc_abcd1234567890
              */
@@ -5706,6 +5711,8 @@ export interface components {
             start_date?: string;
             /** @description The end date for the date range for costs in the Dashboard. ISO 8601 Formatted. Incompatible with 'date_interval' parameter. */
             end_date?: string;
+            /** @description The token of the Dashboard Folder to add the Dashboard to. Send null or an empty string to create the Dashboard at the root. */
+            folder_token?: string | null;
             /** @description The token of the Workspace to add the Dashboard to. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
         };
@@ -5790,6 +5797,8 @@ export interface components {
             start_date?: string | null;
             /** @description The end date for the date range for costs in the Dashboard. ISO 8601 Formatted. Incompatible with 'date_interval' parameter. */
             end_date?: string | null;
+            /** @description The token of the Dashboard Folder to move the Dashboard to. Send null or an empty string to move the Dashboard to the root. */
+            folder_token?: string | null;
             /** @description The token of the Workspace the Dashboard belongs to. Required when updating widgets if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
         };
@@ -6248,7 +6257,7 @@ export interface components {
             /** @description The token for the Workspace the Folder is a part of. */
             workspace_token: string;
         };
-        /** @description Create a Folder for CostReports. */
+        /** @description Create a Folder. */
         createFolder: {
             /** @description The title of the Folder. */
             title: string;
@@ -6263,16 +6272,16 @@ export interface components {
              * @default CostFolder
              * @enum {string}
              */
-            type?: "CostFolder" | "ProviderResourceFolder";
+            type?: "CostFolder" | "DashboardFolder" | "ProviderResourceFolder";
         };
-        /** @description Update a Folder for CostReports. */
+        /** @description Update a Folder. */
         updateFolder: {
             /** @description The title of the Folder. */
             title?: string;
-            /** @description The token of the parent Folder. */
-            parent_folder_token?: string;
+            /** @description The token of the parent Folder. Send null or an empty string to move the Folder to the root. */
+            parent_folder_token?: string | null;
             /** @description The tokens of the SavedFilters to apply to any Cost Report contained within the Folder. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: string[] | null;
         };
         /** @description Integrations model */
         Integrations: {
@@ -6817,12 +6826,12 @@ export interface components {
              * @example azure_csp
              */
             provider: string;
-            /** @description The provider account identifiers this delegated Integration imports. Azure CSP uses subscription ids and GCP uses project ids. An empty array means no filter is applied, so every provider account the credential can see is imported. Providers that do not support scoping always report an empty array. */
+            /** @description The provider account identifiers this delegated Integration imports. Azure CSP uses subscription ids and GCP uses billing account ids (reseller subaccounts). An empty array means no filter is applied, so every provider account the credential can see is imported. Providers that do not support scoping always report an empty array. */
             provider_account_identifiers: string[];
         };
         /** @description Update a delegated Integration on a Managed Account. */
         updateManagedAccountIntegration: {
-            /** @description The provider account identifiers this delegated Integration should import, replacing the current list. For Azure CSP these are subscription ids and for GCP these are project ids. An empty array applies no filter. */
+            /** @description The provider account identifiers this delegated Integration should import, replacing the current list. For Azure CSP these are subscription ids and for GCP these are billing account ids (reseller subaccounts) on the billing export. An empty array applies no filter. */
             provider_account_identifiers: string[];
         };
         /** @description Me model */
@@ -12203,7 +12212,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -12633,7 +12642,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -13411,6 +13420,7 @@ export interface operations {
                      *           "end_date": null,
                      *           "created_at": "2026-10-01T18:52:12Z",
                      *           "updated_at": "2026-10-01T18:52:12Z",
+                     *           "folder_token": null,
                      *           "workspace_token": "wrkspc_1b396cf40caa4666"
                      *         }
                      *       ]
@@ -13520,6 +13530,7 @@ export interface operations {
                      *       "end_date": "2023-08-31",
                      *       "created_at": "2023-08-15T00:00:00Z",
                      *       "updated_at": "2023-08-15T00:00:00Z",
+                     *       "folder_token": null,
                      *       "workspace_token": "wrkspc_3159fd6a40906a33"
                      *     }
                      */
@@ -13604,6 +13615,7 @@ export interface operations {
                      *       "end_date": null,
                      *       "created_at": "2026-10-01T18:52:11Z",
                      *       "updated_at": "2026-10-01T18:52:11Z",
+                     *       "folder_token": null,
                      *       "workspace_token": "wrkspc_78fbdd2cec362c21"
                      *     }
                      */
@@ -13722,6 +13734,7 @@ export interface operations {
                      *       "end_date": "2023-08-31",
                      *       "created_at": "2026-10-01T18:52:14Z",
                      *       "updated_at": "2023-08-15T00:00:00Z",
+                     *       "folder_token": null,
                      *       "workspace_token": "wrkspc_6d1f4d1fb379b3bc"
                      *     }
                      */
@@ -13947,7 +13960,7 @@ export interface operations {
                  * @description Filter statistics to costs for a specific provider key.
                  * @example aws
                  */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp";
             };
             header?: never;
             path: {
@@ -14496,7 +14509,7 @@ export interface operations {
                 /** @description The amount of results to return. The maximum is 1000. */
                 limit?: number;
                 /** @description Filter by folder type. */
-                type?: "CostFolder" | "ProviderResourceFolder";
+                type?: "CostFolder" | "DashboardFolder" | "ProviderResourceFolder";
                 /** @description Search folders by title. */
                 q?: string;
                 /** @description The workspace token of the folders to return. */
@@ -14524,20 +14537,26 @@ export interface operations {
                      *       },
                      *       "folders": [
                      *         {
-                     *           "token": "fldr_baf37f32280f5444",
-                     *           "title": "synergy",
+                     *           "token": "fldr_314cbb26abd3d3b4",
+                     *           "title": "4th generation",
+                     *           "type": "CostFolder",
                      *           "parent_folder_token": null,
-                     *           "created_at": "2023-09-12T05:06:54Z",
-                     *           "updated_at": "2023-09-12T05:06:54Z",
-                     *           "workspace_token": "wrkspc_f583a08beb76f679"
+                     *           "saved_filter_tokens": [],
+                     *           "created_at": "2026-10-05T20:40:17Z",
+                     *           "updated_at": "2026-10-05T20:40:17Z",
+                     *           "workspace_token": "wrkspc_76e0840817a6c8a7"
                      *         },
                      *         {
-                     *           "token": "fldr_625d4591e46f7dfa",
-                     *           "title": "website",
-                     *           "parent_folder_token": "fldr_baf37f32280f5444",
-                     *           "created_at": "2023-09-12T05:06:54Z",
-                     *           "updated_at": "2023-09-12T05:06:54Z",
-                     *           "workspace_token": "wrkspc_f583a08beb76f679"
+                     *           "token": "fldr_83b74c1478d1b6d3",
+                     *           "title": "monitoring",
+                     *           "type": "CostFolder",
+                     *           "parent_folder_token": "fldr_314cbb26abd3d3b4",
+                     *           "saved_filter_tokens": [
+                     *             "svd_fltr_22cd785c608a20c6"
+                     *           ],
+                     *           "created_at": "2026-10-05T20:40:17Z",
+                     *           "updated_at": "2026-10-05T20:40:17Z",
+                     *           "workspace_token": "wrkspc_76e0840817a6c8a7"
                      *         }
                      *       ]
                      *     }
@@ -14567,12 +14586,16 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "fldr_4aabe6f482c2a9e4",
+                     *       "token": "fldr_9ceae7f5f3e405a0",
                      *       "title": "New Folder",
-                     *       "parent_folder_token": "fldr_4d29cbecf2601266",
-                     *       "created_at": "2023-09-12T05:06:52Z",
-                     *       "updated_at": "2023-09-12T05:06:52Z",
-                     *       "workspace_token": "wrkspc_510cc77828001f9b"
+                     *       "type": "CostFolder",
+                     *       "parent_folder_token": "fldr_8b4bb8d17598ce66",
+                     *       "saved_filter_tokens": [
+                     *         "svd_fltr_feb48978fe533df4"
+                     *       ],
+                     *       "created_at": "2026-10-05T20:40:30Z",
+                     *       "updated_at": "2026-10-05T20:40:30Z",
+                     *       "workspace_token": "wrkspc_51f5a7ce58c11b5a"
                      *     }
                      */
                     "application/json": components["schemas"]["Folder"];
@@ -14607,12 +14630,16 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "fldr_3653e0f460786b1e",
-                     *       "title": "intermediate",
-                     *       "parent_folder_token": "fldr_b6bf120a1d3a794b",
-                     *       "created_at": "2023-09-12T05:07:36Z",
-                     *       "updated_at": "2023-09-12T05:07:36Z",
-                     *       "workspace_token": "wrkspc_a707105ff54966c3"
+                     *       "token": "fldr_4a39d019886e0e09",
+                     *       "title": "contextually-based",
+                     *       "type": "CostFolder",
+                     *       "parent_folder_token": "fldr_4feca27bfae88ff0",
+                     *       "saved_filter_tokens": [
+                     *         "svd_fltr_28aeb8abf914e3a2"
+                     *       ],
+                     *       "created_at": "2026-10-05T20:40:27Z",
+                     *       "updated_at": "2026-10-05T20:40:27Z",
+                     *       "workspace_token": "wrkspc_0dd17a988cf7fc1f"
                      *     }
                      */
                     "application/json": components["schemas"]["Folder"];
@@ -14651,12 +14678,16 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "fldr_68e18d8d7df0be96",
+                     *       "token": "fldr_08369ae7c11a447e",
                      *       "title": "New Title",
-                     *       "parent_folder_token": "fldr_9aa0c735a6b615c6",
-                     *       "created_at": "2023-09-12T05:06:53Z",
-                     *       "updated_at": "2023-09-12T05:06:53Z",
-                     *       "workspace_token": "wrkspc_e65a48e5d9684439"
+                     *       "type": "CostFolder",
+                     *       "parent_folder_token": "fldr_410c7670a08a6604",
+                     *       "saved_filter_tokens": [
+                     *         "svd_fltr_3ac1222e6e2d0218"
+                     *       ],
+                     *       "created_at": "2026-10-05T20:40:06Z",
+                     *       "updated_at": "2026-10-05T20:40:06Z",
+                     *       "workspace_token": "wrkspc_e7bb0f1345b3cf80"
                      *     }
                      */
                     "application/json": components["schemas"]["Folder"];
@@ -14716,7 +14747,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -19475,7 +19506,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -19613,7 +19644,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
