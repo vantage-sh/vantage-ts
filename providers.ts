@@ -52,6 +52,7 @@ export const VANTAGE_PROVIDERS = [
   "crusoe",
   "sentry_billing",
   "ramp",
+  "dynatrace",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];
