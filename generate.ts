@@ -1,6 +1,5 @@
-import openapiGen, { astToString, type OpenAPI3 } from "openapi-typescript";
-import ts from "typescript";
-import { writeFileSync } from "fs";
+import { writeFileSync } from "node:fs";
+import { generateSchemaTypes } from "./generator/schemaTypes";
 
 // Maps a substring found in a response description to a handler name and the
 // TypeScript return type to use. Checked against every response description
@@ -56,9 +55,7 @@ function toPascalCase(str: string): string {
 function extractPathParams(path: string): PathParam[] {
   const params: PathParam[] = [];
   const regex = /\{([^}]+)\}/g;
-  let match: RegExpExecArray | null = null;
-
-  while ((match = regex.exec(path)) !== null) {
+  for (let match = regex.exec(path); match !== null; match = regex.exec(path)) {
     params.push({
       name: match[1],
       camelName: toCamelCase(match[1]),
@@ -84,6 +81,12 @@ interface EnumSchema {
   oneOf?: EnumSchema[];
 }
 
+// Only the fields consumed by constants and client generation are needed here.
+interface OpenAPISchema {
+  components?: { schemas?: Record<string, EnumSchema> };
+  paths?: Record<string, any>;
+}
+
 function formatConstArray(values: string[], declarationPrefix = ""): string {
   const inlineValues = JSON.stringify(values).replace(/,/g, ", ");
   if (`${declarationPrefix}${inlineValues} as const;`.length <= 120) return inlineValues;
@@ -95,30 +98,6 @@ function formatTypeAlias(typeName: string, typeExpression: string): string {
   if (declaration.length <= 120) return declaration;
 
   return `${[`export type ${typeName} =`, ...typeExpression.split(" | ").map((part) => `  | ${part}`)].join("\n")};`;
-}
-
-function groupingArrayType(schemaObject: EnumSchema): ts.ArrayTypeNode | undefined {
-  const variants = schemaObject.items?.oneOf;
-  const fixedValues = variants?.find((variant) => variant.enum)?.enum;
-  const prefix = variants
-    ?.find((variant) => variant.pattern)
-    ?.pattern?.match(/^\^(tag|label):/)?.[1];
-  if (!prefix) return undefined;
-
-  const fixedTypes = requireStringEnum(fixedValues, `${prefix} grouping`).map((value) =>
-    ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(value))
-  );
-  const dynamicType = ts.factory.createTemplateLiteralType(
-    ts.factory.createTemplateHead(`${prefix}:`),
-    [
-      ts.factory.createTemplateLiteralTypeSpan(
-        ts.factory.createTypeReferenceNode("NonEmptyString"),
-        ts.factory.createTemplateTail("")
-      ),
-    ]
-  );
-
-  return ts.factory.createArrayTypeNode(ts.factory.createUnionTypeNode([...fixedTypes, dynamicType]));
 }
 
 function requireStringEnum(values: unknown[] | undefined, label: string): string[] {
@@ -134,12 +113,12 @@ function requireStringEnum(values: unknown[] | undefined, label: string): string
   return stringValues;
 }
 
-function getSchemaPropertyEnum(schema: OpenAPI3, schemaName: string, propertyName: string): string[] {
+function getSchemaPropertyEnum(schema: OpenAPISchema, schemaName: string, propertyName: string): string[] {
   const schemaDefinition = schema.components?.schemas?.[schemaName] as EnumSchema | undefined;
   return requireStringEnum(schemaDefinition?.properties?.[propertyName]?.enum, `${schemaName}.${propertyName}`);
 }
 
-function getSchemaPropertyItemsEnum(schema: OpenAPI3, schemaName: string, propertyName: string): string[] {
+function getSchemaPropertyItemsEnum(schema: OpenAPISchema, schemaName: string, propertyName: string): string[] {
   const schemaDefinition = schema.components?.schemas?.[schemaName] as EnumSchema | undefined;
   const property = schemaDefinition?.properties?.[propertyName];
   const enumValues = property?.items?.oneOf?.find((variant) => variant.enum)?.enum;
@@ -147,7 +126,7 @@ function getSchemaPropertyItemsEnum(schema: OpenAPI3, schemaName: string, proper
 }
 
 function getOperationParameterEnum(
-  schema: OpenAPI3,
+  schema: OpenAPISchema,
   path: string,
   method: string,
   parameterName: string
@@ -157,7 +136,9 @@ function getOperationParameterEnum(
     { [method: string]: { parameters?: Array<{ in?: string; name?: string; schema?: { enum?: unknown[] } }> } }
   >;
   const operation = paths[path]?.[method];
-  const parameter = operation?.parameters?.find((candidate) => candidate.in === "query" && candidate.name === parameterName);
+  const parameter = operation?.parameters?.find(
+    (candidate) => candidate.in === "query" && candidate.name === parameterName
+  );
   return requireStringEnum(parameter?.schema?.enum, `${method.toUpperCase()} ${path} ${parameterName}`);
 }
 
@@ -183,7 +164,7 @@ function formatJsDoc(summary?: string, description?: string, deprecated?: boolea
     }
 
     lines.push(" */");
-    return lines.join("\n") + "\n";
+    return `${lines.join("\n")}\n`;
   }
 
   return "";
@@ -199,28 +180,28 @@ function getMethodNameFromOperationId(operationId: string, resource: string): st
   // Remove resource name prefix if present
   const resourcePascal = toPascalCase(resource);
 
-  if (name.startsWith("get" + resourcePascal)) {
-    name = "get" + name.slice(3 + resourcePascal.length);
-  } else if (name.startsWith("create" + resourcePascal)) {
-    name = "create" + name.slice(6 + resourcePascal.length);
-  } else if (name.startsWith("update" + resourcePascal)) {
-    name = "update" + name.slice(6 + resourcePascal.length);
-  } else if (name.startsWith("delete" + resourcePascal)) {
-    name = "delete" + name.slice(6 + resourcePascal.length);
+  if (name.startsWith(`get${resourcePascal}`)) {
+    name = `get${name.slice(3 + resourcePascal.length)}`;
+  } else if (name.startsWith(`create${resourcePascal}`)) {
+    name = `create${name.slice(6 + resourcePascal.length)}`;
+  } else if (name.startsWith(`update${resourcePascal}`)) {
+    name = `update${name.slice(6 + resourcePascal.length)}`;
+  } else if (name.startsWith(`delete${resourcePascal}`)) {
+    name = `delete${name.slice(6 + resourcePascal.length)}`;
   }
 
   // Handle singular forms
   const singularResource = resource.endsWith("s") ? resource.slice(0, -1) : resource;
   const singularPascal = toPascalCase(singularResource);
 
-  if (name.startsWith("get" + singularPascal) && name !== "get") {
-    name = "get" + name.slice(3 + singularPascal.length);
-  } else if (name.startsWith("create" + singularPascal) && name !== "create") {
-    name = "create" + name.slice(6 + singularPascal.length);
-  } else if (name.startsWith("update" + singularPascal) && name !== "update") {
-    name = "update" + name.slice(6 + singularPascal.length);
-  } else if (name.startsWith("delete" + singularPascal) && name !== "delete") {
-    name = "delete" + name.slice(6 + singularPascal.length);
+  if (name.startsWith(`get${singularPascal}`) && name !== "get") {
+    name = `get${name.slice(3 + singularPascal.length)}`;
+  } else if (name.startsWith(`create${singularPascal}`) && name !== "create") {
+    name = `create${name.slice(6 + singularPascal.length)}`;
+  } else if (name.startsWith(`update${singularPascal}`) && name !== "update") {
+    name = `update${name.slice(6 + singularPascal.length)}`;
+  } else if (name.startsWith(`delete${singularPascal}`) && name !== "delete") {
+    name = `delete${name.slice(6 + singularPascal.length)}`;
   }
 
   // If name is empty, use the original
@@ -287,10 +268,11 @@ async function main() {
       throw new Error(`Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`);
     }
     return res.json();
-  })) as OpenAPI3;
+  })) as OpenAPISchema;
 
-  const costProperties = (schema.components?.schemas?.Cost as { properties?: Record<string, { enum?: unknown[] }> } | undefined)
-    ?.properties;
+  const costProperties = (
+    schema.components?.schemas?.Cost as { properties?: Record<string, { enum?: unknown[] }> } | undefined
+  )?.properties;
   const providerValues = requireStringEnum(costProperties?.provider?.enum, "Cost.provider");
 
   const providersOutput = `// Auto-generated from the Vantage OpenAPI schema.\n// Do not edit this file directly.\n\n/** Provider identifiers supported by the Vantage API. */\nexport const VANTAGE_PROVIDERS = ${formatConstArray(providerValues, "export const VANTAGE_PROVIDERS = ")} as const;\n\nexport type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];\n`;
@@ -337,6 +319,7 @@ async function main() {
     {
       name: "VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS",
       typeName: "VantageFinancialCommitmentGrouping",
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
       typeExpression: "(typeof VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS)[number] | `tag:${NonEmptyString}`",
       description: "Built-in grouping dimensions supported by Vantage Financial Commitment reports.",
       values: getSchemaPropertyItemsEnum(schema, "createFinancialCommitmentReport", "groupings"),
@@ -344,6 +327,7 @@ async function main() {
     {
       name: "VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS",
       typeName: "VantageKubernetesEfficiencyGrouping",
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
       typeExpression: "(typeof VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS)[number] | `label:${NonEmptyString}`",
       description: "Built-in grouping dimensions supported by Vantage Kubernetes Efficiency reports.",
       values: getSchemaPropertyItemsEnum(schema, "createKubernetesEfficiencyReport", "groupings"),
@@ -373,51 +357,7 @@ async function main() {
   writeFileSync("constants.ts", constantsOutput, { encoding: "utf-8" });
   console.log("Generated constants.ts");
 
-  const dts = await openapiGen(schema, {
-    // openapi-typescript does not translate string patterns into template literal types.
-    // Preserve the dynamic FCR/KER grouping prefixes instead of widening those oneOf branches to string.
-    transform: (schemaObject) => groupingArrayType(schemaObject as EnumSchema),
-    // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
-    // This makes the generated TS types nicer to use (and matches runtime behavior).
-    transformProperty: (property, schemaObject) => {
-      let updatedProperty = property;
-
-      // Handle x-nullable: add null union type
-      if (schemaObject && (schemaObject as any)["x-nullable"] === true && property.type) {
-        const unionType = ts.factory.createUnionTypeNode([
-          property.type,
-          ts.factory.createLiteralTypeNode(ts.factory.createNull()),
-        ]);
-        updatedProperty = ts.factory.updatePropertySignature(
-          updatedProperty,
-          updatedProperty.modifiers,
-          updatedProperty.name,
-          updatedProperty.questionToken,
-          unionType
-        );
-      }
-
-      // Handle default: make property optional
-      if (schemaObject && schemaObject.default !== undefined) {
-        updatedProperty = ts.factory.updatePropertySignature(
-          updatedProperty,
-          updatedProperty.modifiers,
-          updatedProperty.name,
-          ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-          updatedProperty.type
-        );
-      }
-
-      return updatedProperty;
-    },
-  });
-
-  // Convert AST to string and replace Record<string, never> with Record<string, any>
-  let schemaOutput = astToString(dts);
-  schemaOutput = schemaOutput.replace(/Record<string, never>/g, "Record<string, any>");
-  schemaOutput = `import type { NonEmptyString } from "./stringTypes";\n\n${schemaOutput}`;
-
-  writeFileSync("swaggerSchema.d.ts", schemaOutput, { encoding: "utf-8" });
+  writeFileSync("swaggerSchema.d.ts", generateSchemaTypes(schema), { encoding: "utf-8" });
   console.log("Generated swaggerSchema.d.ts");
 
   const paths = (schema.paths ?? {}) as Record<string, any>;
@@ -459,6 +399,7 @@ async function main() {
       );
 
       endpoints.push({
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
         path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
         originalPath: path,
         method: method.toUpperCase(),
@@ -516,6 +457,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
     const typeBaseName = toPascalCase(endpoint.operationId);
 
     let typePath = `/v2${endpoint.path}`;
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
     if (typePath.includes("${NoSlashString}")) {
       typePath = `\`${typePath}\``;
     } else {
@@ -596,7 +538,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
   // Generate private fields for each resource
   for (const resource of resourceGroups.keys()) {
     const fieldName = sanitizeIdentifier(toCamelCase(resource));
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
     output += `    private _${fieldName}?: ${className}<NeverThrow>;\n`;
   }
 
@@ -605,7 +547,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
   // Generate getters for each resource
   for (const resource of resourceGroups.keys()) {
     const fieldName = sanitizeIdentifier(toCamelCase(resource));
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
 
     output += `    get ${fieldName}(): ${className}<NeverThrow> {\n`;
     output += `        if (!this._${fieldName}) {\n`;
@@ -619,7 +561,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
 
   // Generate API classes for each resource
   for (const [resource, resourceEndpoints] of resourceGroups) {
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
 
     output += `class ${className}<NeverThrow extends boolean> {\n`;
     output += `    constructor(private client: BaseClient<NeverThrow>) {}\n\n`;
@@ -694,7 +636,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
           if (depth === 0) {
             subResource = segments[i];
           } else {
-            subResource += "_" + segments[i];
+            subResource += `_${segments[i]}`;
           }
           depth++;
         }
