@@ -1,6 +1,5 @@
-import openapiGen, { astToString, type OpenAPI3 } from "openapi-typescript";
-import ts from "typescript";
-import { writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { generateSchemaTypes } from "./generator/schemaTypes";
 
 // Maps a substring found in a response description to a handler name and the
 // TypeScript return type to use. Checked against every response description
@@ -56,9 +55,7 @@ function toPascalCase(str: string): string {
 function extractPathParams(path: string): PathParam[] {
   const params: PathParam[] = [];
   const regex = /\{([^}]+)\}/g;
-  let match: RegExpExecArray | null = null;
-
-  while ((match = regex.exec(path)) !== null) {
+  for (let match = regex.exec(path); match !== null; match = regex.exec(path)) {
     params.push({
       name: match[1],
       camelName: toCamelCase(match[1]),
@@ -84,6 +81,12 @@ interface EnumSchema {
   oneOf?: EnumSchema[];
 }
 
+// Only the fields consumed by constants and client generation are needed here.
+interface OpenAPISchema {
+  components?: { schemas?: Record<string, EnumSchema> };
+  paths?: Record<string, any>;
+}
+
 function formatConstArray(values: string[], declarationPrefix = ""): string {
   const inlineValues = JSON.stringify(values).replace(/,/g, ", ");
   if (`${declarationPrefix}${inlineValues} as const;`.length <= 120) return inlineValues;
@@ -95,30 +98,6 @@ function formatTypeAlias(typeName: string, typeExpression: string): string {
   if (declaration.length <= 120) return declaration;
 
   return `${[`export type ${typeName} =`, ...typeExpression.split(" | ").map((part) => `  | ${part}`)].join("\n")};`;
-}
-
-function groupingArrayType(schemaObject: EnumSchema): ts.ArrayTypeNode | undefined {
-  const variants = schemaObject.items?.oneOf;
-  const fixedValues = variants?.find((variant) => variant.enum)?.enum;
-  const prefix = variants
-    ?.find((variant) => variant.pattern)
-    ?.pattern?.match(/^\^(tag|label):/)?.[1];
-  if (!prefix) return undefined;
-
-  const fixedTypes = requireStringEnum(fixedValues, `${prefix} grouping`).map((value) =>
-    ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(value))
-  );
-  const dynamicType = ts.factory.createTemplateLiteralType(
-    ts.factory.createTemplateHead(`${prefix}:`),
-    [
-      ts.factory.createTemplateLiteralTypeSpan(
-        ts.factory.createTypeReferenceNode("NonEmptyString"),
-        ts.factory.createTemplateTail("")
-      ),
-    ]
-  );
-
-  return ts.factory.createArrayTypeNode(ts.factory.createUnionTypeNode([...fixedTypes, dynamicType]));
 }
 
 function requireStringEnum(values: unknown[] | undefined, label: string): string[] {
@@ -134,12 +113,12 @@ function requireStringEnum(values: unknown[] | undefined, label: string): string
   return stringValues;
 }
 
-function getSchemaPropertyEnum(schema: OpenAPI3, schemaName: string, propertyName: string): string[] {
+function getSchemaPropertyEnum(schema: OpenAPISchema, schemaName: string, propertyName: string): string[] {
   const schemaDefinition = schema.components?.schemas?.[schemaName] as EnumSchema | undefined;
   return requireStringEnum(schemaDefinition?.properties?.[propertyName]?.enum, `${schemaName}.${propertyName}`);
 }
 
-function getSchemaPropertyItemsEnum(schema: OpenAPI3, schemaName: string, propertyName: string): string[] {
+function getSchemaPropertyItemsEnum(schema: OpenAPISchema, schemaName: string, propertyName: string): string[] {
   const schemaDefinition = schema.components?.schemas?.[schemaName] as EnumSchema | undefined;
   const property = schemaDefinition?.properties?.[propertyName];
   const enumValues = property?.items?.oneOf?.find((variant) => variant.enum)?.enum;
@@ -147,7 +126,7 @@ function getSchemaPropertyItemsEnum(schema: OpenAPI3, schemaName: string, proper
 }
 
 function getOperationParameterEnum(
-  schema: OpenAPI3,
+  schema: OpenAPISchema,
   path: string,
   method: string,
   parameterName: string
@@ -157,7 +136,9 @@ function getOperationParameterEnum(
     { [method: string]: { parameters?: Array<{ in?: string; name?: string; schema?: { enum?: unknown[] } }> } }
   >;
   const operation = paths[path]?.[method];
-  const parameter = operation?.parameters?.find((candidate) => candidate.in === "query" && candidate.name === parameterName);
+  const parameter = operation?.parameters?.find(
+    (candidate) => candidate.in === "query" && candidate.name === parameterName
+  );
   return requireStringEnum(parameter?.schema?.enum, `${method.toUpperCase()} ${path} ${parameterName}`);
 }
 
@@ -282,15 +263,11 @@ function generateMethod(methodName: string, endpoint: EndpointInfo): string {
 }
 
 async function main() {
-  const schema = (await fetch("https://api.vantage.sh/v2/oas_v3.json").then((res) => {
-    if (!res.ok) {
-      throw new Error(`Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`);
-    }
-    return res.json();
-  })) as OpenAPI3;
+  const schema = JSON.parse(readFileSync("openapi.json", "utf-8")) as OpenAPISchema;
 
-  const costProperties = (schema.components?.schemas?.Cost as { properties?: Record<string, { enum?: unknown[] }> } | undefined)
-    ?.properties;
+  const costProperties = (
+    schema.components?.schemas?.Cost as { properties?: Record<string, { enum?: unknown[] }> } | undefined
+  )?.properties;
   const providerValues = requireStringEnum(costProperties?.provider?.enum, "Cost.provider");
 
   const providersOutput = `// Auto-generated from the Vantage OpenAPI schema.\n// Do not edit this file directly.\n\n/** Provider identifiers supported by the Vantage API. */\nexport const VANTAGE_PROVIDERS = ${formatConstArray(providerValues, "export const VANTAGE_PROVIDERS = ")} as const;\n\nexport type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];\n`;
@@ -373,51 +350,7 @@ async function main() {
   writeFileSync("constants.ts", constantsOutput, { encoding: "utf-8" });
   console.log("Generated constants.ts");
 
-  const dts = await openapiGen(schema, {
-    // openapi-typescript does not translate string patterns into template literal types.
-    // Preserve the dynamic FCR/KER grouping prefixes instead of widening those oneOf branches to string.
-    transform: (schemaObject) => groupingArrayType(schemaObject as EnumSchema),
-    // If a property has an OpenAPI `default`, callers can omit it since the server will fill it in.
-    // This makes the generated TS types nicer to use (and matches runtime behavior).
-    transformProperty: (property, schemaObject) => {
-      let updatedProperty = property;
-
-      // Handle x-nullable: add null union type
-      if (schemaObject && (schemaObject as any)["x-nullable"] === true && property.type) {
-        const unionType = ts.factory.createUnionTypeNode([
-          property.type,
-          ts.factory.createLiteralTypeNode(ts.factory.createNull()),
-        ]);
-        updatedProperty = ts.factory.updatePropertySignature(
-          updatedProperty,
-          updatedProperty.modifiers,
-          updatedProperty.name,
-          updatedProperty.questionToken,
-          unionType
-        );
-      }
-
-      // Handle default: make property optional
-      if (schemaObject && schemaObject.default !== undefined) {
-        updatedProperty = ts.factory.updatePropertySignature(
-          updatedProperty,
-          updatedProperty.modifiers,
-          updatedProperty.name,
-          ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-          updatedProperty.type
-        );
-      }
-
-      return updatedProperty;
-    },
-  });
-
-  // Convert AST to string and replace Record<string, never> with Record<string, any>
-  let schemaOutput = astToString(dts);
-  schemaOutput = schemaOutput.replace(/Record<string, never>/g, "Record<string, any>");
-  schemaOutput = `import type { NonEmptyString } from "./stringTypes";\n\n${schemaOutput}`;
-
-  writeFileSync("swaggerSchema.d.ts", schemaOutput, { encoding: "utf-8" });
+  writeFileSync("swaggerSchema.d.ts", generateSchemaTypes(schema), { encoding: "utf-8" });
   console.log("Generated swaggerSchema.d.ts");
 
   const paths = (schema.paths ?? {}) as Record<string, any>;

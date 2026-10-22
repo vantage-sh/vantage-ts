@@ -31,7 +31,7 @@ jobs:
             - name: Install Dependencies
               run: npm install
             - name: Run Unit Tests
-              run: npm run test BaseClient.test.ts stringTypes.test.ts swaggerSchema.test.ts
+              run: npm run test BaseClient.test.ts stringTypes.test.ts swaggerSchema.test.ts generator/schemaTypes.test.ts
 
     e2e-tests:
         name: E2E Tests
@@ -63,8 +63,8 @@ jobs:
               run: npm install
             - run: npm run build
 
-    compare-to-api:
-        name: Compare to API
+    generated-files-up-to-date:
+        name: Generated files up to date
         runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v7
@@ -73,9 +73,14 @@ jobs:
               with:
                   filters: |
                       autogen:
+                          - openapi.json
+                          - generate.ts
+                          - fetchSpec.ts
+                          - 'generator/**'
                           - clientAutogen.ts
                           - swaggerSchema.d.ts
-                          - generate.ts
+                          - providers.ts
+                          - constants.ts
             - name: Setup Node.js
               if: steps.changes.outputs.autogen == 'true'
               uses: actions/setup-node@v7.0.0
@@ -84,11 +89,8 @@ jobs:
             - name: Install Dependencies
               if: steps.changes.outputs.autogen == 'true'
               run: npm install
-            - name: Diff the generated types with the API
+            - name: Check generated files against the committed spec
               if: steps.changes.outputs.autogen == 'true'
               run: |
-                mv clientAutogen.ts clientAutogen.ts.old
-                mv swaggerSchema.d.ts swaggerSchema.d.ts.old
                 npm run generate
-                diff clientAutogen.ts clientAutogen.ts.old
-                diff swaggerSchema.d.ts swaggerSchema.d.ts.old
+                git diff --exit-code -- swaggerSchema.d.ts clientAutogen.ts providers.ts constants.ts

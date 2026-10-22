@@ -4,5 +4,10 @@
     "moduleResolution": "Bundler",
     "downlevelIteration": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tmp"
+  ]
 }
