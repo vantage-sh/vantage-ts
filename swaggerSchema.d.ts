@@ -3179,7 +3179,7 @@ export interface components {
                 /** @description The AccessPolicy rules for this version. */
                 policy: {
                     /**
-                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. An empty filter is unrestricted.
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. At least one filter is required.
                      * @example (vantage.provider = 'aws')
                      */
                     filter: string;
@@ -3218,7 +3218,7 @@ export interface components {
                 /** @description The AccessPolicy rules for this version. */
                 policy: {
                     /**
-                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. An empty filter is unrestricted.
+                     * @description Vantage Query Language (VQL) that controls which costs this AccessPolicy allows. At least one filter is required.
                      * @example (vantage.provider = 'aws')
                      */
                     filter: string;
@@ -15109,6 +15109,15 @@ export interface operations {
             };
             /** @description NotFound */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
