@@ -19,6 +19,20 @@ jobs:
             - name: Run TypeScript Check
               run: npm run type-check
 
+    lint:
+        name: Lint
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v7
+            - name: Setup Node.js
+              uses: actions/setup-node@v7.0.0
+              with:
+                  node-version: "22"
+            - name: Install Dependencies
+              run: npm install
+            - name: Run Biome
+              run: npx biome ci --error-on-warnings
+
     unit-tests:
         name: Unit Tests
         runs-on: ubuntu-22.04
