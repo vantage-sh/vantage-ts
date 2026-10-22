@@ -1,6 +1,6 @@
-import type { paths } from "./swaggerSchema";
 import type { PathResponseEdgecases } from "./clientAutogen";
 import type { NoSlashString } from "./stringTypes";
+import type { paths } from "./swaggerSchema";
 
 type UnBracket<S extends string> = S extends `${infer X}{${string}}${infer Z}`
   ? UnBracket<`${X}${NoSlashString}${Z}`>
@@ -47,6 +47,7 @@ type Query<
         };
       }
     | undefined,
+  // biome-ignore lint/complexity/noBannedTypes: `{}` is the public "no query params" type.
 > = [T] extends [{ parameters?: { query?: infer Q } }] ? ([Q] extends [undefined] ? {} : Q) : {};
 
 type ReqBody<
@@ -61,7 +62,8 @@ type ReqBody<
   ? R
   : T extends { requestBody: { content: { "multipart/form-data": infer R } } }
     ? R
-    : {};
+    : // biome-ignore lint/complexity/noBannedTypes: `{}` is the public "no request body" type.
+      {};
 
 /** Defines the request body type for a given path and method. */
 export type RequestBodyForPathAndMethod<P extends Path, M extends SupportedMethods<P>> = M extends "GET"
@@ -118,7 +120,8 @@ export type ResponseBodyForPathAndMethod<
   ? PathResponseEdgecases[`${M} ${P}` & keyof PathResponseEdgecases]
   : PathsRedefined[P][0][MethodsInverted[M]] extends ExtendsGoodResponseCode<200 | 201 | 202 | 203, infer R>
     ? DoPathSpecificPatches<P, M, R, PathAndMethodSpecificPatches>
-    : void;
+    : // biome-ignore lint/suspicious/noConfusingVoidType: endpoints without a JSON body resolve to `void` in the public API.
+      void;
 
 /** We need to make this a string rather than a TS type so we can use it at runtime. */
 type StringifyType<T extends string> = T extends `${infer A}{${string}}${infer B}`
@@ -168,27 +171,28 @@ const multipartEdgeCases: MultipartEdgeCases = {
   },
 };
 
-const regexes: { [key: string]: RegExp[] } = {};
+const regexes = new Map<string, RegExp[]>();
 
 function escapeRegex(s: string): string {
-  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+  return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 
 for (const [path, methods] of Object.entries(multipartEdgeCases)) {
   const pathSplit = path.split("{}").map(escapeRegex).join("(.+?)");
   for (const [method, ok] of Object.entries(methods)) {
     if (ok) {
-      if (!regexes[method]) {
-        regexes[method] = [];
+      if (!regexes.has(method)) {
+        regexes.set(method, []);
       }
-      regexes[method].push(new RegExp(`^${pathSplit}$`));
+      regexes.get(method).push(new RegExp(`^${pathSplit}$`));
     }
   }
 }
 
 function isMultipartMethod(method: string, path: string): boolean {
-  if (Object.prototype.hasOwnProperty.call(regexes, method)) {
-    for (const regex of regexes[method]) {
+  const methodRegexes = regexes.get(method);
+  if (methodRegexes) {
+    for (const regex of methodRegexes) {
       const t = regex.test(path);
       regex.lastIndex = 0;
       if (t) {
@@ -223,12 +227,14 @@ export class VantageAPIError extends Error {
         if (Array.isArray(parsed.errors)) {
           e = parsed.errors;
         }
-      } catch {}
+      } catch {
+        // Non-JSON error bodies are reported as raw text below.
+      }
     }
     const text =
       status === null
         ? `Vantage API Error: ${body}`
-        : `Vantage API Error: ${status} ${statusText}` + (e ? ` - ${e.join(", ")}` : "");
+        : `Vantage API Error: ${status} ${statusText}${e ? ` - ${e.join(", ")}` : ""}`;
     super(text);
     this.errors = e;
   }

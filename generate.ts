@@ -164,7 +164,7 @@ function formatJsDoc(summary?: string, description?: string, deprecated?: boolea
     }
 
     lines.push(" */");
-    return lines.join("\n") + "\n";
+    return `${lines.join("\n")}\n`;
   }
 
   return "";
@@ -180,28 +180,28 @@ function getMethodNameFromOperationId(operationId: string, resource: string): st
   // Remove resource name prefix if present
   const resourcePascal = toPascalCase(resource);
 
-  if (name.startsWith("get" + resourcePascal)) {
-    name = "get" + name.slice(3 + resourcePascal.length);
-  } else if (name.startsWith("create" + resourcePascal)) {
-    name = "create" + name.slice(6 + resourcePascal.length);
-  } else if (name.startsWith("update" + resourcePascal)) {
-    name = "update" + name.slice(6 + resourcePascal.length);
-  } else if (name.startsWith("delete" + resourcePascal)) {
-    name = "delete" + name.slice(6 + resourcePascal.length);
+  if (name.startsWith(`get${resourcePascal}`)) {
+    name = `get${name.slice(3 + resourcePascal.length)}`;
+  } else if (name.startsWith(`create${resourcePascal}`)) {
+    name = `create${name.slice(6 + resourcePascal.length)}`;
+  } else if (name.startsWith(`update${resourcePascal}`)) {
+    name = `update${name.slice(6 + resourcePascal.length)}`;
+  } else if (name.startsWith(`delete${resourcePascal}`)) {
+    name = `delete${name.slice(6 + resourcePascal.length)}`;
   }
 
   // Handle singular forms
   const singularResource = resource.endsWith("s") ? resource.slice(0, -1) : resource;
   const singularPascal = toPascalCase(singularResource);
 
-  if (name.startsWith("get" + singularPascal) && name !== "get") {
-    name = "get" + name.slice(3 + singularPascal.length);
-  } else if (name.startsWith("create" + singularPascal) && name !== "create") {
-    name = "create" + name.slice(6 + singularPascal.length);
-  } else if (name.startsWith("update" + singularPascal) && name !== "update") {
-    name = "update" + name.slice(6 + singularPascal.length);
-  } else if (name.startsWith("delete" + singularPascal) && name !== "delete") {
-    name = "delete" + name.slice(6 + singularPascal.length);
+  if (name.startsWith(`get${singularPascal}`) && name !== "get") {
+    name = `get${name.slice(3 + singularPascal.length)}`;
+  } else if (name.startsWith(`create${singularPascal}`) && name !== "create") {
+    name = `create${name.slice(6 + singularPascal.length)}`;
+  } else if (name.startsWith(`update${singularPascal}`) && name !== "update") {
+    name = `update${name.slice(6 + singularPascal.length)}`;
+  } else if (name.startsWith(`delete${singularPascal}`) && name !== "delete") {
+    name = `delete${name.slice(6 + singularPascal.length)}`;
   }
 
   // If name is empty, use the original
@@ -319,6 +319,7 @@ async function main() {
     {
       name: "VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS",
       typeName: "VantageFinancialCommitmentGrouping",
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
       typeExpression: "(typeof VANTAGE_FINANCIAL_COMMITMENT_GROUPINGS)[number] | `tag:${NonEmptyString}`",
       description: "Built-in grouping dimensions supported by Vantage Financial Commitment reports.",
       values: getSchemaPropertyItemsEnum(schema, "createFinancialCommitmentReport", "groupings"),
@@ -326,6 +327,7 @@ async function main() {
     {
       name: "VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS",
       typeName: "VantageKubernetesEfficiencyGrouping",
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
       typeExpression: "(typeof VANTAGE_KUBERNETES_EFFICIENCY_GROUPINGS)[number] | `label:${NonEmptyString}`",
       description: "Built-in grouping dimensions supported by Vantage Kubernetes Efficiency reports.",
       values: getSchemaPropertyItemsEnum(schema, "createKubernetesEfficiencyReport", "groupings"),
@@ -397,6 +399,7 @@ async function main() {
       );
 
       endpoints.push({
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
         path: path.replace(/\{[^}]+\}/g, "${NoSlashString}"),
         originalPath: path,
         method: method.toUpperCase(),
@@ -454,6 +457,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
     const typeBaseName = toPascalCase(endpoint.operationId);
 
     let typePath = `/v2${endpoint.path}`;
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: this is template-literal text written into generated code.
     if (typePath.includes("${NoSlashString}")) {
       typePath = `\`${typePath}\``;
     } else {
@@ -534,7 +538,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
   // Generate private fields for each resource
   for (const resource of resourceGroups.keys()) {
     const fieldName = sanitizeIdentifier(toCamelCase(resource));
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
     output += `    private _${fieldName}?: ${className}<NeverThrow>;\n`;
   }
 
@@ -543,7 +547,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
   // Generate getters for each resource
   for (const resource of resourceGroups.keys()) {
     const fieldName = sanitizeIdentifier(toCamelCase(resource));
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
 
     output += `    get ${fieldName}(): ${className}<NeverThrow> {\n`;
     output += `        if (!this._${fieldName}) {\n`;
@@ -557,7 +561,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
 
   // Generate API classes for each resource
   for (const [resource, resourceEndpoints] of resourceGroups) {
-    const className = toPascalCase(sanitizeIdentifier(resource)) + "Api";
+    const className = `${toPascalCase(sanitizeIdentifier(resource))}Api`;
 
     output += `class ${className}<NeverThrow extends boolean> {\n`;
     output += `    constructor(private client: BaseClient<NeverThrow>) {}\n\n`;
@@ -632,7 +636,7 @@ import { pathEncode, type NoSlashString } from "./stringTypes";
           if (depth === 0) {
             subResource = segments[i];
           } else {
-            subResource += "_" + segments[i];
+            subResource += `_${segments[i]}`;
           }
           depth++;
         }
