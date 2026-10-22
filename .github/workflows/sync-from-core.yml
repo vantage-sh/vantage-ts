@@ -45,9 +45,6 @@ jobs:
         if: github.event_name == 'repository_dispatch'
         run: sleep 600
 
-      - name: Fetch OpenAPI spec
-        run: npm run fetch-spec
-
       - name: Generate SDK
         run: npm run generate
 

@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, test } from "vitest";
@@ -352,11 +352,6 @@ const wrongPrefix: S["Tags"][number] = "label:owner";
     expect(output).toContain("reusable: {");
     expect(output).toContain('"application/json": boolean;');
   });
-
-  test("is deterministic on the checked-in first-party spec", () => {
-    const document = JSON.parse(readFileSync(resolve("openapi.json"), "utf8"));
-    expect(generateSchemaTypes(document)).toBe(generateSchemaTypes(document));
-  });
 });
 
 describe("unsupported constructs", () => {
@@ -436,7 +431,7 @@ describe("unsupported constructs", () => {
     const error = unsupported(document);
     expect(error.issues).toHaveLength(7);
     expect(error.issues.map((issue) => issue.pointer)).toContain("#/components/schemas/Foo~1~0/allOf/0");
-    expect(error.message).toContain("hit 7 unsupported construct(s) in openapi.json");
+    expect(error.message).toContain("hit 7 unsupported construct(s) in the Vantage OpenAPI spec");
     for (let index = 1; index <= 7; index++) expect(error.message).toContain(`[${index}]`);
     for (const issue of error.issues) expect(issue.snippet.length).toBeLessThanOrEqual(300);
   });

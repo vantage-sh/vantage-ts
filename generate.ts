@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { generateSchemaTypes } from "./generator/schemaTypes";
 
 // Maps a substring found in a response description to a handler name and the
@@ -263,7 +263,12 @@ function generateMethod(methodName: string, endpoint: EndpointInfo): string {
 }
 
 async function main() {
-  const schema = JSON.parse(readFileSync("openapi.json", "utf-8")) as OpenAPISchema;
+  const schema = (await fetch("https://api.vantage.sh/v2/oas_v3.json").then((res) => {
+    if (!res.ok) {
+      throw new Error(`Failed to fetch OpenAPI schema: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+  })) as OpenAPISchema;
 
   const costProperties = (
     schema.components?.schemas?.Cost as { properties?: Record<string, { enum?: unknown[] }> } | undefined

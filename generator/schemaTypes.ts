@@ -14,7 +14,7 @@ export class UnsupportedOpenAPIFeatureError extends Error {
   constructor(issues: UnsupportedOpenAPIFeatureIssue[]) {
     super(
       [
-        `the in-house OpenAPI → TypeScript generator (generator/schemaTypes.ts) hit ${issues.length} unsupported construct(s) in openapi.json.`,
+        `the in-house OpenAPI → TypeScript generator (generator/schemaTypes.ts) hit ${issues.length} unsupported construct(s) in the Vantage OpenAPI spec.`,
         "This generator only implements the subset of OpenAPI used by the Vantage spec; it must be extended rather than worked around.",
         "",
         ...issues.flatMap((issue, index) => [

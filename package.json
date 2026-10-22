@@ -32,7 +32,6 @@
         "vitest": "^4.0.16"
     },
     "scripts": {
-        "fetch-spec": "tsx ./fetchSpec.ts",
         "generate": "tsx ./generate.ts",
         "build": "tsup && tsc -p tsconfig.declarations.json && node scripts/finalize-declarations.mjs",
         "type-check": "npm run build && tsc --noEmit",

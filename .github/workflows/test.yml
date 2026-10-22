@@ -63,8 +63,8 @@ jobs:
               run: npm install
             - run: npm run build
 
-    generated-files-up-to-date:
-        name: Generated files up to date
+    compare-to-api:
+        name: Compare to API
         runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v7
@@ -73,9 +73,7 @@ jobs:
               with:
                   filters: |
                       autogen:
-                          - openapi.json
                           - generate.ts
-                          - fetchSpec.ts
                           - 'generator/**'
                           - clientAutogen.ts
                           - swaggerSchema.d.ts
@@ -89,7 +87,7 @@ jobs:
             - name: Install Dependencies
               if: steps.changes.outputs.autogen == 'true'
               run: npm install
-            - name: Check generated files against the committed spec
+            - name: Diff the generated files with the API
               if: steps.changes.outputs.autogen == 'true'
               run: |
                 npm run generate

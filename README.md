@@ -196,14 +196,11 @@ const report = await client.request(
 
 ### Generate the latest API changes
 
-To fetch the latest OpenAPI schema from the Vantage API and regenerate the checked in files, run:
+To fetch the latest OpenAPI schema from the Vantage API and create the checked in generated files, run the following command.
 
 ```bash
-npm run fetch-spec
 npm run generate
 ```
-
-`npm run generate` reads the committed `openapi.json` snapshot without fetching from the API. Commit the snapshot together with `swaggerSchema.d.ts`, `clientAutogen.ts`, `providers.ts`, and `constants.ts` when updating the schema.
 
 ### Building
 
