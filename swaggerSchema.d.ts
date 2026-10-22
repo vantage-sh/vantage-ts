@@ -8134,6 +8134,7 @@ export interface components {
         };
         /** @description VirtualTagConfigs model */
         VirtualTagConfigs: {
+            links?: components["schemas"]["Links"];
             virtual_tag_configs: components["schemas"]["VirtualTagConfig"][];
         };
         /** @description VirtualTagConfig model */
@@ -20554,6 +20555,10 @@ export interface operations {
             query?: {
                 /** @description A search query to filter VirtualTagConfigs by key. */
                 q?: string;
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. Defaults to 2500. The maximum is 5000. */
+                limit?: number;
             };
             header?: never;
             path?: never;
@@ -20568,6 +20573,13 @@ export interface operations {
                 content: {
                     /**
                      * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/virtual_tag_configs",
+                     *         "first": "https://api.vantage.sh/v2/virtual_tag_configs?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/virtual_tag_configs?page=1",
+                     *         "prev": null
+                     *       },
                      *       "virtual_tag_configs": [
                      *         {
                      *           "token": "vtag_eabf584ca1fe7769",
