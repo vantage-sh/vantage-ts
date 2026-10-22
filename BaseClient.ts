@@ -47,7 +47,7 @@ type Query<
         };
       }
     | undefined,
-> = T["parameters"]["query"] extends never | undefined ? {} : T["parameters"]["query"];
+> = [T] extends [{ parameters?: { query?: infer Q } }] ? ([Q] extends [undefined] ? {} : Q) : {};
 
 type ReqBody<
   T extends
@@ -104,10 +104,11 @@ type DoPathSpecificPatches<
   M extends SupportedMethods<P>,
   Response,
   LookupTable extends Partial<LookupTableType>,
-> = LookupTable[P] extends never
-  ? Response
-  : // @ts-expect-error: I'm not sure why this is a error case, but we can ignore it. If the path isn't there, the above check will error.
-    ExecutePatch<LookupTable[P][M], Response>;
+> = P extends keyof LookupTable
+  ? M extends keyof LookupTable[P]
+    ? ExecutePatch<LookupTable[P][M], Response>
+    : Response
+  : Response;
 
 /** Defines the response body type for a given path and method. */
 export type ResponseBodyForPathAndMethod<
