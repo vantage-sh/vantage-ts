@@ -28,13 +28,13 @@
         "dotenv": "^17.4.2",
         "tsup": "^8.5.1",
         "tsx": "^4.21.0",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "vitest": "^4.0.16"
     },
     "scripts": {
         "fetch-spec": "tsx ./fetchSpec.ts",
         "generate": "tsx ./generate.ts",
-        "build": "tsup",
+        "build": "tsup && tsc -p tsconfig.declarations.json && node scripts/finalize-declarations.mjs",
         "type-check": "npm run build && tsc --noEmit",
         "test": "npm run build && vitest",
         "format": "biome format --write",

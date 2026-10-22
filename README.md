@@ -211,7 +211,7 @@ npm run generate
 npm run build
 ```
 
-This compiles the client from the checked in generated files.
+This compiles the client from the checked in generated files. tsup builds the CommonJS and ESM JavaScript bundles targeting Node.js 16; TypeScript 7 emits the declarations separately. The build copies the schema declarations into `dist` and adds an ESM declaration entry point alongside the CommonJS declarations.
 
 ### Type Checking
 
