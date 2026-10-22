@@ -23,13 +23,13 @@
         "url": "git+https://github.com/vantage-sh/vantage-ts.git"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.2.5",
-        "@types/node": "^26.0.1",
+        "@biomejs/biome": "2.5.14",
+        "@types/node": "^26.6.5",
         "dotenv": "^17.4.2",
         "tsup": "^8.5.1",
-        "tsx": "^4.21.0",
+        "tsx": "^4.23.15",
         "typescript": "^7.0.2",
-        "vitest": "^4.0.16"
+        "vitest": "^4.1.12"
     },
     "scripts": {
         "generate": "tsx ./generate.ts",
