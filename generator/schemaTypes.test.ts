@@ -226,6 +226,7 @@ const wrongPrefix: S["Tags"][number] = "label:owner";
         process.execPath,
         [
           resolve("node_modules/typescript/bin/tsc"),
+          "--ignoreConfig",
           "--noEmit",
           "--strict",
           "--skipLibCheck",
