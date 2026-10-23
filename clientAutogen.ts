@@ -801,6 +801,46 @@ export type CreateTwilioIntegrationRequest = RequestBodyForPathAndMethod<"/v2/in
  */
 export type CreateTwilioIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
 /**
+ * Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+export type GetDataImportLocksRequest = RequestBodyForPathAndMethod<"/v2/data_import_locks", "GET">;
+/**
+ * Response type for Get all data import locks
+ */
+export type GetDataImportLocksResponse = ResponseBodyForPathAndMethod<"/v2/data_import_locks", "GET">;
+/**
+ * Create or update a DataImportLock for a provider. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+export type CreateDataImportLockRequest = RequestBodyForPathAndMethod<"/v2/data_import_locks", "POST">;
+/**
+ * Response type for Create data import lock
+ */
+export type CreateDataImportLockResponse = ResponseBodyForPathAndMethod<"/v2/data_import_locks", "POST">;
+/**
+ * Response type for Get data import lock
+ */
+export type GetDataImportLockResponse = ResponseBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}`, "GET">;
+/**
+ * Update a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+export type UpdateDataImportLockRequest = RequestBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update data import lock
+ */
+export type UpdateDataImportLockResponse = ResponseBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete data import lock
+ */
+export type DeleteDataImportLockResponse = ResponseBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}`, "DELETE">;
+/**
+ * Unlock all or part of a data import lock, optionally reimporting the unlocked months from extract. With reimport enabled, the lock is changed asynchronously; acceptance does not mean the unlock or imports have finished.
+ */
+export type UnlockDataImportsRequest = RequestBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}/unlock`, "POST">;
+/**
+ * Response type for Unlock data imports
+ */
+export type UnlockDataImportsResponse = ResponseBodyForPathAndMethod<`/v2/data_import_locks/${NoSlashString}/unlock`, "POST">;
+/**
  * Returns a list of invoices (MSP invoicing required).
  */
 export type GetInvoicesRequest = RequestBodyForPathAndMethod<"/v2/invoices", "GET">;
@@ -1584,6 +1624,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _financialCommitments?: FinancialCommitmentsApi<NeverThrow>;
     private _folders?: FoldersApi<NeverThrow>;
     private _integrations?: IntegrationsApi<NeverThrow>;
+    private _dataImportLocks?: DataImportLocksApi<NeverThrow>;
     private _invoices?: InvoicesApi<NeverThrow>;
     private _kubernetesEfficiencyReports?: KubernetesEfficiencyReportsApi<NeverThrow>;
     private _managedAccounts?: ManagedAccountsApi<NeverThrow>;
@@ -1803,6 +1844,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._integrations = new IntegrationsApi(this);
         }
         return this._integrations;
+    }
+
+    get dataImportLocks(): DataImportLocksApi<NeverThrow> {
+        if (!this._dataImportLocks) {
+            this._dataImportLocks = new DataImportLocksApi(this);
+        }
+        return this._dataImportLocks;
     }
 
     get invoices(): InvoicesApi<NeverThrow> {
@@ -3395,6 +3443,77 @@ class IntegrationsApi<NeverThrow extends boolean> {
     createTwilioIntegration(body: CreateTwilioIntegrationRequest) {
         return this.client.request(
             `/v2/integrations/twilio`,
+            "POST",
+            body,
+        );
+    }
+
+}
+
+class DataImportLocksApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+    list(body?: GetDataImportLocksRequest) {
+        return this.client.request(
+            `/v2/data_import_locks`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create or update a DataImportLock for a provider. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+    create(body: CreateDataImportLockRequest) {
+        return this.client.request(
+            `/v2/data_import_locks`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+    get(dataImportLockToken: string) {
+        return this.client.request(
+            `/v2/data_import_locks/${pathEncode(dataImportLockToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+ */
+    update(dataImportLockToken: string, body: UpdateDataImportLockRequest) {
+        return this.client.request(
+            `/v2/data_import_locks/${pathEncode(dataImportLockToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a DataImportLock.
+ */
+    delete(dataImportLockToken: string) {
+        return this.client.request(
+            `/v2/data_import_locks/${pathEncode(dataImportLockToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
+ * Unlock all or part of a data import lock, optionally reimporting the unlocked months from extract. With reimport enabled, the lock is changed asynchronously; acceptance does not mean the unlock or imports have finished.
+ */
+    unlockDataImports(dataImportLockToken: string, body: UnlockDataImportsRequest) {
+        return this.client.request(
+            `/v2/data_import_locks/${pathEncode(dataImportLockToken)}/unlock`,
             "POST",
             body,
         );

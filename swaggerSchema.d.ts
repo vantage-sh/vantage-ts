@@ -1529,6 +1529,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/data_import_locks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all data import locks
+         * @description Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+         */
+        get: operations["getDataImportLocks"];
+        put?: never;
+        /**
+         * Create data import lock
+         * @description Create or update a DataImportLock for a provider. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+         */
+        post: operations["createDataImportLock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/data_import_locks/{data_import_lock_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get data import lock
+         * @description Return a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+         */
+        get: operations["getDataImportLock"];
+        /**
+         * Update data import lock
+         * @description Update a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+         */
+        put: operations["updateDataImportLock"];
+        post?: never;
+        /**
+         * Delete data import lock
+         * @description Delete a DataImportLock.
+         */
+        delete: operations["deleteDataImportLock"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/data_import_locks/{data_import_lock_token}/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unlock data imports
+         * @description Unlock all or part of a data import lock, optionally reimporting the unlocked months from extract. With reimport enabled, the lock is changed asynchronously; acceptance does not mean the unlock or imports have finished.
+         */
+        post: operations["unlockDataImports"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoices": {
         parameters: {
             query?: never;
@@ -8645,6 +8717,70 @@ export interface components {
                 end_date?: string | null;
             }[];
         };
+        /** @description DataImportLocks model */
+        DataImportLocks: {
+            links?: components["schemas"]["Links"];
+            data_import_locks: components["schemas"]["DataImportLock"][];
+        };
+        /** @description DataImportLock model */
+        DataImportLock: {
+            /**
+             * @description The token of the DataImportLock.
+             * @example etl_lck_1234
+             */
+            token: string;
+            /**
+             * @description The cost provider whose processed cost months are locked.
+             * @example aws
+             */
+            provider: string;
+            /**
+             * @description The last billing month included in the lock, as the first day of that month. ISO 8601 formatted. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+             * @example 2024-06-01
+             */
+            locked_until: string;
+            /**
+             * @description The token of the user or team that created the DataImportLock.
+             * @example usr_1234
+             */
+            created_by_token: string | null;
+            /**
+             * @description The date and time, in UTC, the DataImportLock was created. ISO 8601 formatted.
+             * @example 2024-06-28T00:00:00Z
+             */
+            created_at: string;
+        };
+        /** @description Create or update a DataImportLock for a provider. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month. */
+        createDataImportLock: {
+            /** @description The cost provider to lock, for example aws or gcp. */
+            provider: string;
+            /**
+             * Format: date
+             * @description The last billing month to lock, as the first day of that month. ISO 8601 formatted. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+             */
+            locked_until: string;
+        };
+        /** @description Update a DataImportLock. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month. */
+        updateDataImportLock: {
+            /**
+             * Format: date
+             * @description The last billing month to lock, as the first day of that month. ISO 8601 formatted. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
+             */
+            locked_until: string;
+        };
+        /** @description Unlock all or part of a data import lock, optionally reimporting the unlocked months from extract. With reimport enabled, the lock is changed asynchronously; acceptance does not mean the unlock or imports have finished. */
+        unlockDataImports: {
+            /**
+             * Format: date
+             * @description The last month to keep locked. Must be earlier than the current watermark. Omit to unlock all months.
+             */
+            locked_until?: string | null;
+            /**
+             * @description Reimport newly unlocked months from extract asynchronously. Defaults to false.
+             * @default false
+             */
+            reimport?: boolean | null;
+        };
         /** @description Workspaces model */
         Workspaces: {
             links?: components["schemas"]["Links"];
@@ -15301,6 +15437,404 @@ export interface operations {
             };
             /** @description BadRequest */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getDataImportLocks: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/data_import_locks",
+                     *         "first": "https://api.vantage.sh/v2/data_import_locks?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/data_import_locks?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "data_import_locks": [
+                     *         {
+                     *           "token": "etl_lck_1234",
+                     *           "provider": "aws",
+                     *           "locked_until": "2024-06-01",
+                     *           "created_by_token": "usr_1234",
+                     *           "created_at": "2024-06-28T00:00:00Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DataImportLocks"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createDataImportLock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createDataImportLock"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "etl_lck_1234",
+                     *       "provider": "aws",
+                     *       "locked_until": "2024-06-01",
+                     *       "created_by_token": "usr_1234",
+                     *       "created_at": "2024-06-28T00:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description ServiceUnavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getDataImportLock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                data_import_lock_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "etl_lck_1234",
+                     *       "provider": "aws",
+                     *       "locked_until": "2024-06-01",
+                     *       "created_by_token": "usr_1234",
+                     *       "created_at": "2024-06-28T00:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateDataImportLock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                data_import_lock_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateDataImportLock"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "etl_lck_1234",
+                     *       "provider": "aws",
+                     *       "locked_until": "2024-05-01",
+                     *       "created_by_token": "usr_1234",
+                     *       "created_at": "2024-06-28T00:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description ServiceUnavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteDataImportLock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                data_import_lock_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    unlockDataImports: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                data_import_lock_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["unlockDataImports"];
+            };
+        };
+        responses: {
+            /** @description Partially unlocked */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DataImportLock"];
+                };
+            };
+            /** @description Unlock and reimport accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Fully unlocked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description ServiceUnavailable */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
