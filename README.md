@@ -196,7 +196,7 @@ const report = await client.request(
 
 ### Generate the latest API changes
 
-To create the checked in generated files, run the following command.
+To fetch the latest OpenAPI schema from the Vantage API and create the checked in generated files, run the following command.
 
 ```bash
 npm run generate
@@ -208,7 +208,7 @@ npm run generate
 npm run build
 ```
 
-This fetches the latest OpenAPI schema from the Vantage API, generates TypeScript types, and compiles the client.
+This compiles the client from the checked in generated files. tsup builds the CommonJS and ESM JavaScript bundles targeting Node.js 16; TypeScript 7 emits the declarations separately. The build copies the schema declarations into `dist` and adds an ESM declaration entry point alongside the CommonJS declarations.
 
 ### Type Checking
 

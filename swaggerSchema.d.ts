@@ -3049,7 +3049,7 @@ export interface components {
         /** @description AccessGrants model */
         AccessGrants: {
             links?: components["schemas"]["Links"];
-            access_grants: components["schemas"]["AccessGrant"][];
+            access_grants: (components["schemas"]["AccessGrant"])[];
         };
         Links: {
             /** @description The URL of the current page of results. */
@@ -3086,7 +3086,7 @@ export interface components {
         /** @description Errors model */
         Errors: {
             links?: components["schemas"]["Links"];
-            errors: string[];
+            errors: (string)[];
         };
         /** @description Create an Access Grant. */
         createAccessGrant: {
@@ -3111,7 +3111,7 @@ export interface components {
         /** @description AccessPolicies model */
         AccessPolicies: {
             links?: components["schemas"]["Links"];
-            access_policies: components["schemas"]["AccessPolicy"][];
+            access_policies: (components["schemas"]["AccessPolicy"])[];
         };
         /** @description AccessPolicy model */
         AccessPolicy: {
@@ -3128,7 +3128,7 @@ export interface components {
             description: string | null;
             policy: components["schemas"]["AccessPolicyDocument"];
             /** @description The tokens for Teams this AccessPolicy is assigned to. */
-            team_tokens: string[];
+            team_tokens: (string)[];
             /**
              * @description The token for the User who created the AccessPolicy.
              * @example usr_abcd1234
@@ -3193,7 +3193,7 @@ export interface components {
              *       "team_abcd1234"
              *     ]
              */
-            team_tokens?: string[];
+            team_tokens?: (string)[];
         };
         /** @description Update an Access Policy. Requires a personal API token belonging to a user with the Owner role and the write scope. */
         updateAccessPolicy: {
@@ -3232,12 +3232,12 @@ export interface components {
              *       "team_abcd1234"
              *     ]
              */
-            team_tokens?: string[];
+            team_tokens?: (string)[];
         };
         /** @description AnomalyAlerts model */
         AnomalyAlerts: {
             links?: components["schemas"]["Links"];
-            anomaly_alerts: components["schemas"]["AnomalyAlert"][];
+            anomaly_alerts: (components["schemas"]["AnomalyAlert"])[];
         };
         /** @description AnomalyAlert model */
         AnomalyAlert: {
@@ -3269,9 +3269,9 @@ export interface components {
             /** @description The user-provided feedback of why alert was ignored/archived. */
             feedback?: string | null;
             /** @description The names of the resources the AnomalyAlert was attributed to. */
-            resources: string[];
+            resources: (string)[];
             /** @description The tokens of the Resources the AnomalyAlert was attributed to. */
-            resource_tokens: string[];
+            resource_tokens: (string)[];
             /** @description The token of the Report associated with the AnomalyAlert. */
             cost_report_token: string;
         };
@@ -3285,7 +3285,7 @@ export interface components {
         /** @description AnomalyNotifications model */
         AnomalyNotifications: {
             links?: components["schemas"]["Links"];
-            anomaly_notifications: components["schemas"]["AnomalyNotification"][];
+            anomaly_notifications: (components["schemas"]["AnomalyNotification"])[];
         };
         /** @description AnomalyNotification model */
         AnomalyNotification: {
@@ -3308,11 +3308,11 @@ export interface components {
              */
             threshold: number;
             /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
-            user_tokens: string[];
+            user_tokens: (string)[];
             /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
-            recipient_emails: string[];
+            recipient_emails: (string)[];
             /** @description The channels that the notification is sent to. */
-            recipient_channels: string[];
+            recipient_channels: (string)[];
         };
         /** @description Create an Anomaly Notification for a Cost Report. */
         createAnomalyNotification: {
@@ -3324,11 +3324,11 @@ export interface components {
              */
             threshold?: number;
             /** @description The tokens of the Users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The Slack/MS Teams channels that receive the notification. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
         };
         /** @description Update an Anomaly Notification. */
         updateAnomalyNotification: {
@@ -3338,16 +3338,16 @@ export interface components {
              */
             threshold?: number;
             /** @description The tokens of the users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The Slack/MS Teams channels that receive the notification. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
         };
         /** @description Annotations model */
         Annotations: {
             links?: components["schemas"]["Links"];
-            annotations: components["schemas"]["Annotation"][];
+            annotations: (components["schemas"]["Annotation"])[];
         };
         /** @description Annotation model */
         Annotation: {
@@ -3356,7 +3356,7 @@ export interface components {
             /** @description The title of the Annotation. */
             title: string;
             /** @description The tokens of the Reports associated with the Annotation. */
-            report_tokens: string[];
+            report_tokens: (string)[];
             /**
              * @description The date of the Annotation. ISO 8601 formatted.
              * @example 2026-08-12
@@ -3368,7 +3368,7 @@ export interface components {
         /** @description Create an Annotation. */
         createAnnotation: {
             /** @description The tokens of the Reports to annotate. */
-            report_tokens: string[];
+            report_tokens: (string)[];
             /** @description The title of the Annotation. Defaults to a title generated from the first Report and date. */
             title?: string;
             /**
@@ -3391,12 +3391,12 @@ export interface components {
             /** @description The message of the Annotation. */
             message?: string;
             /** @description The tokens of the Reports to associate with the Annotation. */
-            report_tokens?: string[];
+            report_tokens?: (string)[];
         };
         /** @description AuditLogs model */
         AuditLogs: {
             links?: components["schemas"]["Links"];
-            audit_logs: components["schemas"]["AuditLog"][];
+            audit_logs: (components["schemas"]["AuditLog"])[];
         };
         /** @description AuditLog model */
         AuditLog: {
@@ -3452,7 +3452,7 @@ export interface components {
         /** @description BillingProfiles model */
         BillingProfiles: {
             links?: components["schemas"]["Links"];
-            billing_profiles: components["schemas"]["BillingProfile"][];
+            billing_profiles: (components["schemas"]["BillingProfile"])[];
         };
         /** @description BillingProfile model */
         BillingProfile: {
@@ -3493,7 +3493,7 @@ export interface components {
             /** @description Postal or ZIP code */
             postal_code: string | null;
             /** @description Array of billing email addresses */
-            billing_email: string[] | null;
+            billing_email: (string)[] | null;
         };
         BusinessInformation: {
             token: string;
@@ -3501,7 +3501,7 @@ export interface components {
         };
         BusinessInformationMetadata: {
             /** @description Array of custom field objects */
-            custom_fields?: components["schemas"]["BusinessInformationCustomField"][];
+            custom_fields?: (components["schemas"]["BusinessInformationCustomField"])[];
         };
         BusinessInformationCustomField: {
             /** @description Custom field name */
@@ -3532,7 +3532,7 @@ export interface components {
         InvoiceAdjustment: {
             token: string;
             /** @description Array of adjustment items (taxes, fees, etc.) */
-            adjustment_items: components["schemas"]["AdjustmentItem"][];
+            adjustment_items: (components["schemas"]["AdjustmentItem"])[];
         };
         AdjustmentItem: {
             /** @description Name of the adjustment (e.g., 'State Tax', 'Processing Fee') */
@@ -3572,7 +3572,7 @@ export interface components {
                 /** @description Postal or ZIP code */
                 postal_code?: string;
                 /** @description Array of billing email addresses */
-                billing_email?: string[];
+                billing_email?: (string)[];
             };
             /** @description Business information and custom fields */
             business_information_attributes?: {
@@ -3580,12 +3580,12 @@ export interface components {
                 /** @description Business metadata including custom fields */
                 metadata?: {
                     /** @description Array of custom field objects */
-                    custom_fields?: {
+                    custom_fields?: ({
                         /** @description Custom field name */
                         name?: string;
                         /** @description Custom field value */
                         value?: string;
-                    }[];
+                    })[];
                 };
             };
             /** @description Banking details (MSP accounts only) */
@@ -3613,7 +3613,7 @@ export interface components {
             invoice_adjustment_attributes?: {
                 token?: string;
                 /** @description Array of adjustment items */
-                adjustment_items?: {
+                adjustment_items?: ({
                     /** @description Name of the adjustment */
                     name: string;
                     /**
@@ -3632,7 +3632,7 @@ export interface components {
                      * @description Amount or percentage value
                      */
                     amount: number;
-                }[];
+                })[];
             };
         };
         /** @description Update a billing profile (MSP invoicing required). */
@@ -3657,7 +3657,7 @@ export interface components {
                 /** @description Postal or ZIP code */
                 postal_code?: string;
                 /** @description Array of billing email addresses */
-                billing_email?: string[];
+                billing_email?: (string)[];
             };
             /** @description Business information and custom fields */
             business_information_attributes?: {
@@ -3665,12 +3665,12 @@ export interface components {
                 /** @description Business metadata including custom fields */
                 metadata?: {
                     /** @description Array of custom field objects */
-                    custom_fields?: {
+                    custom_fields?: ({
                         /** @description Custom field name */
                         name?: string;
                         /** @description Custom field value */
                         value?: string;
-                    }[];
+                    })[];
                 };
             };
             /** @description Banking details (MSP accounts only) */
@@ -3698,7 +3698,7 @@ export interface components {
             invoice_adjustment_attributes?: {
                 token?: string;
                 /** @description Array of adjustment items */
-                adjustment_items?: {
+                adjustment_items?: ({
                     /** @description Name of the adjustment */
                     name: string;
                     /**
@@ -3717,13 +3717,13 @@ export interface components {
                      * @description Amount or percentage value
                      */
                     amount: number;
-                }[];
+                })[];
             };
         };
         /** @description BillingRules model */
         BillingRules: {
             links?: components["schemas"]["Links"];
-            billing_rules: components["schemas"]["BillingRule"][];
+            billing_rules: (components["schemas"]["BillingRule"])[];
         };
         /** @description BillingRule model */
         BillingRule: {
@@ -3878,13 +3878,13 @@ export interface components {
         /** @description BudgetAlerts model */
         BudgetAlerts: {
             links?: components["schemas"]["Links"];
-            budget_alerts: components["schemas"]["BudgetAlert"][];
+            budget_alerts: (components["schemas"]["BudgetAlert"])[];
         };
         /** @description BudgetAlert model */
         BudgetAlert: {
             token: string;
             /** @description The tokens for the Budgets that the Budget Alert is monitoring to trigger alerts on. */
-            budget_tokens: string[];
+            budget_tokens: (string)[];
             /**
              * @description The date and time, in UTC, the Budget Alert was created. ISO 8601 Formatted.
              * @example 2024-03-19T00:00:00Z
@@ -3895,9 +3895,9 @@ export interface components {
             /** @description The token for the User who created this BudgetAlert. */
             user_token?: string | null;
             /** @description The tokens of organization users that receive the alert. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
-            user_tokens: string[];
+            user_tokens: (string)[];
             /** @description The email addresses that receive the alert, including organization users, SSO-domain addresses, and approved third-party addresses. */
-            recipient_emails: string[];
+            recipient_emails: (string)[];
             /**
              * Format: int32
              * @description The number of days from the start or end of the month to trigger the alert if the threshold is reached.
@@ -3920,12 +3920,12 @@ export interface components {
              */
             integration_provider?: string | null;
             /** @description The channels receiving the alerts. Requires an integration provider to be connected. */
-            recipient_channels: string[] | null;
+            recipient_channels: (string)[] | null;
         };
         /** @description Create a Budget Alert. */
         createBudgetAlert: {
             /** @description The tokens of the Budget that has the alert. */
-            budget_tokens: string[];
+            budget_tokens: (string)[];
             /**
              * Format: int32
              * @description The threshold amount that must be met for the alert to fire.
@@ -3934,20 +3934,20 @@ export interface components {
             /** @description The token of the Workspace to add the BudgetAlert to. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the alert. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached.  For the full month, pass an empty value. */
             duration_in_days: string;
             /** @description The period tracked on the alert. Used with duration_in_days to determine the time window of the alert. Defaults to start_of_the_month if not passed. Possible values: start_of_the_month, end_of_the_month. */
             period_to_track?: string;
             /** @description The channels receiving the alerts. Requires an integration provider to be connected. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
         };
         /** @description Updates an existing BudgetAlert. */
         updateBudgetAlert: {
             /** @description The tokens of the Budget that has the alert. */
-            budget_tokens?: string[];
+            budget_tokens?: (string)[];
             /**
              * Format: int32
              * @description The threshold amount that must be met for the alert to fire.
@@ -3956,20 +3956,20 @@ export interface components {
             /** @description The token of the Workspace the BudgetAlert belongs to. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
             /** @description The tokens of the users that receive the alert. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the alert. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The number of days from the start or end of the month to trigger the alert if the threshold is reached. For the full month, pass an empty value. */
             duration_in_days?: string | null;
             /** @description The period tracked on the alert. Used with duration_in_days to determine the time window of the alert. Defaults to start_of_the_month if not passed. Possible values: start_of_the_month, end_of_the_month. */
             period_to_track?: string;
             /** @description The channels receiving the alerts. Requires an integration provider to be connected. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
         };
         /** @description Budgets model */
         Budgets: {
             links?: components["schemas"]["Links"];
-            budgets: components["schemas"]["Budget"][];
+            budgets: (components["schemas"]["Budget"])[];
         };
         /** @description Budget model */
         Budget: {
@@ -4001,14 +4001,14 @@ export interface components {
              */
             created_at: string;
             /** @description The tokens of the BudgetAlerts associated with the Budget. */
-            budget_alert_tokens: string[];
+            budget_alert_tokens: (string)[];
             /** @description The tokens of the child Budgets associated with the hierarchical Budget. */
-            child_budget_tokens: string[];
+            child_budget_tokens: (string)[];
             period_cadence: components["schemas"]["PeriodCadence"];
             /** @description The budget periods associated with the Budget. */
-            periods: components["schemas"]["BudgetPeriod"][];
+            periods: (components["schemas"]["BudgetPeriod"])[];
             /** @description The historical performance of the Budget. */
-            performance?: components["schemas"]["BudgetPerformance"][];
+            performance?: (components["schemas"]["BudgetPerformance"])[];
         };
         PeriodCadence: {
             /**
@@ -4086,7 +4086,7 @@ export interface components {
             /** @description The usage unit for usage Budgets. */
             unit?: string;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. */
-            child_budget_tokens?: string[];
+            child_budget_tokens?: (string)[];
             /** @description The interval cadence for budget periods. */
             period_cadence?: {
                 /**
@@ -4106,7 +4106,7 @@ export interface components {
                 interval_unit?: "day" | "week" | "month" | "year";
             };
             /** @description The periods for the Budget. The start_at and end_at must be iso8601 formatted e.g. YYYY-MM-DD. Ignored for hierarchical Budgets. */
-            periods?: {
+            periods?: ({
                 /**
                  * Format: date
                  * @description The start date of the period.
@@ -4122,7 +4122,7 @@ export interface components {
                  * @description The amount of the period.
                  */
                 amount: number;
-            }[];
+            })[];
         };
         /** @description Update a Budget. */
         updateBudget: {
@@ -4138,7 +4138,7 @@ export interface components {
             /** @description The usage unit for usage Budgets. Send null to clear. */
             unit?: string | null;
             /** @description The tokens of any child Budgets when creating a hierarchical Budget. Child budgets must share the same current period dates. Omitted on update to leave the current child list unchanged. */
-            child_budget_tokens?: string[];
+            child_budget_tokens?: (string)[];
             /** @description The interval cadence for budget periods. Changing cadence after creation is rejected. */
             period_cadence?: {
                 /**
@@ -4158,7 +4158,7 @@ export interface components {
                 interval_unit?: "day" | "week" | "month" | "year";
             };
             /** @description The periods for the Budget. The start_at and end_at must be iso8601 formatted e.g. YYYY-MM-DD. Ignored for hierarchical Budgets. */
-            periods?: {
+            periods?: ({
                 /**
                  * Format: date
                  * @description The start date of the period.
@@ -4174,11 +4174,11 @@ export interface components {
                  * @description The amount of the period.
                  */
                 amount: number;
-            }[];
+            })[];
         };
         /** @description BusinessMetrics model */
         BusinessMetrics: {
-            business_metrics: components["schemas"]["BusinessMetric"][];
+            business_metrics: (components["schemas"]["BusinessMetric"])[];
         };
         /** @description BusinessMetric model */
         BusinessMetric: {
@@ -4198,7 +4198,7 @@ export interface components {
              */
             created_by_token?: string | null;
             /** @description The tokens for any CostReports that use the BusinessMetric, the unit scale, and label filter. */
-            cost_report_tokens_with_metadata: components["schemas"]["AttachedCostReportForBusinessMetric"][];
+            cost_report_tokens_with_metadata: (components["schemas"]["AttachedCostReportForBusinessMetric"])[];
             /**
              * @description The type of import for the BusinessMetric.
              * @example datadog_metrics
@@ -4237,7 +4237,7 @@ export interface components {
              */
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
-            label_filter?: string[] | null;
+            label_filter?: (string)[] | null;
             /**
              * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
              * @example {
@@ -4251,7 +4251,7 @@ export interface components {
              *     }
              */
             label_filters?: {
-                [key: string]: string[];
+                [key: string]: (string)[];
             } | null;
         };
         CloudwatchFields: {
@@ -4277,7 +4277,7 @@ export interface components {
              */
             metric_name: string;
             /** @description The dimensions used to pull specific statistical data for Cloudwatch metrics. */
-            dimensions: components["schemas"]["CloudwatchDimension"][];
+            dimensions: (components["schemas"]["CloudwatchDimension"])[];
             /** @description The dimension used to aggregate the Cloudwatch metrics. */
             label_dimension: string | null;
         };
@@ -4321,7 +4321,7 @@ export interface components {
         /** @description BusinessMetricLabels model */
         BusinessMetricLabels: {
             links?: components["schemas"]["Links"];
-            labels: components["schemas"]["BusinessMetricLabel"][];
+            labels: (components["schemas"]["BusinessMetricLabel"])[];
         };
         BusinessMetricLabel: {
             /**
@@ -4332,7 +4332,7 @@ export interface components {
         };
         /** @description BusinessMetricValues model */
         BusinessMetricValues: {
-            values: components["schemas"]["BusinessMetricValue"][];
+            values: (components["schemas"]["BusinessMetricValue"])[];
         };
         BusinessMetricValue: {
             /**
@@ -4356,7 +4356,7 @@ export interface components {
             /** @description The title of the BusinessMetrics. */
             title: string;
             /** @description The tokens for any CostReports that use the BusinessMetric, the unit scale, and label filter. */
-            cost_report_tokens_with_metadata?: {
+            cost_report_tokens_with_metadata?: ({
                 /** @description The token of the CostReport the BusinessMetric is attached to. */
                 cost_report_token: string;
                 /**
@@ -4374,7 +4374,7 @@ export interface components {
                 /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
                 label?: string;
                 /** @description Include only values with these labels in the CostReport. */
-                label_filter?: string[];
+                label_filter?: (string)[];
                 /**
                  * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
                  * @example {
@@ -4388,25 +4388,25 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 };
-            }[];
+            })[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
-            values?: {
+            values?: ({
                 /** Format: date-time */
                 date: string;
                 /** Format: double */
                 amount: number;
                 label?: string | null;
-            }[];
+            })[];
             /** @description The dates, amounts, and (optional) labels for forecasted BusinessMetric values. */
-            forecasted_values?: {
+            forecasted_values?: ({
                 /** Format: date-time */
                 date: string;
                 /** Format: double */
                 amount: number;
                 label?: string | null;
-            }[];
+            })[];
             /** @description Datadog metric configuration fields */
             datadog_metric_fields?: {
                 /** @description Integration token for the account from which you would like to fetch metrics. */
@@ -4423,10 +4423,10 @@ export interface components {
                 namespace?: string;
                 metric_name?: string;
                 label_dimension?: string;
-                dimensions?: {
+                dimensions?: ({
                     name?: string;
                     value?: string;
-                }[];
+                })[];
             };
             /** @description GCP BigQuery metric configuration fields. */
             gcp_bigquery_metric_fields?: {
@@ -4457,7 +4457,7 @@ export interface components {
             /** @description The title of the BusinessMetric. */
             title?: string;
             /** @description The tokens for any CostReports that use the BusinessMetric, and the unit scale. */
-            cost_report_tokens_with_metadata?: {
+            cost_report_tokens_with_metadata?: ({
                 /** @description The token of the CostReport the BusinessMetric is attached to. */
                 cost_report_token: string;
                 /**
@@ -4475,7 +4475,7 @@ export interface components {
                 /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
                 label?: string;
                 /** @description Include only values with these labels in the CostReport. */
-                label_filter?: string[];
+                label_filter?: (string)[];
                 /**
                  * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
                  * @example {
@@ -4489,25 +4489,25 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 };
-            }[];
+            })[];
             /** @description The dates, amounts, and (optional) labels for the BusinessMetric. */
-            values?: {
+            values?: ({
                 /** Format: date-time */
                 date: string;
                 /** Format: double */
                 amount: number;
                 label?: string | null;
-            }[];
+            })[];
             /** @description The dates, amounts, and (optional) labels for forecasted BusinessMetric values. */
-            forecasted_values?: {
+            forecasted_values?: ({
                 /** Format: date-time */
                 date: string;
                 /** Format: double */
                 amount: number;
                 label?: string | null;
-            }[];
+            })[];
             /** @description Datadog metric configuration fields */
             datadog_metric_fields?: {
                 /** @description Integration token for the account from which you would like to fetch metrics. */
@@ -4524,10 +4524,10 @@ export interface components {
                 namespace?: string;
                 metric_name?: string;
                 label_dimension?: string;
-                dimensions?: {
+                dimensions?: ({
                     name?: string;
                     value?: string;
-                }[];
+                })[];
             };
             /** @description Snowflake metric configuration fields. */
             snowflake_metric_fields?: {
@@ -4549,7 +4549,7 @@ export interface components {
         /** @description Canvases model */
         Canvases: {
             links?: components["schemas"]["Links"];
-            canvases: components["schemas"]["Canvas"][];
+            canvases: (components["schemas"]["Canvas"])[];
         };
         /** @description Canvas model */
         Canvas: {
@@ -4604,7 +4604,7 @@ export interface components {
         /** @description CostAlertEvents model */
         CostAlertEvents: {
             links?: components["schemas"]["Links"];
-            cost_alert_events: components["schemas"]["CostAlertEvent"][];
+            cost_alert_events: (components["schemas"]["CostAlertEvent"])[];
         };
         /** @description CostAlertEvent model */
         CostAlertEvent: {
@@ -4633,18 +4633,18 @@ export interface components {
         /** @description CostAlerts model */
         CostAlerts: {
             links?: components["schemas"]["Links"];
-            cost_alerts: components["schemas"]["CostAlert"][];
+            cost_alerts: (components["schemas"]["CostAlert"])[];
         };
         /** @description CostAlert model */
         CostAlert: {
             token: string;
             title: string;
             /** @description The email addresses that will receive the alert. */
-            email_recipients: string[];
+            email_recipients: (string)[];
             /** @description The Slack channels that will receive the alert. Make sure your slack integration is connected at https://console.vantage.sh/settings/slack. */
-            slack_channels: string[];
+            slack_channels: (string)[];
             /** @description The Microsoft Teams channels that will receive the alert. Make sure your teams integration is connected at https://console.vantage.sh/settings/microsoft_teams. */
-            teams_channels: string[];
+            teams_channels: (string)[];
             /**
              * @description The date and time, in UTC, for when the alert was created. ISO 8601 Formatted.
              * @example 2023-10-01T12:00:00Z
@@ -4666,7 +4666,7 @@ export interface components {
             /** @description The minimum monetary amount threshold for percentage-based alerts. When set, alerts will only trigger if the cost change meets this minimum, even if the percentage threshold is exceeded. */
             minimum_threshold: number | null;
             /** @description The tokens of the reports to alert on. */
-            report_tokens: string[];
+            report_tokens: (string)[];
         };
         /** @description Create a new Cost Alert */
         createCostAlert: {
@@ -4684,13 +4684,13 @@ export interface components {
             /** @description The token of the Workspace to add the Cost Alert to. */
             workspace_token: string;
             /** @description The tokens of the reports to alert on. */
-            report_tokens: string[];
+            report_tokens: (string)[];
             /** @description The email recipients for the Cost Alert. Accepts organization users, SSO-domain emails, and approved third-party service emails. */
-            email_recipients?: string[];
+            email_recipients?: (string)[];
             /** @description The Slack channels that will receive the alert. */
-            slack_channels?: string[];
+            slack_channels?: (string)[];
             /** @description The Microsoft Teams channels that will receive the alert. */
-            teams_channels?: string[];
+            teams_channels?: (string)[];
             /**
              * Format: float
              * @description The minimum monetary amount threshold for percentage-based alerts. Only applicable when unit_type is 'percentage'.
@@ -4702,7 +4702,7 @@ export interface components {
             /** @description The title of the Cost Alert. */
             title?: string;
             /** @description The email recipients for the Cost Alert. Accepts organization users, SSO-domain emails, and approved third-party service emails. */
-            email_recipients?: string[];
+            email_recipients?: (string)[];
             /** @description The period of time used to compare costs. Options are 'day', 'week', 'month', 'quarter'. */
             interval?: string;
             /**
@@ -4711,13 +4711,13 @@ export interface components {
              */
             threshold?: number;
             /** @description The Slack channels that will receive the alert. Make sure your slack integration is connected at https://console.vantage.sh/settings/slack. */
-            slack_channels?: string[];
+            slack_channels?: (string)[];
             /** @description The Microsoft Teams channels that will receive the alert. Make sure your teams integration is connected at https://console.vantage.sh/settings/microsoft_teams. */
-            teams_channels?: string[];
+            teams_channels?: (string)[];
             /** @description The unit type used to compare costs. Options are 'currency' or 'percentage'. */
             unit_type?: string;
             /** @description The tokens of the reports to alert on. */
-            report_tokens?: string[];
+            report_tokens?: (string)[];
             /**
              * Format: float
              * @description The minimum monetary amount threshold for percentage-based alerts. Only applicable when unit_type is 'percentage'.
@@ -4727,7 +4727,7 @@ export interface components {
         /** @description CostProviderAccounts model */
         CostProviderAccounts: {
             links?: components["schemas"]["Links"];
-            cost_provider_accounts: components["schemas"]["CostProviderAccount"][];
+            cost_provider_accounts: (components["schemas"]["CostProviderAccount"])[];
         };
         CostProviderAccount: {
             /**
@@ -4754,7 +4754,7 @@ export interface components {
         /** @description CostReports model */
         CostReports: {
             links?: components["schemas"]["Links"];
-            cost_reports: components["schemas"]["CostReport"][];
+            cost_reports: (components["schemas"]["CostReport"])[];
         };
         /** @description CostReport model */
         CostReport: {
@@ -4767,9 +4767,9 @@ export interface components {
             /** @description The token for the Folder the CostReport is a part of. */
             folder_token?: string | null;
             /** @description The tokens for the SavedFilters assigned to the CostReport. */
-            saved_filter_tokens?: string[] | null;
+            saved_filter_tokens?: (string)[] | null;
             /** @description The tokens for the BusinessMetrics assigned to the CostReport, the unit scale, and label filter. */
-            business_metric_tokens_with_metadata: components["schemas"]["AttachedBusinessMetricForCostReport"][];
+            business_metric_tokens_with_metadata: (components["schemas"]["AttachedBusinessMetricForCostReport"])[];
             default_forecast: components["schemas"]["DefaultForecast"];
             /** @description The filter applied to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
@@ -4886,7 +4886,7 @@ export interface components {
              */
             label?: string | null;
             /** @description The labels that the BusinessMetric is filtered by within a particular CostReport. */
-            label_filter?: string[] | null;
+            label_filter?: (string)[] | null;
             /**
              * @description The ClickHouse BusinessMetric label filters applied within a CostReport. Each key is required and values within a key are alternatives.
              * @example {
@@ -4900,7 +4900,7 @@ export interface components {
              *     }
              */
             label_filters?: {
-                [key: string]: string[];
+                [key: string]: (string)[];
             } | null;
         };
         DefaultForecast: {
@@ -4919,12 +4919,12 @@ export interface components {
              */
             y_axis_dimension: "cost" | "usage" | "count";
             /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
-            x_axis_dimension: string[];
+            x_axis_dimension: (string)[];
         };
         /** @description ForecastedCosts model */
         ForecastedCosts: {
             links?: components["schemas"]["Links"];
-            forecasted_costs: components["schemas"]["ForecastedCost"][];
+            forecasted_costs: (components["schemas"]["ForecastedCost"])[];
             /**
              * @description The currency of the forecasted costs.
              * @example USD
@@ -4966,9 +4966,9 @@ export interface components {
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
             /** @description The tokens of the SavedFilters to apply to the CostReport. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: (string)[];
             /** @description The tokens for any BusinessMetrics to attach to the CostReport, and the unit scale. */
-            business_metric_tokens_with_metadata?: {
+            business_metric_tokens_with_metadata?: ({
                 /** @description The token of the BusinessMetric to attach to the CostReport. */
                 business_metric_token: string;
                 /**
@@ -4986,7 +4986,7 @@ export interface components {
                 /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
                 label?: string;
                 /** @description Include only values with these labels in the CostReport. */
-                label_filter?: string[];
+                label_filter?: (string)[];
                 /**
                  * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
                  * @example {
@@ -5000,9 +5000,9 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 };
-            }[];
+            })[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
             /** @description Report settings. */
@@ -5082,7 +5082,7 @@ export interface components {
             /** @description Report chart settings. */
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
-                x_axis_dimension?: string[];
+                x_axis_dimension?: (string)[];
                 /**
                  * @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'.
                  * @enum {string}
@@ -5099,9 +5099,9 @@ export interface components {
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
             /** @description The tokens of the SavedFilters to apply to the CostReport. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: (string)[];
             /** @description The tokens for any BusinessMetrics to attach to the CostReport, and the unit scale. */
-            business_metric_tokens_with_metadata?: {
+            business_metric_tokens_with_metadata?: ({
                 /** @description The token of the BusinessMetric to attach to the CostReport. */
                 business_metric_token: string;
                 /**
@@ -5119,7 +5119,7 @@ export interface components {
                 /** @description Optional custom display name for this BusinessMetric on the CostReport. When omitted, a default is derived from the calculation type. */
                 label?: string;
                 /** @description Include only values with these labels in the CostReport. */
-                label_filter?: string[];
+                label_filter?: (string)[];
                 /**
                  * @description Include only ClickHouse BusinessMetric values matching every label key and one of its values.
                  * @example {
@@ -5133,9 +5133,9 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 };
-            }[];
+            })[];
             /** @description The token of the Folder to add the CostReport to. Determines the Workspace the report is assigned to. */
             folder_token?: string;
             /** @description The default forecast selection for the CostReport. */
@@ -5175,7 +5175,7 @@ export interface components {
             /** @description Report chart settings. */
             chart_settings?: {
                 /** @description The dimension used to group or label data along the x-axis (e.g., by date, region, or service). NOTE: Only one value is allowed at this time. Defaults to ['date']. */
-                x_axis_dimension?: string[];
+                x_axis_dimension?: (string)[];
                 /**
                  * @description The metric or measure displayed on the chart’s y-axis. Possible values: 'cost', 'usage', 'count'. Defaults to 'cost'.
                  * @enum {string}
@@ -5219,7 +5219,7 @@ export interface components {
             /** @description Last date you would like to filter costs to. ISO 8601 formatted. When omitted with cost_report_token, the report's saved end date is used. */
             end_date?: string;
             /** @description Group the results by specific field(s). When omitted with cost_report_token, the report's saved groupings are used; otherwise defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
-            groupings?: string[];
+            groupings?: (string)[];
             /**
              * @description The date bin of the costs. Defaults to the report's default or day.
              * @enum {string}
@@ -5281,15 +5281,15 @@ export interface components {
             links?: components["schemas"]["Links"];
             total_cost: components["schemas"]["CostPartial"];
             /** @description The sum of all usage for the CostReport for the requested period, rounded to 2 decimal places, grouped by usage unit. */
-            total_usage?: components["schemas"]["UsagePartial"][];
+            total_usage?: (components["schemas"]["UsagePartial"])[];
             /**
              * Format: int64
              * @description The sum of the date-binned counts. Present when settings.aggregate_by is 'count'.
              */
             total_count?: number | null;
             /** @description Distinct Group By permutation counts for the full requested period, unaffected by page and limit. Bins without cost are omitted. Present when settings.aggregate_by is 'count'. */
-            counts?: components["schemas"]["CostCount"][];
-            costs: components["schemas"]["Cost"][];
+            counts?: (components["schemas"]["CostCount"])[];
+            costs: (components["schemas"]["Cost"])[];
         };
         CostPartial: {
             /**
@@ -5391,7 +5391,7 @@ export interface components {
              */
             tag?: string | null;
             /** @description The tag pairs attached to the cost that was incurred. */
-            tags?: string[] | null;
+            tags?: (string)[] | null;
             /**
              * @description The category for the cost.
              * @example Data Transfer
@@ -5426,7 +5426,7 @@ export interface components {
         /** @description DashboardNotifications model */
         DashboardNotifications: {
             links?: components["schemas"]["Links"];
-            dashboard_notifications: components["schemas"]["DashboardNotification"][];
+            dashboard_notifications: (components["schemas"]["DashboardNotification"])[];
         };
         /** @description DashboardNotification model */
         DashboardNotification: {
@@ -5447,9 +5447,9 @@ export interface components {
              */
             workspace_token: string;
             /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
-            user_tokens: string[];
+            user_tokens: (string)[];
             /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
-            recipient_emails: string[];
+            recipient_emails: (string)[];
             /**
              * @description The frequency the DashboardNotification is sent.
              * @example weekly
@@ -5466,9 +5466,9 @@ export interface components {
             /** @description The token of the Workspace to add the DashboardNotification to. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
             /** @description The Users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /**
              * @description The frequency the DashboardNotification is sent. Possible values: daily, weekly, monthly.
              * @enum {string}
@@ -5482,9 +5482,9 @@ export interface components {
             /** @description The Dashboard token. Retargeting requires edit access to the new Dashboard. */
             dashboard_token?: string;
             /** @description The Users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /**
              * @description The frequency the DashboardNotification is sent. Possible values: daily, weekly, monthly.
              * @enum {string}
@@ -5576,7 +5576,7 @@ export interface components {
         /** @description Dashboards model */
         Dashboards: {
             links?: components["schemas"]["Links"];
-            dashboards: components["schemas"]["Dashboard"][];
+            dashboards: (components["schemas"]["Dashboard"])[];
         };
         /** @description Dashboard model */
         Dashboard: {
@@ -5588,9 +5588,9 @@ export interface components {
              */
             title: string;
             /** @description The widgets displayed in the Dashboard. Report-backed widgets include widgetable_token and settings. Free text widgets include widgetable_type set to free_text and content, omit widgetable_token, and include settings when a grid layout is persisted. */
-            widgets: components["schemas"]["DashboardWidget"][];
+            widgets: (components["schemas"]["DashboardWidget"])[];
             /** @description The tokens of the Saved Filters used in the Dashboard. */
-            saved_filter_tokens: string[];
+            saved_filter_tokens: (string)[];
             /**
              * @description Determines how to group costs in the Dashboard.
              * @enum {string|null}
@@ -5637,7 +5637,7 @@ export interface components {
             /** @description The title of the Dashboard. */
             title: string;
             /** @description The widgets to add to the Dashboard. Report-backed widgets use widgetable_token. Free text widgets use widgetable_type set to free_text and require content. */
-            widgets?: {
+            widgets?: ({
                 /** @description The token of the represented Resource. */
                 widgetable_token?: string;
                 /**
@@ -5654,7 +5654,7 @@ export interface components {
                      * @enum {string}
                      */
                     type: "doc";
-                    content?: Record<string, any>[];
+                    content?: (Record<string, any>)[];
                 };
                 /** @description The display and grid layout settings for the DashboardWidget. */
                 settings?: {
@@ -5696,9 +5696,9 @@ export interface components {
                         h: number;
                     };
                 };
-            }[];
+            })[];
             /** @description The tokens of the Saved Filters used in the Dashboard. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: (string)[];
             /**
              * @description Determines how to group costs in the Dashboard.
              * @enum {string}
@@ -5723,7 +5723,7 @@ export interface components {
             /** @description The title of the Dashboard. */
             title?: string;
             /** @description The complete replacement list of widgets for the Dashboard. Omit widgets or send null to preserve every existing widget. When provided, include every report-backed and free text widget to keep; an empty array removes all widgets. Report-backed widgets use widgetable_token. Free text widgets use widgetable_type set to free_text and require content. */
-            widgets?: {
+            widgets?: ({
                 /** @description The token of the represented Resource. */
                 widgetable_token?: string;
                 /**
@@ -5740,7 +5740,7 @@ export interface components {
                      * @enum {string}
                      */
                     type: "doc";
-                    content?: Record<string, any>[];
+                    content?: (Record<string, any>)[];
                 };
                 /** @description The display and grid layout settings for the DashboardWidget. */
                 settings?: {
@@ -5782,9 +5782,9 @@ export interface components {
                         h: number;
                     };
                 };
-            }[] | null;
+            })[] | null;
             /** @description The tokens of the Saved Filters used in the Dashboard. */
-            saved_filter_tokens?: string[] | null;
+            saved_filter_tokens?: (string)[] | null;
             /**
              * @description Determines how to group costs in the Dashboard.
              * @enum {string}
@@ -5818,7 +5818,7 @@ export interface components {
             attributes: Record<string, any>;
         };
         DataExportManifest: {
-            files: string[];
+            files: (string)[];
             /** @example 2025-03-20T12:00:00Z */
             completed_at: string | null;
             /** @example 2025-03-20T12:00:00Z */
@@ -5827,7 +5827,7 @@ export interface components {
         /** @description EnrichmentSources model */
         EnrichmentSources: {
             links?: components["schemas"]["Links"];
-            enrichment_sources: components["schemas"]["EnrichmentSource"][];
+            enrichment_sources: (components["schemas"]["EnrichmentSource"])[];
         };
         /** @description EnrichmentSource model */
         EnrichmentSource: {
@@ -5857,7 +5857,7 @@ export interface components {
         /** @description EnrichmentStatistics model */
         EnrichmentStatistics: {
             links?: components["schemas"]["Links"];
-            enrichment_statistics: components["schemas"]["EnrichmentStatistic"][];
+            enrichment_statistics: (components["schemas"]["EnrichmentStatistic"])[];
         };
         EnrichmentStatistic: {
             token: string;
@@ -5904,7 +5904,7 @@ export interface components {
         /** @description ExchangeRates model */
         ExchangeRates: {
             links?: components["schemas"]["Links"];
-            exchange_rates: components["schemas"]["exchange_rate"][];
+            exchange_rates: (components["schemas"]["exchange_rate"])[];
         };
         exchange_rate: {
             base_currency_code: string;
@@ -5916,7 +5916,7 @@ export interface components {
         /** @description FinancialCommitmentReports model */
         FinancialCommitmentReports: {
             links?: components["schemas"]["Links"];
-            financial_commitment_reports: components["schemas"]["FinancialCommitmentReport"][];
+            financial_commitment_reports: (components["schemas"]["FinancialCommitmentReport"])[];
         };
         /** @description FinancialCommitmentReport model */
         FinancialCommitmentReport: {
@@ -5975,7 +5975,7 @@ export interface components {
             links?: components["schemas"]["Links"];
             total_amount: components["schemas"]["CostPartial"];
             total_gross_amount: components["schemas"]["CostPartial"];
-            costs: components["schemas"]["FinancialCommitmentReportCost"][];
+            costs: (components["schemas"]["FinancialCommitmentReportCost"])[];
         };
         FinancialCommitmentReportCost: {
             /**
@@ -6064,7 +6064,7 @@ export interface components {
              */
             instance_type?: string | null;
             /** @description The tag key/value pairs attached to the cost that was incurred. */
-            tags?: components["schemas"]["FinancialCommitmentReportCostTag"][];
+            tags?: (components["schemas"]["FinancialCommitmentReportCostTag"])[];
         };
         FinancialCommitmentReportCostTag: {
             /**
@@ -6155,7 +6155,7 @@ export interface components {
         /** @description FinancialCommitments model */
         FinancialCommitments: {
             links?: components["schemas"]["Links"];
-            financial_commitments: components["schemas"]["FinancialCommitment"][];
+            financial_commitments: (components["schemas"]["FinancialCommitment"])[];
         };
         FinancialCommitment: {
             /**
@@ -6230,7 +6230,7 @@ export interface components {
         /** @description Folders model */
         Folders: {
             links?: components["schemas"]["Links"];
-            folders: components["schemas"]["Folder"][];
+            folders: (components["schemas"]["Folder"])[];
         };
         /** @description Folder model */
         Folder: {
@@ -6245,7 +6245,7 @@ export interface components {
             /** @description The token for the parent Folder, if any. */
             parent_folder_token?: string | null;
             /** @description The tokens for the SavedFilters assigned to the Folder. */
-            saved_filter_tokens: string[];
+            saved_filter_tokens: (string)[];
             /**
              * @description The date and time, in UTC, the Folder was created. ISO 8601 Formatted.
              * @example 2023-08-04T00:00:00Z
@@ -6266,7 +6266,7 @@ export interface components {
             /** @description The token of the parent Folder. */
             parent_folder_token?: string;
             /** @description The tokens of the SavedFilters to apply to any Cost Report contained within the Folder. */
-            saved_filter_tokens?: string[];
+            saved_filter_tokens?: (string)[];
             /** @description The token of the Workspace to add the Folder to. Ignored if 'parent_folder_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
             /**
@@ -6283,12 +6283,12 @@ export interface components {
             /** @description The token of the parent Folder. Send null or an empty string to move the Folder to the root. */
             parent_folder_token?: string | null;
             /** @description The tokens of the SavedFilters to apply to any Cost Report contained within the Folder. */
-            saved_filter_tokens?: string[] | null;
+            saved_filter_tokens?: (string)[] | null;
         };
         /** @description Integrations model */
         Integrations: {
             links?: components["schemas"]["Links"];
-            integrations: components["schemas"]["Integration"][];
+            integrations: (components["schemas"]["Integration"])[];
         };
         /** @description Integration model */
         Integration: {
@@ -6315,16 +6315,16 @@ export interface components {
              */
             last_updated?: string | null;
             /** @description The tokens for any Workspaces that the account belongs to. */
-            workspace_tokens: string[];
+            workspace_tokens: (string)[];
             /**
              * @description The date and time, in UTC, the Integration was created. ISO 8601 Formatted.
              * @example 2023-08-04T00:00:00Z
              */
             created_at: string;
             /** @description The tokens for any Managed Accounts that are associated with the Integration. */
-            managed_account_tokens: string[];
+            managed_account_tokens: (string)[];
             /** @description Tokens of the data integrations that enrich this integration's costs. Empty when enrichment is not connected. */
-            enriched_by: string[];
+            enriched_by: (string)[];
         };
         /** @description Create a Custom Provider Integration */
         createCustomProviderIntegration: {
@@ -6379,7 +6379,7 @@ export interface components {
         /** @description UserCostsUploads model */
         UserCostsUploads: {
             links?: components["schemas"]["Links"];
-            user_costs_uploads: components["schemas"]["UserCostsUpload"][];
+            user_costs_uploads: (components["schemas"]["UserCostsUpload"])[];
         };
         /** @description Create a GCP Integration */
         createGCPIntegration: {
@@ -6419,12 +6419,12 @@ export interface components {
         /** @description Update an Integration. */
         updateIntegration: {
             /** @description The Workspace tokens to associate to the Integration. */
-            workspace_tokens?: string[];
+            workspace_tokens?: (string)[];
         };
         /** @description Invoices model */
         Invoices: {
             links?: components["schemas"]["Links"];
-            invoices: components["schemas"]["Invoice"][];
+            invoices: (components["schemas"]["Invoice"])[];
         };
         /** @description Invoice model */
         Invoice: {
@@ -6477,7 +6477,7 @@ export interface components {
         };
         /** @description SendInvoice model */
         SendInvoice: {
-            recipients: string[];
+            recipients: (string)[];
         };
         /** @description CostReportUrl model */
         CostReportUrl: {
@@ -6490,7 +6490,7 @@ export interface components {
         /** @description KubernetesEfficiencyReports model */
         KubernetesEfficiencyReports: {
             links?: components["schemas"]["Links"];
-            kubernetes_efficiency_reports: components["schemas"]["KubernetesEfficiencyReport"][];
+            kubernetes_efficiency_reports: (components["schemas"]["KubernetesEfficiencyReport"])[];
         };
         /** @description KubernetesEfficiencyReport model */
         KubernetesEfficiencyReport: {
@@ -6569,7 +6569,7 @@ export interface components {
              * @example 0.66666666666666666667
              */
             total_cost_efficiency: string;
-            costs: components["schemas"]["KubernetesEfficiencyReportCost"][];
+            costs: (components["schemas"]["KubernetesEfficiencyReportCost"])[];
         };
         KubernetesEfficiencyReportCost: {
             /**
@@ -6610,7 +6610,7 @@ export interface components {
             /** @description Whether the aggregated Kubernetes records contain any labels. */
             labeled?: boolean;
             /** @description The requested Kubernetes label grouping values. */
-            labels?: components["schemas"]["KubernetesEfficiencyReportCostLabel"][];
+            labels?: (components["schemas"]["KubernetesEfficiencyReportCostLabel"])[];
         };
         KubernetesEfficiencyReportCostLabel: {
             /**
@@ -6697,7 +6697,7 @@ export interface components {
         /** @description ManagedAccounts model */
         ManagedAccounts: {
             links?: components["schemas"]["Links"];
-            managed_accounts: components["schemas"]["ManagedAccount"][];
+            managed_accounts: (components["schemas"]["ManagedAccount"])[];
         };
         /** @description ManagedAccount model */
         ManagedAccount: {
@@ -6707,9 +6707,9 @@ export interface components {
             /** @description The token for the parent Account. */
             parent_account_token: string;
             /** @description The tokens for the Access Credentials assigned to the Managed Account. */
-            access_credential_tokens: string[];
+            access_credential_tokens: (string)[];
             /** @description The tokens for the Billing Rules assigned to the Managed Account, in the order they will execute against this account's cost data. */
-            billing_rule_tokens: string[];
+            billing_rule_tokens: (string)[];
             /** @description Email domain associated with this Managed Account for SSO. */
             email_domain?: string | null;
             /** @description Token of the MSP billing profile used for this managed account (MSP invoicing accounts only) */
@@ -6731,9 +6731,9 @@ export interface components {
             /** @description The contact email address for the Managed Account. */
             contact_email: string;
             /** @description Access Credential (aka Integrations) tokens to assign to the Managed Account. */
-            access_credential_tokens?: string[];
+            access_credential_tokens?: (string)[];
             /** @description Billing Rule tokens to assign to the Managed Account, in their desired execution order. Tokens must be ordered by execution group: AWS transforms, then COST inserts, then COST transforms, then monthly post-transform inserts. Within a group any order is accepted and persisted as-is. Submitting a list whose cross-group ordering does not match the pipeline returns a 400.Existing rules with apply_to_all enabled will be added implicity to the end of their execution group. */
-            billing_rule_tokens?: string[];
+            billing_rule_tokens?: (string)[];
             /** @description Email domain to associate with this Managed Account for SSO. */
             email_domain?: string;
         };
@@ -6744,9 +6744,9 @@ export interface components {
             /** @description The contact email address for the Managed Account. */
             contact_email?: string;
             /** @description Access Credential (aka Integrations) tokens to assign to the Managed Account. */
-            access_credential_tokens?: string[];
+            access_credential_tokens?: (string)[];
             /** @description Billing Rule tokens to assign to the Managed Account, in their desired execution order. Tokens must be ordered by execution group: AWS transforms, then COST inserts, then COST transforms, then monthly post-transform inserts. Within a group any order is accepted and persisted as-is. Submitting a list whose cross-group ordering does not match the pipeline returns a 400. */
-            billing_rule_tokens?: string[];
+            billing_rule_tokens?: (string)[];
             /** @description Email domain to associate with this Managed Account for SSO. */
             email_domain?: string;
             /** @description Token of the MSP billing profile to use for this managed account (MSP invoicing accounts only). */
@@ -6778,7 +6778,7 @@ export interface components {
                 /** @description Postal or ZIP code */
                 postal_code?: string;
                 /** @description Array of billing email addresses */
-                billing_email?: string[];
+                billing_email?: (string)[];
             };
             /** @description Business information and custom fields (MSP invoicing accounts only) */
             business_information_attributes?: {
@@ -6788,12 +6788,12 @@ export interface components {
                 /** @description Business metadata including custom fields */
                 metadata?: {
                     /** @description Array of custom field objects */
-                    custom_fields?: {
+                    custom_fields?: ({
                         /** @description Custom field name */
                         name?: string;
                         /** @description Custom field value */
                         value?: string;
-                    }[];
+                    })[];
                 };
             };
         };
@@ -6807,14 +6807,14 @@ export interface components {
             /** @description The SAML metadata URL for the identity provider. Required when type is saml. */
             saml_metadata_url?: string;
             /** @description Additional email domains to associate with this SSO configuration. The account's SSO domain is always included. */
-            additional_domains?: string[];
+            additional_domains?: (string)[];
         };
         /** @description Update SSO configuration for a Managed Account. */
         updateSsoConnectionForManagedAccount: {
             /** @description The SAML metadata URL for the identity provider. */
             saml_metadata_url?: string;
             /** @description Additional email domains to associate with this SSO configuration. Replaces existing additional domains. The account's SSO domain is always preserved. */
-            additional_domains?: string[];
+            additional_domains?: (string)[];
         };
         /** @description ManagedAccountIntegration model */
         ManagedAccountIntegration: {
@@ -6829,19 +6829,19 @@ export interface components {
              */
             provider: string;
             /** @description The provider account identifiers this delegated Integration imports. Azure CSP uses subscription ids and GCP uses billing account ids (reseller subaccounts). An empty array means no filter is applied, so every provider account the credential can see is imported. Providers that do not support scoping always report an empty array. */
-            provider_account_identifiers: string[];
+            provider_account_identifiers: (string)[];
         };
         /** @description Update a delegated Integration on a Managed Account. */
         updateManagedAccountIntegration: {
             /** @description The provider account identifiers this delegated Integration should import, replacing the current list. For Azure CSP these are subscription ids and for GCP these are billing account ids (reseller subaccounts) on the billing export. An empty array applies no filter. */
-            provider_account_identifiers: string[];
+            provider_account_identifiers: (string)[];
         };
         /** @description Me model */
         Me: {
             default_workspace_token: string | null;
             /** @description The token of the default Dashboard for the User. */
             default_dashboard_token?: string | null;
-            workspaces: components["schemas"]["Workspace"][];
+            workspaces: (components["schemas"]["Workspace"])[];
             bearer_token: components["schemas"]["BearerToken"];
             /** @description True when the authenticated User or Token has the Owner role on the Account. */
             is_account_owner: boolean;
@@ -6878,7 +6878,7 @@ export interface components {
              */
             created_at: string;
             /** @description The scopes applied to the BearerToken used to authenticate this request. */
-            scope: string[];
+            scope: (string)[];
         };
         /** @description Update the authenticated User. */
         updateMe: {
@@ -6888,7 +6888,7 @@ export interface components {
         /** @description CostProviders model */
         CostProviders: {
             links?: components["schemas"]["Links"];
-            cost_providers: components["schemas"]["CostProvider"][];
+            cost_providers: (components["schemas"]["CostProvider"])[];
         };
         CostProvider: {
             /**
@@ -6905,7 +6905,7 @@ export interface components {
         /** @description CostServices model */
         CostServices: {
             links?: components["schemas"]["Links"];
-            cost_services: components["schemas"]["CostService"][];
+            cost_services: (components["schemas"]["CostService"])[];
         };
         CostService: {
             /**
@@ -6945,7 +6945,7 @@ export interface components {
             flow_weight: string;
             /** @description Sampling metadata for the selected data. */
             sampling: Record<string, any>;
-            network_flow_logs: components["schemas"]["NetworkFlowLog"][];
+            network_flow_logs: (components["schemas"]["NetworkFlowLog"])[];
         };
         NetworkFlowLog: {
             /** @description The grouping values for this aggregated Network Flow Log row. */
@@ -6970,7 +6970,7 @@ export interface components {
         /** @description NetworkFlowReports model */
         NetworkFlowReports: {
             links?: components["schemas"]["Links"];
-            network_flow_reports: components["schemas"]["NetworkFlowReport"][];
+            network_flow_reports: (components["schemas"]["NetworkFlowReport"])[];
         };
         /** @description NetworkFlowReport model */
         NetworkFlowReport: {
@@ -7097,7 +7097,7 @@ export interface components {
         /** @description Prices model */
         Prices: {
             links?: components["schemas"]["Links"];
-            prices: components["schemas"]["Price"][];
+            prices: (components["schemas"]["Price"])[];
         };
         /** @description Price model */
         Price: {
@@ -7139,7 +7139,7 @@ export interface components {
         /** @description Products model */
         Products: {
             links?: components["schemas"]["Links"];
-            products: components["schemas"]["Product"][];
+            products: (components["schemas"]["Product"])[];
         };
         /** @description Product model */
         Product: {
@@ -7181,7 +7181,7 @@ export interface components {
         /** @description Recommendations model */
         Recommendations: {
             links?: components["schemas"]["Links"];
-            recommendations: components["schemas"]["Recommendation"][];
+            recommendations: (components["schemas"]["Recommendation"])[];
         };
         /** @description Recommendation model */
         Recommendation: {
@@ -7239,7 +7239,7 @@ export interface components {
         /** @description RecommendationProviderResources model */
         RecommendationProviderResources: {
             links?: components["schemas"]["Links"];
-            resources: components["schemas"]["RecommendationProviderResource"][];
+            resources: (components["schemas"]["RecommendationProviderResource"])[];
         };
         /** @description RecommendationProviderResource model */
         RecommendationProviderResource: {
@@ -7272,7 +7272,7 @@ export interface components {
              */
             region: string | null;
             /** @description The cost of the resource broken down by category. */
-            costs?: components["schemas"]["ResourceCost"][];
+            costs?: (components["schemas"]["ResourceCost"])[];
             /** @description The date and time when Vantage first observed the resource. */
             created_at: string;
             /** @description Key-value pairs of tags associated with the resource. */
@@ -7283,7 +7283,7 @@ export interface components {
              */
             resource_id: string;
             /** @description The actions to take to implement the Recommendation. */
-            recommendation_actions?: components["schemas"]["RecommendationAction"][];
+            recommendation_actions?: (components["schemas"]["RecommendationAction"])[];
         };
         ResourceCost: {
             /** @description The category of the cost. */
@@ -7313,7 +7313,7 @@ export interface components {
         /** @description RecommendationViews model */
         RecommendationViews: {
             links?: components["schemas"]["Links"];
-            recommendation_views?: components["schemas"]["RecommendationView"][];
+            recommendation_views?: (components["schemas"]["RecommendationView"])[];
         };
         /** @description RecommendationView model */
         RecommendationView: {
@@ -7336,15 +7336,15 @@ export interface components {
              */
             end_date?: string | null;
             /** @description Filter by one or more providers. */
-            provider_ids?: string[] | null;
+            provider_ids?: (string)[] | null;
             /** @description Filter by billing account identifiers. */
-            billing_account_ids?: string[] | null;
+            billing_account_ids?: (string)[] | null;
             /** @description Filter by cloud account identifiers. */
-            account_ids?: string[] | null;
+            account_ids?: (string)[] | null;
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
-            regions?: string[] | null;
+            regions?: (string)[] | null;
             /** @description Filter by one or more recommendation type slugs. */
-            types?: string[] | null;
+            types?: (string)[] | null;
             /**
              * @description Filter by tag key (must be used with tag_value).
              * @example environment
@@ -7376,15 +7376,15 @@ export interface components {
             /** @description The Workspace to associate the RecommendationView with. */
             workspace_token: string;
             /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
-            provider_ids?: string[];
+            provider_ids?: (string)[];
             /** @description Filter by billing account identifiers. */
-            billing_account_ids?: string[];
+            billing_account_ids?: (string)[];
             /** @description Filter by cloud account identifiers. */
-            account_ids?: string[];
+            account_ids?: (string)[];
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
-            regions?: string[];
+            regions?: (string)[];
             /** @description Filter by one or more recommendation type slugs. */
-            types?: string[];
+            types?: (string)[];
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string;
             /** @description Filter by tag value (requires tag_key). */
@@ -7404,15 +7404,15 @@ export interface components {
             /** @description The title of the RecommendationView. */
             title?: string;
             /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
-            provider_ids?: string[];
+            provider_ids?: (string)[];
             /** @description Filter by billing account identifiers. */
-            billing_account_ids?: string[];
+            billing_account_ids?: (string)[];
             /** @description Filter by cloud account identifiers. */
-            account_ids?: string[];
+            account_ids?: (string)[];
             /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
-            regions?: string[];
+            regions?: (string)[];
             /** @description Filter by one or more recommendation type slugs. */
-            types?: string[];
+            types?: (string)[];
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string;
             /** @description Filter by tag value (requires tag_key). */
@@ -7430,7 +7430,7 @@ export interface components {
         /** @description ReportNotifications model */
         ReportNotifications: {
             links?: components["schemas"]["Links"];
-            report_notifications: components["schemas"]["ReportNotification"][];
+            report_notifications: (components["schemas"]["ReportNotification"])[];
         };
         /** @description ReportNotification model */
         ReportNotification: {
@@ -7446,11 +7446,11 @@ export interface components {
              */
             cost_report_token: string;
             /** @description The tokens of organization users that receive the notification. Freeform SSO-domain and approved third-party emails are not included; see recipient_emails. */
-            user_tokens: string[];
+            user_tokens: (string)[];
             /** @description The email addresses that receive the notification, including organization users, SSO-domain addresses, and approved third-party addresses. */
-            recipient_emails: string[];
+            recipient_emails: (string)[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
-            recipient_channels: string[];
+            recipient_channels: (string)[];
             /**
              * @description The frequency the ReportNotification is sent.
              * @example weekly
@@ -7473,11 +7473,11 @@ export interface components {
             /** @description The token of the Workspace to add the ReportNotification to. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
             /** @description The Users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
             /** @description The frequency the ReportNotification is sent. Possible values: daily, weekly, monthly. */
             frequency: string;
             /** @description The type of change the ReportNotification is tracking. Possible values: percentage, dollars. */
@@ -7490,11 +7490,11 @@ export interface components {
             /** @description The CostReport token. */
             cost_report_token?: string;
             /** @description The Users that receive the notification. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description Email addresses that receive the notification. Must be organization users, on the account's SSO domain, or an approved third-party service address. */
-            recipient_emails?: string[];
+            recipient_emails?: (string)[];
             /** @description The Slack or Microsoft Teams channels that receive the notification. */
-            recipient_channels?: string[];
+            recipient_channels?: (string)[];
             /** @description The frequency the ReportNotification is sent. Possible values: daily, weekly, monthly. */
             frequency?: string;
             /** @description The type of change the ReportNotification is tracking. Possible values: percentage, dollars. */
@@ -7503,14 +7503,14 @@ export interface components {
         /** @description ReportForecasts model */
         ReportForecasts: {
             links?: components["schemas"]["Links"];
-            report_forecasts: components["schemas"]["ReportForecast"][];
+            report_forecasts: (components["schemas"]["ReportForecast"])[];
         };
         /** @description ReportForecast model */
         ReportForecast: {
             token: string;
             title: string;
             cost_report_token: string;
-            scenario_model_tokens: string[];
+            scenario_model_tokens: (string)[];
             business_metric_token: string | null;
             is_default: boolean;
             created_by_token: string | null;
@@ -7521,26 +7521,26 @@ export interface components {
         createReportForecast: {
             cost_report_token: string;
             title: string;
-            scenario_model_tokens?: string[];
+            scenario_model_tokens?: (string)[];
             business_metric_token?: string | null;
             set_as_default?: boolean | null;
         };
         /** @description Update a scenario-model ReportForecast. */
         updateReportForecast: {
             title?: string;
-            scenario_model_tokens?: string[];
+            scenario_model_tokens?: (string)[];
             business_metric_token?: string | null;
             set_as_default?: boolean | null;
         };
         /** @description ResourceReportColumns model */
         ResourceReportColumns: {
             /** @description Array of available column names for the specified resource type. */
-            columns: string[];
+            columns: (string)[];
         };
         /** @description ResourceReports model */
         ResourceReports: {
             links?: components["schemas"]["Links"];
-            resource_reports: components["schemas"]["ResourceReport"][];
+            resource_reports: (components["schemas"]["ResourceReport"])[];
         };
         /** @description ResourceReport model */
         ResourceReport: {
@@ -7566,7 +7566,7 @@ export interface components {
             /** @description The token for the Folder the ResourceReport is a part of. */
             folder_token?: string | null;
             /** @description Array of column names configured for the ResourceReport table display. */
-            columns: string[];
+            columns: (string)[];
         };
         /** @description Create a ResourceReport. */
         createResourceReport: {
@@ -7577,7 +7577,7 @@ export interface components {
             /** @description The filter query language to apply to the ResourceReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
             /** @description Array of column names to display in the table. Column names should match those returned by the /resource_reports/columns endpoint. The order determines the display order. Only available for reports with a single resource type filter. */
-            columns?: string[];
+            columns?: (string)[];
             /** @description The token of the Folder to add the ResourceReport to. */
             folder_token?: string;
         };
@@ -7588,14 +7588,14 @@ export interface components {
             /** @description The filter query language to apply to the ResourceReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter?: string;
             /** @description Array of column names to display in the table. Column names should match those returned by the /resource_reports/columns endpoint. The order determines the display order. Only available for reports with a single resource type filter. */
-            columns?: string[];
+            columns?: (string)[];
             /** @description The token of the Folder to move the ResourceReport to. */
             folder_token?: string;
         };
         /** @description Resources model */
         Resources: {
             links?: components["schemas"]["Links"];
-            resources: components["schemas"]["Resource"][];
+            resources: (components["schemas"]["Resource"])[];
         };
         /** @description Resource model */
         Resource: {
@@ -7628,7 +7628,7 @@ export interface components {
              */
             region: string | null;
             /** @description The cost of the resource broken down by category. */
-            costs?: components["schemas"]["ResourceCost"][];
+            costs?: (components["schemas"]["ResourceCost"])[];
             /** @description The date and time when Vantage first observed the resource. */
             created_at: string;
             /** @description Key-value pairs of tags associated with the resource. */
@@ -7637,7 +7637,7 @@ export interface components {
         /** @description SavedFilters model */
         SavedFilters: {
             links?: components["schemas"]["Links"];
-            saved_filters: components["schemas"]["SavedFilter"][];
+            saved_filters: (components["schemas"]["SavedFilter"])[];
         };
         /** @description SavedFilter model */
         SavedFilter: {
@@ -7648,7 +7648,7 @@ export interface components {
              */
             title: string;
             /** @description The tokens for any CostReports the SavedFilter is applied to. */
-            cost_report_tokens: string[];
+            cost_report_tokens: (string)[];
             /**
              * @description The SavedFilter's filter, applied to any relevant CostReports. Additional documentation available at https://docs.vantage.sh/vql.
              * @example costs.provider = 'azure'
@@ -7683,7 +7683,7 @@ export interface components {
         /** @description ScenarioModels model */
         ScenarioModels: {
             links?: components["schemas"]["Links"];
-            scenario_models: components["schemas"]["ScenarioModel"][];
+            scenario_models: (components["schemas"]["ScenarioModel"])[];
         };
         /** @description ScenarioModel model */
         ScenarioModel: {
@@ -7694,7 +7694,7 @@ export interface components {
             workspace_token: string | null;
             provider: string | null;
             service: string | null;
-            periods: components["schemas"]["ScenarioModelPeriod"][];
+            periods: (components["schemas"]["ScenarioModelPeriod"])[];
             created_by_token: string | null;
             created_at: string;
             updated_at: string;
@@ -7730,7 +7730,7 @@ export interface components {
             service?: string | null;
             workspace_token?: string;
             /** @description The periods for the ScenarioModel. */
-            periods?: {
+            periods?: ({
                 /** Format: date */
                 start_at: string;
                 /** Format: date */
@@ -7739,7 +7739,7 @@ export interface components {
                 amount: number;
                 /** @enum {string} */
                 amount_type: "dollar" | "percent";
-            }[];
+            })[];
         };
         /** @description Update a ScenarioModel. */
         updateScenarioModel: {
@@ -7750,7 +7750,7 @@ export interface components {
             service?: string | null;
             workspace_token?: string;
             /** @description The periods for the ScenarioModel. */
-            periods?: {
+            periods?: ({
                 /** Format: date */
                 start_at: string;
                 /** Format: date */
@@ -7759,12 +7759,12 @@ export interface components {
                 amount: number;
                 /** @enum {string} */
                 amount_type: "dollar" | "percent";
-            }[];
+            })[];
         };
         /** @description Segments model */
         Segments: {
             links?: components["schemas"]["Links"];
-            segments: components["schemas"]["Segment"][];
+            segments: (components["schemas"]["Segment"])[];
         };
         /** @description Segment model */
         Segment: {
@@ -7885,7 +7885,7 @@ export interface components {
         /** @description Tags model */
         Tags: {
             links?: components["schemas"]["Links"];
-            tags: components["schemas"]["Tag"][];
+            tags: (components["schemas"]["Tag"])[];
         };
         Tag: {
             /**
@@ -7898,12 +7898,12 @@ export interface components {
             /** @description Whether the Tag has been marked as preferred. */
             preferred: boolean;
             /** @description The unique providers that are covered by the Tag key. */
-            providers: string[];
+            providers: (string)[];
         };
         /** @description TagValues model */
         TagValues: {
             links?: components["schemas"]["Links"];
-            tag_values: components["schemas"]["TagValue"][];
+            tag_values: (components["schemas"]["TagValue"])[];
         };
         TagValue: {
             /**
@@ -7912,12 +7912,12 @@ export interface components {
              */
             tag_value: string;
             /** @description The unique providers that are covered by the TagValue. */
-            providers: string[];
+            providers: (string)[];
         };
         /** @description Updates an existing Tag. */
         updateTag: {
             tag_key?: string;
-            tag_keys?: string[];
+            tag_keys?: (string)[];
             /** @description Whether the Tag is hidden from the Vantage UI. */
             hidden?: boolean | null;
             /** @description Whether the Tag is marked as preferred in the Vantage UI. */
@@ -7926,7 +7926,7 @@ export interface components {
         /** @description Teams model */
         Teams: {
             links?: components["schemas"]["Links"];
-            teams: components["schemas"]["Team"][];
+            teams: (components["schemas"]["Team"])[];
         };
         /** @description Team model */
         Team: {
@@ -7942,11 +7942,11 @@ export interface components {
              */
             description: string | null;
             /** @description The tokens for any Workspaces that the Team belongs to */
-            workspace_tokens: string[];
+            workspace_tokens: (string)[];
             /** @description The email addresses for Users that belong to the Team */
-            user_emails: string[];
+            user_emails: (string)[];
             /** @description The tokens for Users that belong to the Team */
-            user_tokens: string[];
+            user_tokens: (string)[];
             /**
              * @description The token of the default Dashboard for the Team.
              * @example dshbrd_abcd1234
@@ -7960,11 +7960,11 @@ export interface components {
             /** @description The description of the Team. */
             description?: string;
             /** @description The Workspace tokens to associate to the Team. */
-            workspace_tokens?: string[];
+            workspace_tokens?: (string)[];
             /** @description The User tokens to associate to the Team. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description The User emails to associate to the Team. */
-            user_emails?: string[];
+            user_emails?: (string)[];
             /**
              * @description The role to assign to the provided Users. Defaults to 'editor' which has editor permissions.
              * @enum {string}
@@ -7980,11 +7980,11 @@ export interface components {
             /** @description The description of the Team. */
             description?: string;
             /** @description The Workspace tokens to associate to the Team. */
-            workspace_tokens?: string[];
+            workspace_tokens?: (string)[];
             /** @description The User tokens to associate to the Team. */
-            user_tokens?: string[];
+            user_tokens?: (string)[];
             /** @description The User emails to associate to the Team. */
-            user_emails?: string[];
+            user_emails?: (string)[];
             /**
              * @description The role to assign to the provided Users. Defaults to 'editor' which has editor permissions.
              * @enum {string}
@@ -7996,7 +7996,7 @@ export interface components {
         /** @description TeamMembers model */
         TeamMembers: {
             links?: components["schemas"]["Links"];
-            members: components["schemas"]["TeamMember"][];
+            members: (components["schemas"]["TeamMember"])[];
         };
         /** @description TeamMember model */
         TeamMember: {
@@ -8051,7 +8051,7 @@ export interface components {
         /** @description UnitCosts model */
         UnitCosts: {
             links?: components["schemas"]["Links"];
-            unit_costs: components["schemas"]["UnitCost"][];
+            unit_costs: (components["schemas"]["UnitCost"])[];
         };
         UnitCost: {
             links?: components["schemas"]["Links"];
@@ -8096,7 +8096,7 @@ export interface components {
         /** @description Users model */
         Users: {
             links?: components["schemas"]["Links"];
-            users: components["schemas"]["User"][];
+            users: (components["schemas"]["User"])[];
         };
         /** @description User model */
         User: {
@@ -8135,7 +8135,7 @@ export interface components {
         /** @description VirtualTagConfigs model */
         VirtualTagConfigs: {
             links?: components["schemas"]["Links"];
-            virtual_tag_configs: components["schemas"]["VirtualTagConfig"][];
+            virtual_tag_configs: (components["schemas"]["VirtualTagConfig"])[];
         };
         /** @description VirtualTagConfig model */
         VirtualTagConfig: {
@@ -8166,9 +8166,9 @@ export interface components {
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
-            collapsed_tag_keys: components["schemas"]["VirtualTagConfigCollapsedTagKey"][];
+            collapsed_tag_keys: (components["schemas"]["VirtualTagConfigCollapsedTagKey"])[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by their relative order in the list. */
-            values: components["schemas"]["VirtualTagConfigValue"][];
+            values: (components["schemas"]["VirtualTagConfigValue"])[];
         };
         VirtualTagConfigCollapsedTagKey: {
             /**
@@ -8177,7 +8177,7 @@ export interface components {
              */
             key: string;
             /** @description The providers this collapsed tag key applies to. Empty when it applies to all providers. */
-            providers: string[];
+            providers: (string)[];
             /**
              * @description The VQL filter this collapsed tag key applies to. Null when the key is provider-scoped or unset.
              * @example (costs.provider = 'aws') OR (costs.provider = 'gcp')
@@ -8209,7 +8209,7 @@ export interface components {
             /** @description The business metric label key used for this virtual tag value. */
             label_key?: string | null;
             /** @description Optional business metric label values. An empty array includes every value for the label key. */
-            label_values?: string[] | null;
+            label_values?: (string)[] | null;
             /**
              * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives.
              * @example {
@@ -8222,17 +8222,17 @@ export interface components {
              *     }
              */
             label_filters?: {
-                [key: string]: string[];
+                [key: string]: (string)[];
             } | null;
             cost_metric?: components["schemas"]["VirtualTagConfigValueCostMetric"];
             /** @description The display name for this allocation value. */
             display_name?: string | null;
             /** @description Label transforms applied to business metric labels. */
-            label_transforms: components["schemas"]["VirtualTagConfigValueLabelTransform"][];
+            label_transforms: (components["schemas"]["VirtualTagConfigValueLabelTransform"])[];
             /** @description Labeled percentage allocations for matching costs. */
-            percentages: components["schemas"]["VirtualTagConfigValuePercentage"][];
+            percentages: (components["schemas"]["VirtualTagConfigValuePercentage"])[];
             /** @description Date ranges restricting when this value applies. */
-            date_ranges: components["schemas"]["VirtualTagConfigValueDateRange"][];
+            date_ranges: (components["schemas"]["VirtualTagConfigValueDateRange"])[];
         };
         VirtualTagConfigValueCostMetric: {
             /** @description The filter VQL for the cost metric. */
@@ -8287,7 +8287,7 @@ export interface components {
             /** @description Whether the VirtualTagConfig is currently processing. True if any provider has not completed processing. */
             processing: boolean;
             /** @description Processing status broken down by provider. */
-            providers: components["schemas"]["VirtualTagConfigProviderStatus"][];
+            providers: (components["schemas"]["VirtualTagConfigProviderStatus"])[];
         };
         VirtualTagConfigProviderStatus: {
             /**
@@ -8313,16 +8313,16 @@ export interface components {
              */
             backfill_until?: string;
             /** @description Tag keys to collapse values for. */
-            collapsed_tag_keys?: {
+            collapsed_tag_keys?: ({
                 /** @description The tag key to collapse values for. */
                 key: string;
                 /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
-                providers?: string[];
+                providers?: (string)[];
                 /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
-            }[];
+            })[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
-            values?: {
+            values?: ({
                 /** @description The filter query language to apply to the value. Additional documentation available at https://docs.vantage.sh/vql. */
                 filter: string;
                 /** @description The name of the value. */
@@ -8332,7 +8332,7 @@ export interface components {
                 /** @description The business metric label key used for this virtual tag value. */
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
-                label_values?: string[];
+                label_values?: (string)[];
                 /**
                  * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
                  * @example {
@@ -8345,36 +8345,36 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
-                label_transforms?: {
+                label_transforms?: ({
                     type: string;
                     delimiter?: string | null;
                     /** Format: int32 */
                     index?: number | null;
                     template?: string | null;
-                }[];
+                })[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
                         tag: string;
                     };
                 };
-                percentages?: {
+                percentages?: ({
                     value: string;
                     /** Format: float */
                     pct: number;
-                }[];
+                })[];
                 /** @description Date ranges restricting when this value applies. Each range has optional start_date and end_date (inclusive, YYYY-MM-DD). */
-                date_ranges?: {
+                date_ranges?: ({
                     /** @description Inclusive start date (YYYY-MM-DD), or null for unbounded. */
                     start_date?: string;
                     /** @description Inclusive end date (YYYY-MM-DD), or null for unbounded. */
                     end_date?: string;
-                }[];
-            }[];
+                })[];
+            })[];
         };
         /** @description Updates an existing VirtualTagConfig. */
         updateVirtualTagConfig: {
@@ -8388,16 +8388,16 @@ export interface components {
              */
             backfill_until?: string | null;
             /** @description Tag keys to collapse values for. */
-            collapsed_tag_keys?: {
+            collapsed_tag_keys?: ({
                 /** @description The tag key to collapse values for. */
                 key: string;
                 /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
-                providers?: string[];
+                providers?: (string)[];
                 /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
-            }[];
+            })[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
-            values?: {
+            values?: ({
                 /** @description The filter query language to apply to the value. Additional documentation available at https://docs.vantage.sh/vql. */
                 filter: string;
                 /** @description The name of the value. */
@@ -8407,7 +8407,7 @@ export interface components {
                 /** @description The business metric label key used for this virtual tag value. */
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
-                label_values?: string[];
+                label_values?: (string)[];
                 /**
                  * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
                  * @example {
@@ -8420,36 +8420,36 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
-                label_transforms?: {
+                label_transforms?: ({
                     type: string;
                     delimiter?: string | null;
                     /** Format: int32 */
                     index?: number | null;
                     template?: string | null;
-                }[];
+                })[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
                         tag: string;
                     };
                 };
-                percentages?: {
+                percentages?: ({
                     value: string;
                     /** Format: float */
                     pct: number;
-                }[];
+                })[];
                 /** @description Date ranges restricting when this value applies. Each range has optional start_date and end_date (inclusive, YYYY-MM-DD). */
-                date_ranges?: {
+                date_ranges?: ({
                     /** @description Inclusive start date (YYYY-MM-DD), or null for unbounded. */
                     start_date?: string;
                     /** @description Inclusive end date (YYYY-MM-DD), or null for unbounded. */
                     end_date?: string;
-                }[];
-            }[];
+                })[];
+            })[];
         };
         /** @description AsyncVirtualTagConfigUpdate model */
         AsyncVirtualTagConfigUpdate: {
@@ -8476,16 +8476,16 @@ export interface components {
              */
             backfill_until?: string | null;
             /** @description Tag keys to collapse values for. */
-            collapsed_tag_keys?: {
+            collapsed_tag_keys?: ({
                 /** @description The tag key to collapse values for. */
                 key: string;
                 /** @description Provider-only scope for this collapsed tag key. Invalid when filter is set; include provider restrictions in filter instead. Defaults to all providers. */
-                providers?: string[];
+                providers?: (string)[];
                 /** @description The VQL filter this collapsed tag key applies to. When set, do not also set providers; include any provider restrictions directly in filter. */
                 filter?: string;
-            }[];
+            })[];
             /** @description Values for the VirtualTagConfig, with match precedence determined by order in the list. */
-            values?: {
+            values?: ({
                 /** @description The filter query language to apply to the value. Additional documentation available at https://docs.vantage.sh/vql. */
                 filter: string;
                 /** @description The name of the value. */
@@ -8495,7 +8495,7 @@ export interface components {
                 /** @description The business metric label key used for this virtual tag value. */
                 label_key?: string;
                 /** @description Optional business metric label values. An empty array includes every value for the label key. */
-                label_values?: string[];
+                label_values?: (string)[];
                 /**
                  * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Send null or an empty object to clear.
                  * @example {
@@ -8508,36 +8508,36 @@ export interface components {
                  *     }
                  */
                 label_filters?: {
-                    [key: string]: string[];
+                    [key: string]: (string)[];
                 } | null;
                 /** @description The display name for an allocation value (cost_metric or percentages). Invalid when name is set. */
                 display_name?: string;
-                label_transforms?: {
+                label_transforms?: ({
                     type: string;
                     delimiter?: string | null;
                     /** Format: int32 */
                     index?: number | null;
                     template?: string | null;
-                }[];
+                })[];
                 cost_metric?: {
                     filter: string;
                     aggregation: {
                         tag: string;
                     };
                 };
-                percentages?: {
+                percentages?: ({
                     value: string;
                     /** Format: float */
                     pct: number;
-                }[];
+                })[];
                 /** @description Date ranges restricting when this value applies. Each range has optional start_date and end_date (inclusive, YYYY-MM-DD). */
-                date_ranges?: {
+                date_ranges?: ({
                     /** @description Inclusive start date (YYYY-MM-DD), or null for unbounded. */
                     start_date?: string;
                     /** @description Inclusive end date (YYYY-MM-DD), or null for unbounded. */
                     end_date?: string;
-                }[];
-            }[];
+                })[];
+            })[];
         };
         /** @description Create a VirtualTagConfigValue. */
         createVirtualTagConfigValue: {
@@ -8550,7 +8550,7 @@ export interface components {
             /** @description The business metric label key used for this virtual tag value. */
             label_key?: string;
             /** @description Business metric label values. An empty array includes every value for the label key. */
-            label_values?: string[];
+            label_values?: (string)[];
             /**
              * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Null and an empty object leave stored filters unchanged.
              * @example {
@@ -8563,34 +8563,34 @@ export interface components {
              *     }
              */
             label_filters?: {
-                [key: string]: string[];
+                [key: string]: (string)[];
             } | null;
             /** @description The display name for a cost metric or percentage allocation value. */
             display_name?: string | null;
-            label_transforms?: {
+            label_transforms?: ({
                 /** @enum {string} */
                 type: "split" | "format";
                 delimiter?: string | null;
                 /** Format: int32 */
                 index?: number | null;
                 template?: string | null;
-            }[];
+            })[];
             cost_metric?: {
                 filter: string;
                 aggregation: {
                     tag: string;
                 };
             };
-            percentages?: {
+            percentages?: ({
                 value: string;
                 /** Format: float */
                 pct: number;
-            }[];
+            })[];
             /** @description Date ranges restricting when this value applies. */
-            date_ranges?: {
+            date_ranges?: ({
                 start_date?: string | null;
                 end_date?: string | null;
-            }[];
+            })[];
         };
         /** @description Update a VirtualTagConfigValue. */
         updateVirtualTagConfigValue: {
@@ -8603,7 +8603,7 @@ export interface components {
             /** @description The business metric label key used for this virtual tag value. */
             label_key?: string;
             /** @description Business metric label values. An empty array includes every value for the label key. */
-            label_values?: string[];
+            label_values?: (string)[];
             /**
              * @description ClickHouse BusinessMetric row filters. Each key must match, and values within a key are alternatives. Cannot include the fan-out label_key. Null and an empty object leave stored filters unchanged.
              * @example {
@@ -8616,39 +8616,39 @@ export interface components {
              *     }
              */
             label_filters?: {
-                [key: string]: string[];
+                [key: string]: (string)[];
             } | null;
             /** @description The display name for a cost metric or percentage allocation value. */
             display_name?: string | null;
-            label_transforms?: {
+            label_transforms?: ({
                 /** @enum {string} */
                 type: "split" | "format";
                 delimiter?: string | null;
                 /** Format: int32 */
                 index?: number | null;
                 template?: string | null;
-            }[];
+            })[];
             cost_metric?: {
                 filter: string;
                 aggregation: {
                     tag: string;
                 };
             };
-            percentages?: {
+            percentages?: ({
                 value: string;
                 /** Format: float */
                 pct: number;
-            }[];
+            })[];
             /** @description Date ranges restricting when this value applies. */
-            date_ranges?: {
+            date_ranges?: ({
                 start_date?: string | null;
                 end_date?: string | null;
-            }[];
+            })[];
         };
         /** @description Workspaces model */
         Workspaces: {
             links?: components["schemas"]["Links"];
-            workspaces: components["schemas"]["Workspace"][];
+            workspaces: (components["schemas"]["Workspace"])[];
         };
         /** @description Create a workspace */
         createWorkspace: {
@@ -11384,7 +11384,7 @@ export interface operations {
                 /** @description Query BusinessMetrics by the first date you would like to filter from. ISO 8601 Formatted - 2021-07-15 */
                 start_date?: string;
                 /** @description Return values matching any exact label value. For multi-label metrics, matches values under any label key. */
-                label_values?: string[];
+                label_values?: (string)[];
                 /** @description Sum values by UTC day or month while preserving labels. When omitted, values are returned without aggregation. */
                 date_bin?: "day" | "month";
             };
@@ -12802,7 +12802,7 @@ export interface operations {
                 /** @description Last date you would like to filter costs to. ISO 8601 formatted. When omitted with cost_report_token, the report's saved end date is used. */
                 end_date?: string;
                 /** @description Group the results by specific field(s). When omitted with cost_report_token, the report's saved groupings are used; otherwise defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
-                groupings?: string[];
+                groupings?: (string)[];
                 /** @description Whether to order costs by date in ascending or descending order. Defaults to desc. */
                 order?: "asc" | "desc";
                 /** @description Sort results by one of the fields in groupings. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. Defaults to sorting by date. */
@@ -14387,7 +14387,7 @@ export interface operations {
                 /** @description The date bin of the costs. Defaults to the report's configured date bucket. Hourly costs are limited to 14 days. */
                 date_bin?: "hour" | "day" | "week" | "month" | "quarter";
                 /** @description Group the results by up to 100 fields. Valid groupings: cost_type, provider, commitment_type, commitment_id, service, resource_account_id, provider_account_id, region, cost_category, cost_sub_category, instance_type, tag:<label_name>. Serialize as a CSV query parameter: groupings=cost_type,service. Repeated parameters (groupings[]=cost_type&groupings[]=service) are also accepted. */
-                groupings?: string[];
+                groupings?: (string)[];
                 /** @description The VQL filter to apply to the costs. Overrides the report's saved filter. */
                 filter?: string;
                 /** @description The scope for the costs. Possible values: discountable, all. */
@@ -17060,11 +17060,11 @@ export interface operations {
                 /** @description Filter by one or more providers. Requires workspace_token. */
                 provider_ids?: ("aws" | "gcp" | "azure" | "kubernetes" | "datadog")[];
                 /** @description Filter by billing account identifiers. Requires workspace_token. */
-                billing_account_ids?: string[];
+                billing_account_ids?: (string)[];
                 /** @description Filter by account identifiers. Requires workspace_token. */
-                account_ids?: string[];
+                account_ids?: (string)[];
                 /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). Requires workspace_token. */
-                regions?: string[];
+                regions?: (string)[];
                 /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
                 tag_key?: string;
                 /** @description Filter by tag value (requires tag_key). Requires workspace_token. */
@@ -17289,11 +17289,11 @@ export interface operations {
                 /** @description Filter by one or more providers. Requires workspace_token. */
                 provider_ids?: ("aws" | "gcp" | "azure" | "kubernetes" | "datadog")[];
                 /** @description Filter by billing account identifiers. Requires workspace_token. */
-                billing_account_ids?: string[];
+                billing_account_ids?: (string)[];
                 /** @description Filter by account identifiers. Requires workspace_token. */
-                account_ids?: string[];
+                account_ids?: (string)[];
                 /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). Requires workspace_token. */
-                regions?: string[];
+                regions?: (string)[];
                 /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
                 tag_key?: string;
                 /** @description Filter by tag value (requires tag_key). Requires workspace_token. */

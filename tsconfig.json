@@ -1,8 +1,16 @@
 {
   "compilerOptions": {
+    "target": "ES2021",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "downlevelIteration": true,
+    "strict": false,
+    "useDefineForClassFields": true,
+    "types": ["node"],
     "skipLibCheck": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tmp"
+  ]
 }

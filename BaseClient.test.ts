@@ -1,4 +1,4 @@
-import { expect, test, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { BaseClient } from "./BaseClient";
 
 // Mock fetch globally

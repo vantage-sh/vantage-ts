@@ -1,5 +1,5 @@
+import { describe, expect, test } from "vitest";
 import { APIV2Client, VantageAPIError } from "./dist";
-import { expect, test, describe } from "vitest";
 
 const token = process.env.VANTAGE_API_TOKEN;
 if (!token) {
