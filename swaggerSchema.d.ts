@@ -802,7 +802,7 @@ export interface paths {
         };
         /**
          * Get all cost provider accounts
-         * @description List CostProviderAccounts available in a given Workspace.
+         * @description List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
          */
         get: operations["getCostProviderAccounts"];
         put?: never;
@@ -1523,6 +1523,86 @@ export interface paths {
          * @description Create a Twilio Integration
          */
         post: operations["createTwilioIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/open_ai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenAI integration
+         * @description Create an OpenAI Integration
+         */
+        post: operations["createOpenAIIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/anthropic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Anthropic integration
+         * @description Create an Anthropic Integration
+         */
+        post: operations["createAnthropicIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/openrouter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenRouter integration
+         * @description Create an OpenRouter Integration
+         */
+        post: operations["createOpenrouterIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/xai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create SpaceXAI integration
+         * @description Create a SpaceXAI Integration
+         */
+        post: operations["createXaiIntegration"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4944,6 +5024,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean | null;
+                /** @description Ordered list of CostReport table column keys. Empty or omitted uses the default column order. */
+                table_column_order?: (string)[] | null;
             };
             /**
              * @description The date and time, in UTC, the report was created. ISO 8601 Formatted.
@@ -5171,6 +5253,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -5289,6 +5373,8 @@ export interface components {
                 show_previous_period?: boolean | null;
                 /** @description Report will restrict date ranges to completed periods only. */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -5393,6 +5479,22 @@ export interface components {
                  */
                 show_previous_period?: boolean;
             };
+        };
+        /** @description PaymentRequiredErrors model */
+        PaymentRequiredErrors: {
+            errors: (string)[];
+            billing_action: components["schemas"]["BillingAction"];
+        };
+        BillingAction: {
+            /**
+             * @description upgrade_plan means an Account owner must choose or renew a plan at url. contact_account_manager means the Account is billed through the Account that manages it, which must change its plan.
+             * @enum {string}
+             */
+            type: "upgrade_plan" | "contact_account_manager";
+            /** @description A sentence to show the person who has to take the action. */
+            message: string;
+            /** @description Where a signed-in Account owner takes the action. Null for contact_account_manager. */
+            url: string | null;
         };
         /** @description Costs model */
         Costs: {
@@ -5956,7 +6058,7 @@ export interface components {
              * @example custom_llm_enrichment_source
              * @enum {string}
              */
-            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source";
+            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source" | "bifrost_enrichment_source";
             /**
              * @description The display name for the enrichment source type.
              * @example Custom LLM Enrichment
@@ -6533,6 +6635,48 @@ export interface components {
             description: string;
             /** @description When true, api_key and api_secret are an OAuth client id and secret. */
             is_oauth?: boolean;
+        };
+        /** @description Create an OpenAI Integration */
+        createOpenAIIntegration: {
+            /** @description OpenAI Admin API key (sk-admin-...). With codex_analytics, an Analytics API key for the ChatGPT workspace. */
+            api_key: string;
+            /** @description Name for this OpenAI integration in Vantage. */
+            description: string;
+            /**
+             * @description When true, creates an OpenAI Codex Analytics integration for a ChatGPT workspace instead of an OpenAI API usage integration.
+             * @default false
+             */
+            codex_analytics?: boolean;
+            /** @description ChatGPT workspace UUID from the ChatGPT Admin console. Required when codex_analytics is true. */
+            workspace_id?: string;
+        };
+        /** @description Create an Anthropic Integration */
+        createAnthropicIntegration: {
+            /** @description Anthropic Admin API key. With enterprise_analytics, a Claude Enterprise Analytics API key with the read:analytics scope. */
+            api_key: string;
+            /**
+             * @description When true, creates a Claude Enterprise Analytics integration instead of an Anthropic API usage integration.
+             * @default false
+             */
+            enterprise_analytics?: boolean;
+            /** @description Name for this Claude Enterprise account in Vantage. Required when enterprise_analytics is true. */
+            account_name?: string;
+            /** @description Claude Enterprise organization UUID, used when enterprise_analytics is true. Defaults to the organization of the API key. */
+            organization_id?: string;
+        };
+        /** @description Create an OpenRouter Integration */
+        createOpenrouterIntegration: {
+            /** @description OpenRouter management API key. */
+            management_api_key: string;
+            /** @description Name for this OpenRouter integration in Vantage. */
+            description: string;
+        };
+        /** @description Create a SpaceXAI Integration */
+        createXaiIntegration: {
+            /** @description SpaceXAI management key. */
+            management_key: string;
+            /** @description Name for this SpaceXAI integration in Vantage. */
+            description: string;
         };
         /** @description Update an Integration. */
         updateIntegration: {
@@ -8766,7 +8910,7 @@ export interface components {
         /** @description DataImportLocks model */
         DataImportLocks: {
             links?: components["schemas"]["Links"];
-            data_import_locks: components["schemas"]["DataImportLock"][];
+            data_import_locks: (components["schemas"]["DataImportLock"])[];
         };
         /** @description DataImportLock model */
         DataImportLock: {
@@ -11627,11 +11771,11 @@ export interface operations {
     deleteBusinessMetricValues: {
         parameters: {
             query?: {
-                /** @description Inclusive lower bound (ISO 8601 date or datetime, UTC). Date-only values start at 00:00:00 UTC that day. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit start_date to delete all values of the selected type. */
                 start_date?: string;
-                /** @description Inclusive upper bound (ISO 8601 date or datetime, UTC). Date-only values include the full calendar day through 23:59:59.999999999 UTC. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit end_date to delete all values of the selected type. */
                 end_date?: string;
-                /** @description When present in the query string (including as an empty value), only unit metrics with this exact label are deleted. Omit the parameter to delete all labels in range. */
+                /** @description Unsupported for deletes. Supplying label, including an empty value, returns 422; omit it to delete all values of the selected type. */
                 label?: string;
                 /** @description When true, deletes forecasted unit metrics instead of historical ones. */
                 forecasted?: boolean;
@@ -12956,7 +13100,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -13100,7 +13244,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14037,7 +14181,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14612,7 +14756,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -15483,6 +15627,222 @@ export interface operations {
             };
             /** @description BadRequest */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenAIIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenAIIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_c5c4ab6733b94daf",
+                     *       "provider": "open_ai",
+                     *       "account_identifier": "OpenAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createAnthropicIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAnthropicIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_59bf4b8615e4f794",
+                     *       "provider": "anthropic",
+                     *       "account_identifier": "org-12345",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenrouterIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenrouterIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_3bdaf712475edece",
+                     *       "provider": "openrouter",
+                     *       "account_identifier": "OpenRouter production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createXaiIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createXaiIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_966773f4159e4a48",
+                     *       "provider": "xai",
+                     *       "account_identifier": "SpaceXAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:23Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16505,7 +16865,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -17099,7 +17459,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -19234,7 +19594,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20818,7 +21178,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20932,7 +21292,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
