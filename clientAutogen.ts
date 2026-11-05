@@ -457,7 +457,7 @@ export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_prov
  */
 export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
 export type GetCostProviderAccountsRequest = RequestBodyForPathAndMethod<"/v2/cost_provider_accounts", "GET">;
 /**
@@ -528,6 +528,38 @@ export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_servi
  * Response type for Get cost services
  */
 export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
+/**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+export type GetCustomCalculationsRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Response type for Get all custom calculations
+ */
+export type GetCustomCalculationsResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+export type CreateCustomCalculationRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Create a custom calculation
+ */
+export type CreateCustomCalculationResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Get a custom calculation
+ */
+export type GetCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "GET">;
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+export type UpdateCustomCalculationRequest = RequestBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update a custom calculation
+ */
+export type UpdateCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete a custom calculation
+ */
+export type DeleteCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "DELETE">;
 /**
  * Return all DashboardNotifications.
  */
@@ -800,6 +832,38 @@ export type CreateTwilioIntegrationRequest = RequestBodyForPathAndMethod<"/v2/in
  * Response type for Create Twilio integration
  */
 export type CreateTwilioIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
+/**
+ * Create an OpenAI Integration
+ */
+export type CreateOpenAIIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Response type for Create OpenAI integration
+ */
+export type CreateOpenAIIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Create an Anthropic Integration
+ */
+export type CreateAnthropicIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Response type for Create Anthropic integration
+ */
+export type CreateAnthropicIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Create an OpenRouter Integration
+ */
+export type CreateOpenrouterIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Response type for Create OpenRouter integration
+ */
+export type CreateOpenrouterIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Create a SpaceXAI Integration
+ */
+export type CreateXaiIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
+/**
+ * Response type for Create SpaceXAI integration
+ */
+export type CreateXaiIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
 /**
  * Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
  */
@@ -1614,6 +1678,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
     private _costServices?: CostServicesApi<NeverThrow>;
+    private _customCalculations?: CustomCalculationsApi<NeverThrow>;
     private _dashboardNotifications?: DashboardNotificationsApi<NeverThrow>;
     private _widgets?: WidgetsApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
@@ -1774,6 +1839,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costServices = new CostServicesApi(this);
         }
         return this._costServices;
+    }
+
+    get customCalculations(): CustomCalculationsApi<NeverThrow> {
+        if (!this._customCalculations) {
+            this._customCalculations = new CustomCalculationsApi(this);
+        }
+        return this._customCalculations;
     }
 
     get dashboardNotifications(): DashboardNotificationsApi<NeverThrow> {
@@ -2812,7 +2884,7 @@ class CostProviderAccountsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
     list(body?: GetCostProviderAccountsRequest) {
         return this.client.request(
@@ -2933,6 +3005,66 @@ class CostServicesApi<NeverThrow extends boolean> {
             `/v2/cost_services`,
             "GET",
             body,
+        );
+    }
+
+}
+
+class CustomCalculationsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+    list(body?: GetCustomCalculationsRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+    create(body: CreateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a CustomCalculation by its token.
+ */
+    get(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+    update(customCalculationToken: string, body: UpdateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a CustomCalculation. Read-only calculations cannot be deleted.
+ */
+    delete(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "DELETE",
+            {},
         );
     }
 
@@ -3443,6 +3575,50 @@ class IntegrationsApi<NeverThrow extends boolean> {
     createTwilioIntegration(body: CreateTwilioIntegrationRequest) {
         return this.client.request(
             `/v2/integrations/twilio`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenAI Integration
+ */
+    createOpenAIIntegration(body: CreateOpenAIIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/open_ai`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an Anthropic Integration
+ */
+    createAnthropicIntegration(body: CreateAnthropicIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/anthropic`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenRouter Integration
+ */
+    createOpenrouterIntegration(body: CreateOpenrouterIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/openrouter`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create a SpaceXAI Integration
+ */
+    createXaiIntegration(body: CreateXaiIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/xai`,
             "POST",
             body,
         );
