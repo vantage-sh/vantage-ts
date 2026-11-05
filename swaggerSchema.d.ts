@@ -802,7 +802,7 @@ export interface paths {
         };
         /**
          * Get all cost provider accounts
-         * @description List CostProviderAccounts available in a given Workspace.
+         * @description List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
          */
         get: operations["getCostProviderAccounts"];
         put?: never;
@@ -940,6 +940,58 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/custom_calculations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all custom calculations
+         * @description Return all CustomCalculations that the current API token has access to.
+         */
+        get: operations["getCustomCalculations"];
+        put?: never;
+        /**
+         * Create a custom calculation
+         * @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+         */
+        post: operations["createCustomCalculation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/custom_calculations/{custom_calculation_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a custom calculation
+         * @description Return a CustomCalculation by its token.
+         */
+        get: operations["getCustomCalculation"];
+        /**
+         * Update a custom calculation
+         * @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+         */
+        put: operations["updateCustomCalculation"];
+        post?: never;
+        /**
+         * Delete a custom calculation
+         * @description Delete a CustomCalculation. Read-only calculations cannot be deleted.
+         */
+        delete: operations["deleteCustomCalculation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1523,6 +1575,86 @@ export interface paths {
          * @description Create a Twilio Integration
          */
         post: operations["createTwilioIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/open_ai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenAI integration
+         * @description Create an OpenAI Integration
+         */
+        post: operations["createOpenAIIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/anthropic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Anthropic integration
+         * @description Create an Anthropic Integration
+         */
+        post: operations["createAnthropicIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/openrouter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenRouter integration
+         * @description Create an OpenRouter Integration
+         */
+        post: operations["createOpenrouterIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/xai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create SpaceXAI integration
+         * @description Create a SpaceXAI Integration
+         */
+        post: operations["createXaiIntegration"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4276,7 +4408,7 @@ export interface components {
              * @example datadog_metrics
              * @enum {string|null}
              */
-            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "csv" | null;
+            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "rippling_metrics" | "csv" | null;
             /** @description The Integration token used to import the BusinessMetric. */
             integration_token: string | null;
             cloudwatch_fields?: components["schemas"]["CloudwatchFields"];
@@ -4888,6 +5020,8 @@ export interface components {
             saved_filter_tokens?: (string)[] | null;
             /** @description The tokens for the BusinessMetrics assigned to the CostReport, the unit scale, and label filter. */
             business_metric_tokens_with_metadata: (components["schemas"]["AttachedBusinessMetricForCostReport"])[];
+            /** @description The tokens of the CustomCalculations attached to the CostReport. */
+            custom_calculation_tokens: (string)[];
             default_forecast: components["schemas"]["DefaultForecast"];
             /** @description The filter applied to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
@@ -4944,6 +5078,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean | null;
+                /** @description Ordered list of CostReport table column keys. Empty or omitted uses the default column order. */
+                table_column_order?: (string)[] | null;
             };
             /**
              * @description The date and time, in UTC, the report was created. ISO 8601 Formatted.
@@ -5171,6 +5307,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -5212,6 +5350,8 @@ export interface components {
         updateCostReport: {
             /** @description The title of the CostReport. */
             title?: string;
+            /** @description The complete replacement set of CustomCalculation tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. */
+            custom_calculation_tokens?: (string)[];
             /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
@@ -5289,6 +5429,8 @@ export interface components {
                 show_previous_period?: boolean | null;
                 /** @description Report will restrict date ranges to completed periods only. */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -5393,6 +5535,22 @@ export interface components {
                  */
                 show_previous_period?: boolean;
             };
+        };
+        /** @description PaymentRequiredErrors model */
+        PaymentRequiredErrors: {
+            errors: (string)[];
+            billing_action: components["schemas"]["BillingAction"];
+        };
+        BillingAction: {
+            /**
+             * @description upgrade_plan means an Account owner must choose or renew a plan at url. contact_account_manager means the Account is billed through the Account that manages it, which must change its plan.
+             * @enum {string}
+             */
+            type: "upgrade_plan" | "contact_account_manager";
+            /** @description A sentence to show the person who has to take the action. */
+            message: string;
+            /** @description Where a signed-in Account owner takes the action. Null for contact_account_manager. */
+            url: string | null;
         };
         /** @description Costs model */
         Costs: {
@@ -5956,7 +6114,7 @@ export interface components {
              * @example custom_llm_enrichment_source
              * @enum {string}
              */
-            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source";
+            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source" | "bifrost_enrichment_source";
             /**
              * @description The display name for the enrichment source type.
              * @example Custom LLM Enrichment
@@ -6533,6 +6691,48 @@ export interface components {
             description: string;
             /** @description When true, api_key and api_secret are an OAuth client id and secret. */
             is_oauth?: boolean;
+        };
+        /** @description Create an OpenAI Integration */
+        createOpenAIIntegration: {
+            /** @description OpenAI Admin API key (sk-admin-...). With codex_analytics, an Analytics API key for the ChatGPT workspace. */
+            api_key: string;
+            /** @description Name for this OpenAI integration in Vantage. */
+            description: string;
+            /**
+             * @description When true, creates an OpenAI Codex Analytics integration for a ChatGPT workspace instead of an OpenAI API usage integration.
+             * @default false
+             */
+            codex_analytics?: boolean;
+            /** @description ChatGPT workspace UUID from the ChatGPT Admin console. Required when codex_analytics is true. */
+            workspace_id?: string;
+        };
+        /** @description Create an Anthropic Integration */
+        createAnthropicIntegration: {
+            /** @description Anthropic Admin API key. With enterprise_analytics, a Claude Enterprise Analytics API key with the read:analytics scope. */
+            api_key: string;
+            /**
+             * @description When true, creates a Claude Enterprise Analytics integration instead of an Anthropic API usage integration.
+             * @default false
+             */
+            enterprise_analytics?: boolean;
+            /** @description Name for this Claude Enterprise account in Vantage. Required when enterprise_analytics is true. */
+            account_name?: string;
+            /** @description Claude Enterprise organization UUID, used when enterprise_analytics is true. Defaults to the organization of the API key. */
+            organization_id?: string;
+        };
+        /** @description Create an OpenRouter Integration */
+        createOpenrouterIntegration: {
+            /** @description OpenRouter management API key. */
+            management_api_key: string;
+            /** @description Name for this OpenRouter integration in Vantage. */
+            description: string;
+        };
+        /** @description Create a SpaceXAI Integration */
+        createXaiIntegration: {
+            /** @description SpaceXAI management key. */
+            management_key: string;
+            /** @description Name for this SpaceXAI integration in Vantage. */
+            description: string;
         };
         /** @description Update an Integration. */
         updateIntegration: {
@@ -8280,7 +8480,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2026-04-01
+             * @example 2026-05-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -8766,7 +8966,7 @@ export interface components {
         /** @description DataImportLocks model */
         DataImportLocks: {
             links?: components["schemas"]["Links"];
-            data_import_locks: components["schemas"]["DataImportLock"][];
+            data_import_locks: (components["schemas"]["DataImportLock"])[];
         };
         /** @description DataImportLock model */
         DataImportLock: {
@@ -8870,6 +9070,92 @@ export interface components {
              * @enum {string}
              */
             exchange_rate_date?: "daily_rate" | "end_of_billing_period_rate";
+        };
+        /** @description CustomCalculations model */
+        CustomCalculations: {
+            links?: components["schemas"]["Links"];
+            custom_calculations: (components["schemas"]["CustomCalculation"])[];
+        };
+        /** @description CustomCalculation model */
+        CustomCalculation: {
+            /**
+             * @description The token of the CustomCalculation.
+             * @example cstm_clcltn_1234
+             */
+            token: string;
+            /** @description The title of the Custom Calculation. */
+            title: string;
+            /**
+             * @description The operation applied to the filtered cost or usage data.
+             * @enum {string}
+             */
+            operation: "sum" | "average" | "division" | "min" | "max";
+            /** @description The VQL filters and usage units used by the calculation. */
+            filter: Record<string, any>;
+            /**
+             * @description The display format of the calculation.
+             * @enum {string}
+             */
+            display_as: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation.
+             */
+            unit_scale: number;
+            /** @description Whether the calculation is read only. */
+            is_read_only: boolean;
+            /** @description The tokens of the attached CostReports visible to the caller. */
+            cost_report_tokens: (string)[];
+            /** @description When the calculation was created, in ISO 8601 format. */
+            created_at: string;
+            /** @description When the calculation was last updated, in ISO 8601 format. */
+            updated_at: string;
+        };
+        /** @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set. */
+        createCustomCalculation: {
+            /** @description The title of the Custom Calculation. */
+            title: string;
+            /** @description The VQL filters and usage units used by the calculation. */
+            filter: Record<string, any>;
+            /**
+             * @description The operation applied to the filtered cost or usage data. Defaults to sum when creating a calculation.
+             * @enum {string}
+             */
+            operation?: "sum" | "average" | "division" | "min" | "max";
+            /**
+             * @description The display format of the calculation. Defaults to ratio when creating a calculation.
+             * @enum {string}
+             */
+            display_as?: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation. Defaults to 1 when creating a calculation.
+             */
+            unit_scale?: number | null;
+        };
+        /** @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed. */
+        updateCustomCalculation: {
+            /** @description The title of the Custom Calculation. */
+            title?: string;
+            /** @description The complete replacement VQL filters and usage units used by the calculation. */
+            filter?: Record<string, any>;
+            /**
+             * @description The operation applied to the filtered cost or usage data. Defaults to sum when creating a calculation.
+             * @enum {string}
+             */
+            operation?: "sum" | "average" | "division" | "min" | "max";
+            /**
+             * @description The display format of the calculation. Defaults to ratio when creating a calculation.
+             * @enum {string}
+             */
+            display_as?: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation. Defaults to 1 when creating a calculation.
+             */
+            unit_scale?: number | null;
+            /** @description The complete replacement set of CostReport tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. Replacement requires access to every currently attached CostReport. */
+            cost_report_tokens?: (string)[];
         };
     };
     responses: never;
@@ -11627,11 +11913,11 @@ export interface operations {
     deleteBusinessMetricValues: {
         parameters: {
             query?: {
-                /** @description Inclusive lower bound (ISO 8601 date or datetime, UTC). Date-only values start at 00:00:00 UTC that day. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit start_date to delete all values of the selected type. */
                 start_date?: string;
-                /** @description Inclusive upper bound (ISO 8601 date or datetime, UTC). Date-only values include the full calendar day through 23:59:59.999999999 UTC. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit end_date to delete all values of the selected type. */
                 end_date?: string;
-                /** @description When present in the query string (including as an empty value), only unit metrics with this exact label are deleted. Omit the parameter to delete all labels in range. */
+                /** @description Unsupported for deletes. Supplying label, including an empty value, returns 422; omit it to delete all values of the selected type. */
                 label?: string;
                 /** @description When true, deletes forecasted unit metrics instead of historical ones. */
                 forecasted?: boolean;
@@ -12477,6 +12763,7 @@ export interface operations {
                      *       "cost_reports": [
                      *         {
                      *           "token": "rprt_6f2c7d330c05636f",
+                     *           "custom_calculation_tokens": [],
                      *           "title": "Untitled",
                      *           "folder_token": null,
                      *           "saved_filter_tokens": [
@@ -12544,6 +12831,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_299359872859a568",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "New Cost Report",
                      *       "folder_token": "fldr_736175272c30b820",
                      *       "saved_filter_tokens": [
@@ -12636,6 +12924,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_5db7a73cf4d09998",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "Untitled",
                      *       "folder_token": null,
                      *       "saved_filter_tokens": [
@@ -12712,6 +13001,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_1e692ea6b3eddf6b",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "Updated Cost Report",
                      *       "folder_token": "fldr_86dec25791dca5ce",
                      *       "saved_filter_tokens": [
@@ -12956,7 +13246,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -13100,7 +13390,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -13133,6 +13423,350 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CostServices"];
+                };
+            };
+        };
+    };
+    getCustomCalculations: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all CustomCalculations that the current API token has access to. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=1",
+                     *         "first": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=1",
+                     *         "next": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=2",
+                     *         "last": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=2",
+                     *         "prev": null
+                     *       },
+                     *       "custom_calculations": [
+                     *         {
+                     *           "token": "cstm_clcltn_f1e304dee0467dcc",
+                     *           "cost_report_tokens": [],
+                     *           "title": "Custom Calculation",
+                     *           "operation": "sum",
+                     *           "filter": {
+                     *             "type": "sum",
+                     *             "filter": "costs.provider = 'aws'",
+                     *             "usage_unit": null
+                     *           },
+                     *           "display_as": "ratio",
+                     *           "unit_scale": 1,
+                     *           "is_read_only": false,
+                     *           "created_at": "2026-10-22T12:00:00Z",
+                     *           "updated_at": "2026-10-22T12:00:00Z"
+                     *         },
+                     *         {
+                     *           "token": "cstm_clcltn_2ec8e12f8e600a1c",
+                     *           "cost_report_tokens": [],
+                     *           "title": "Second",
+                     *           "operation": "sum",
+                     *           "filter": {
+                     *             "type": "sum",
+                     *             "filter": "costs.provider = 'aws'",
+                     *             "usage_unit": null
+                     *           },
+                     *           "display_as": "ratio",
+                     *           "unit_scale": 1,
+                     *           "is_read_only": false,
+                     *           "created_at": "2026-10-22T12:00:00Z",
+                     *           "updated_at": "2026-10-22T12:00:00Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculations"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createCustomCalculation"];
+            };
+        };
+        responses: {
+            /** @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_92abe93a4b50fb40",
+                     *       "cost_report_tokens": [],
+                     *       "title": "AWS usage",
+                     *       "operation": "sum",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "ratio",
+                     *       "unit_scale": 1,
+                     *       "is_read_only": false,
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return a CustomCalculation by its token. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_e4a22aa5f3475eca",
+                     *       "cost_report_tokens": [],
+                     *       "title": "Custom Calculation",
+                     *       "operation": "sum",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "ratio",
+                     *       "unit_scale": 1,
+                     *       "is_read_only": false,
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateCustomCalculation"];
+            };
+        };
+        responses: {
+            /** @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_8f10c97851c7691e",
+                     *       "cost_report_tokens": [],
+                     *       "title": "Updated calculation",
+                     *       "operation": "average",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "per-n",
+                     *       "unit_scale": 1000,
+                     *       "is_read_only": false,
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete a CustomCalculation. Read-only calculations cannot be deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
         };
@@ -14037,7 +14671,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14612,7 +15246,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -15483,6 +16117,222 @@ export interface operations {
             };
             /** @description BadRequest */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenAIIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenAIIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_c5c4ab6733b94daf",
+                     *       "provider": "open_ai",
+                     *       "account_identifier": "OpenAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createAnthropicIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAnthropicIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_59bf4b8615e4f794",
+                     *       "provider": "anthropic",
+                     *       "account_identifier": "org-12345",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenrouterIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenrouterIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_3bdaf712475edece",
+                     *       "provider": "openrouter",
+                     *       "account_identifier": "OpenRouter production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createXaiIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createXaiIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_966773f4159e4a48",
+                     *       "provider": "xai",
+                     *       "account_identifier": "SpaceXAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:23Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16505,7 +17355,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -17099,7 +17949,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -19234,7 +20084,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20818,7 +21668,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20932,7 +21782,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
