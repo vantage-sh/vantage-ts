@@ -457,7 +457,7 @@ export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_prov
  */
 export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
 export type GetCostProviderAccountsRequest = RequestBodyForPathAndMethod<"/v2/cost_provider_accounts", "GET">;
 /**
@@ -800,6 +800,38 @@ export type CreateTwilioIntegrationRequest = RequestBodyForPathAndMethod<"/v2/in
  * Response type for Create Twilio integration
  */
 export type CreateTwilioIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
+/**
+ * Create an OpenAI Integration
+ */
+export type CreateOpenAIIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Response type for Create OpenAI integration
+ */
+export type CreateOpenAIIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Create an Anthropic Integration
+ */
+export type CreateAnthropicIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Response type for Create Anthropic integration
+ */
+export type CreateAnthropicIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Create an OpenRouter Integration
+ */
+export type CreateOpenrouterIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Response type for Create OpenRouter integration
+ */
+export type CreateOpenrouterIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Create a SpaceXAI Integration
+ */
+export type CreateXaiIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
+/**
+ * Response type for Create SpaceXAI integration
+ */
+export type CreateXaiIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
 /**
  * Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
  */
@@ -2812,7 +2844,7 @@ class CostProviderAccountsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
     list(body?: GetCostProviderAccountsRequest) {
         return this.client.request(
@@ -3443,6 +3475,50 @@ class IntegrationsApi<NeverThrow extends boolean> {
     createTwilioIntegration(body: CreateTwilioIntegrationRequest) {
         return this.client.request(
             `/v2/integrations/twilio`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenAI Integration
+ */
+    createOpenAIIntegration(body: CreateOpenAIIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/open_ai`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an Anthropic Integration
+ */
+    createAnthropicIntegration(body: CreateAnthropicIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/anthropic`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenRouter Integration
+ */
+    createOpenrouterIntegration(body: CreateOpenrouterIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/openrouter`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create a SpaceXAI Integration
+ */
+    createXaiIntegration(body: CreateXaiIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/xai`,
             "POST",
             body,
         );
