@@ -802,7 +802,7 @@ export interface paths {
         };
         /**
          * Get all cost provider accounts
-         * @description List CostProviderAccounts available in a given Workspace.
+         * @description List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
          */
         get: operations["getCostProviderAccounts"];
         put?: never;
@@ -1137,6 +1137,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enrichment_sources/{enrichment_source_token}/cost_integrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get associated cost integrations
+         * @description Return associated cost integrations, including those with errors and excluding disabled associations.
+         */
+        get: operations["getEnrichmentSourceCostIntegrations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enrichment_sources/{enrichment_source_token}/ingest_tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List enrichment source ingest tokens
+         * @description List ingest token metadata for this enrichment source. Secret credentials are never returned.
+         */
+        get: operations["getEnrichmentSourceIngestTokens"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enrichment_sources/{enrichment_source_token}/statistics": {
         parameters: {
             query?: never;
@@ -1341,6 +1381,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ingest_tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List ingest tokens
+         * @description List ingest token metadata for an existing telemetry feed. Secret credentials are never returned.
+         */
+        get: operations["getIngestTokens"];
+        put?: never;
+        /**
+         * Create ingest token
+         * @description Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once.
+         */
+        post: operations["createIngestToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ingest_tokens/{token_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke ingest token
+         * @description Revoke an ingest token while preserving its metadata. Repeated revocation has no additional effect.
+         */
+        post: operations["revokeIngestToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/integrations": {
         parameters: {
             query?: never;
@@ -1523,6 +1607,86 @@ export interface paths {
          * @description Create a Twilio Integration
          */
         post: operations["createTwilioIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/open_ai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenAI integration
+         * @description Create an OpenAI Integration
+         */
+        post: operations["createOpenAIIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/anthropic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Anthropic integration
+         * @description Create an Anthropic Integration
+         */
+        post: operations["createAnthropicIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/openrouter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create OpenRouter integration
+         * @description Create an OpenRouter Integration
+         */
+        post: operations["createOpenrouterIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/xai": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create SpaceXAI integration
+         * @description Create a SpaceXAI Integration
+         */
+        post: operations["createXaiIntegration"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4276,7 +4440,7 @@ export interface components {
              * @example datadog_metrics
              * @enum {string|null}
              */
-            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "csv" | null;
+            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "rippling_metrics" | "csv" | null;
             /** @description The Integration token used to import the BusinessMetric. */
             integration_token: string | null;
             cloudwatch_fields?: components["schemas"]["CloudwatchFields"];
@@ -4888,6 +5052,8 @@ export interface components {
             saved_filter_tokens?: (string)[] | null;
             /** @description The tokens for the BusinessMetrics assigned to the CostReport, the unit scale, and label filter. */
             business_metric_tokens_with_metadata: (components["schemas"]["AttachedBusinessMetricForCostReport"])[];
+            /** @description The tokens of the CustomCalculations attached to the CostReport. */
+            custom_calculation_tokens: (string)[];
             default_forecast: components["schemas"]["DefaultForecast"];
             /** @description The filter applied to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
             filter: string | null;
@@ -4944,6 +5110,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean | null;
+                /** @description Ordered list of CostReport table column keys. Empty or omitted uses the default column order. */
+                table_column_order?: (string)[] | null;
             };
             /**
              * @description The date and time, in UTC, the report was created. ISO 8601 Formatted.
@@ -5171,6 +5339,8 @@ export interface components {
                  * @default false
                  */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -5212,6 +5382,8 @@ export interface components {
         updateCostReport: {
             /** @description The title of the CostReport. */
             title?: string;
+            /** @description The complete replacement set of CustomCalculation tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. */
+            custom_calculation_tokens?: (string)[];
             /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
@@ -5289,6 +5461,8 @@ export interface components {
                 show_previous_period?: boolean | null;
                 /** @description Report will restrict date ranges to completed periods only. */
                 complete_period?: boolean;
+                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
+                table_column_order?: (string)[];
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -5393,6 +5567,22 @@ export interface components {
                  */
                 show_previous_period?: boolean;
             };
+        };
+        /** @description PaymentRequiredErrors model */
+        PaymentRequiredErrors: {
+            errors: (string)[];
+            billing_action: components["schemas"]["BillingAction"];
+        };
+        BillingAction: {
+            /**
+             * @description upgrade_plan means an Account owner must choose or renew a plan at url. contact_account_manager means the Account is billed through the Account that manages it, which must change its plan.
+             * @enum {string}
+             */
+            type: "upgrade_plan" | "contact_account_manager";
+            /** @description A sentence to show the person who has to take the action. */
+            message: string;
+            /** @description Where a signed-in Account owner takes the action. Null for contact_account_manager. */
+            url: string | null;
         };
         /** @description Costs model */
         Costs: {
@@ -5639,7 +5829,7 @@ export interface components {
             /** @enum {string} */
             display_type: "table" | "chart" | "kpi";
             /**
-             * @description The aggregation used when display_type is kpi.
+             * @description The aggregation used when display_type is kpi. Custom calculation KPIs use the calculation's own operation instead.
              * @enum {string|null}
              */
             kpi_calculation?: "sum" | "average" | null;
@@ -5647,7 +5837,12 @@ export interface components {
              * @description The metric represented by the KPI.
              * @enum {string|null}
              */
-            kpi_type?: "cost" | "usage" | "count" | "business_metric" | null;
+            kpi_type?: "cost" | "usage" | "count" | "business_metric" | "custom_calculation" | null;
+            /**
+             * @description The token of the custom calculation assigned to the Cost Report represented by this KPI.
+             * @example cstm_clcltn_a12b3c
+             */
+            kpi_custom_calculation_token?: string | null;
             /** @description The usage unit represented by the KPI. */
             kpi_usage_unit?: string | null;
             grid?: components["schemas"]["DashboardWidgetGridLayout"];
@@ -5679,16 +5874,21 @@ export interface components {
             /** @description The token of the Resource represented by the Widget. */
             widgetable_token?: string;
             /** @description The title of the Widget. */
-            title?: string;
+            title?: string | null;
             /** @description The settings for the DashboardWidget. */
             settings?: {
                 /** @enum {string} */
                 display_type?: "table" | "chart" | "kpi";
-                /** @enum {string} */
+                /**
+                 * @description The aggregation used for standard KPI widgets. Custom calculation widgets use the operation defined by the referenced calculation.
+                 * @enum {string}
+                 */
                 kpi_calculation?: "sum" | "average";
                 /** @enum {string} */
-                kpi_type?: "cost" | "usage" | "count" | "business_metric";
-                kpi_usage_unit?: string;
+                kpi_type?: "cost" | "usage" | "count" | "business_metric" | "custom_calculation";
+                /** @description The token of a custom calculation assigned to the selected Cost Report. Omit to preserve the current selection. */
+                kpi_custom_calculation_token?: string;
+                kpi_usage_unit?: string | null;
             };
         };
         /** @description Dashboards model */
@@ -5779,7 +5979,7 @@ export interface components {
                     /** @enum {string} */
                     display_type: "table" | "chart" | "kpi";
                     /**
-                     * @description The aggregation used when display_type is kpi.
+                     * @description The aggregation used for standard KPI widgets. Custom calculation widgets use the operation defined by the referenced calculation.
                      * @enum {string}
                      */
                     kpi_calculation?: "sum" | "average";
@@ -5787,7 +5987,9 @@ export interface components {
                      * @description The metric represented when display_type is kpi.
                      * @enum {string}
                      */
-                    kpi_type?: "cost" | "usage" | "count" | "business_metric";
+                    kpi_type?: "cost" | "usage" | "count" | "business_metric" | "custom_calculation";
+                    /** @description The token of a custom calculation assigned to the selected Cost Report. Required for custom calculation KPI widgets. */
+                    kpi_custom_calculation_token?: string;
                     /** @description The usage unit represented when kpi_type is usage. */
                     kpi_usage_unit?: string;
                     /** @description The widget's size and position in the dashboard's 12-column grid. */
@@ -5865,7 +6067,7 @@ export interface components {
                     /** @enum {string} */
                     display_type: "table" | "chart" | "kpi";
                     /**
-                     * @description The aggregation used when display_type is kpi.
+                     * @description The aggregation used for standard KPI widgets. Custom calculation widgets use the operation defined by the referenced calculation.
                      * @enum {string}
                      */
                     kpi_calculation?: "sum" | "average";
@@ -5873,7 +6075,9 @@ export interface components {
                      * @description The metric represented when display_type is kpi.
                      * @enum {string}
                      */
-                    kpi_type?: "cost" | "usage" | "count" | "business_metric";
+                    kpi_type?: "cost" | "usage" | "count" | "business_metric" | "custom_calculation";
+                    /** @description The token of a custom calculation assigned to the selected Cost Report. Required for custom calculation KPI widgets. */
+                    kpi_custom_calculation_token?: string;
                     /** @description The usage unit represented when kpi_type is usage. */
                     kpi_usage_unit?: string;
                     /** @description The widget's size and position in the dashboard's 12-column grid. */
@@ -5956,7 +6160,7 @@ export interface components {
              * @example custom_llm_enrichment_source
              * @enum {string}
              */
-            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source";
+            type: "custom_llm_enrichment_source" | "cloudflare_ai_gateway_enrichment_source" | "cloudflare_ai_gateway_otel_enrichment_source" | "lite_llm_enrichment_source" | "aws_bedrock_enrichment_source" | "bifrost_enrichment_source" | "open_router_enrichment_source";
             /**
              * @description The display name for the enrichment source type.
              * @example Custom LLM Enrichment
@@ -5971,6 +6175,78 @@ export interface components {
              * @example 2026-08-04T00:00:00Z
              */
             created_at: string;
+        };
+        /** @description CostIntegrations model */
+        CostIntegrations: {
+            links?: components["schemas"]["Links"];
+            cost_integrations: (components["schemas"]["Integration"])[];
+        };
+        /** @description Integration model */
+        Integration: {
+            token: string;
+            /**
+             * @description The name of the Integration.
+             * @example AWS
+             */
+            provider: string;
+            /**
+             * @description The account identifier. For GCP this is the billing Account ID, for Azure this is the account ID
+             * @example 011389-EF4C3E-3ED7AE
+             */
+            account_identifier: string | null;
+            /**
+             * @description The status of the Integration. Can be 'connected', 'error', 'pending', 'importing', 'imported', or 'disconnected'.
+             * @example imported
+             * @enum {string}
+             */
+            status: "connected" | "error" | "pending" | "importing" | "imported" | "disconnected";
+            /**
+             * @description The date and time, in UTC, when the Integration was last updated. ISO 8601 Formatted.
+             * @example 2023-08-04T00:00:00Z
+             */
+            last_updated?: string | null;
+            /** @description The tokens for any Workspaces that the account belongs to. */
+            workspace_tokens: (string)[];
+            /**
+             * @description The date and time, in UTC, the Integration was created. ISO 8601 Formatted.
+             * @example 2023-08-04T00:00:00Z
+             */
+            created_at: string;
+            /** @description The tokens for any Managed Accounts that are associated with the Integration. */
+            managed_account_tokens: (string)[];
+            /** @description Tokens of the data integrations that enrich this integration's costs. Empty when enrichment is not connected. */
+            enriched_by: (string)[];
+        };
+        /** @description IngestTokens model */
+        IngestTokens: {
+            links?: components["schemas"]["Links"];
+            tokens: (components["schemas"]["IngestToken"])[];
+        };
+        /** @description IngestToken model */
+        IngestToken: {
+            /** @description The public identifier for this token, not the secret ingest credential. */
+            token: string;
+            /** @description The public token of the telemetry feed this token belongs to. */
+            feed_token: string;
+            /** @description The telemetry provider for this token. */
+            provider: string;
+            /** @description The token name. */
+            name: string | null;
+            /** @description The last four characters of the secret ingest credential. */
+            last4: string;
+            /**
+             * Format: int32
+             * @description The retention period in days, when specified.
+             */
+            retention_days: number | null;
+            /** @description When the token was issued, in ISO 8601 format. */
+            issued_at: string;
+            /** @description When the token expires, in ISO 8601 format. */
+            expires_at: string;
+            /** @description When the token was revoked, in ISO 8601 format. */
+            revoked_at: string | null;
+            /** @description The public token of the user who created this ingest token, when available. */
+            created_by: string | null;
         };
         /** @description EnrichmentStatistics model */
         EnrichmentStatistics: {
@@ -6403,46 +6679,55 @@ export interface components {
             /** @description The tokens of the SavedFilters to apply to any Cost Report contained within the Folder. */
             saved_filter_tokens?: (string)[] | null;
         };
+        /** @description Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once. */
+        createIngestToken: {
+            /** @description The public token of an existing telemetry feed. */
+            feed_token: string;
+            /** @description An optional name, up to 100 characters. */
+            name?: string;
+            /**
+             * Format: date-time
+             * @description Expiration time in ISO 8601 format. Defaults to 18 months; must be in the future and no more than 18 months away.
+             */
+            expires_at?: string;
+            /**
+             * Format: int32
+             * @description An optional positive retention period in days.
+             */
+            retention_days?: number;
+        };
+        /** @description IngestTokenCreation model */
+        IngestTokenCreation: {
+            /** @description The public identifier for this token, not the secret ingest credential. */
+            token: string;
+            /** @description The public token of the telemetry feed this token belongs to. */
+            feed_token: string;
+            /** @description The telemetry provider for this token. */
+            provider: string;
+            /** @description The token name. */
+            name: string | null;
+            /** @description The last four characters of the secret ingest credential. */
+            last4: string;
+            /**
+             * Format: int32
+             * @description The retention period in days, when specified.
+             */
+            retention_days: number | null;
+            /** @description When the token was issued, in ISO 8601 format. */
+            issued_at: string;
+            /** @description When the token expires, in ISO 8601 format. */
+            expires_at: string;
+            /** @description When the token was revoked, in ISO 8601 format. */
+            revoked_at: string | null;
+            /** @description The public token of the user who created this ingest token, when available. */
+            created_by: string | null;
+            /** @description The secret ingest credential. Returned only on creation; save it securely. */
+            plaintext_token: string;
+        };
         /** @description Integrations model */
         Integrations: {
             links?: components["schemas"]["Links"];
             integrations: (components["schemas"]["Integration"])[];
-        };
-        /** @description Integration model */
-        Integration: {
-            token: string;
-            /**
-             * @description The name of the Integration.
-             * @example AWS
-             */
-            provider: string;
-            /**
-             * @description The account identifier. For GCP this is the billing Account ID, for Azure this is the account ID
-             * @example 011389-EF4C3E-3ED7AE
-             */
-            account_identifier: string | null;
-            /**
-             * @description The status of the Integration. Can be 'connected', 'error', 'pending', 'importing', 'imported', or 'disconnected'.
-             * @example imported
-             * @enum {string}
-             */
-            status: "connected" | "error" | "pending" | "importing" | "imported" | "disconnected";
-            /**
-             * @description The date and time, in UTC, when the Integration was last updated. ISO 8601 Formatted.
-             * @example 2023-08-04T00:00:00Z
-             */
-            last_updated?: string | null;
-            /** @description The tokens for any Workspaces that the account belongs to. */
-            workspace_tokens: (string)[];
-            /**
-             * @description The date and time, in UTC, the Integration was created. ISO 8601 Formatted.
-             * @example 2023-08-04T00:00:00Z
-             */
-            created_at: string;
-            /** @description The tokens for any Managed Accounts that are associated with the Integration. */
-            managed_account_tokens: (string)[];
-            /** @description Tokens of the data integrations that enrich this integration's costs. Empty when enrichment is not connected. */
-            enriched_by: (string)[];
         };
         /** @description Create a Custom Provider Integration */
         createCustomProviderIntegration: {
@@ -6531,8 +6816,48 @@ export interface components {
             friendly_account_name: string;
             /** @description Description of the integration. */
             description: string;
-            /** @description When true, api_key and api_secret are an OAuth client id and secret. */
-            is_oauth?: boolean;
+        };
+        /** @description Create an OpenAI Integration */
+        createOpenAIIntegration: {
+            /** @description OpenAI Admin API key (sk-admin-...). With codex_analytics, an Analytics API key for the ChatGPT workspace. */
+            api_key: string;
+            /** @description Name for this OpenAI integration in Vantage. */
+            description: string;
+            /**
+             * @description When true, creates an OpenAI Codex Analytics integration for a ChatGPT workspace instead of an OpenAI API usage integration.
+             * @default false
+             */
+            codex_analytics?: boolean;
+            /** @description ChatGPT workspace UUID from the ChatGPT Admin console. Required when codex_analytics is true. */
+            workspace_id?: string;
+        };
+        /** @description Create an Anthropic Integration */
+        createAnthropicIntegration: {
+            /** @description Anthropic Admin API key. With enterprise_analytics, a Claude Enterprise Analytics API key with the read:analytics scope. */
+            api_key: string;
+            /**
+             * @description When true, creates a Claude Enterprise Analytics integration instead of an Anthropic API usage integration.
+             * @default false
+             */
+            enterprise_analytics?: boolean;
+            /** @description Name for this Claude Enterprise account in Vantage. Required when enterprise_analytics is true. */
+            account_name?: string;
+            /** @description Claude Enterprise organization UUID, used when enterprise_analytics is true. Defaults to the organization of the API key. */
+            organization_id?: string;
+        };
+        /** @description Create an OpenRouter Integration */
+        createOpenrouterIntegration: {
+            /** @description OpenRouter management API key. */
+            management_api_key: string;
+            /** @description Name for this OpenRouter integration in Vantage. */
+            description: string;
+        };
+        /** @description Create a SpaceXAI Integration */
+        createXaiIntegration: {
+            /** @description SpaceXAI management key. */
+            management_key: string;
+            /** @description Name for this SpaceXAI integration in Vantage. */
+            description: string;
         };
         /** @description Update an Integration. */
         updateIntegration: {
@@ -8280,7 +8605,7 @@ export interface components {
             overridable: boolean;
             /**
              * @description The earliest month VirtualTagConfig should be backfilled to.
-             * @example 2026-04-01
+             * @example 2026-05-01
              */
             backfill_until: string;
             /** @description Tag keys to collapse values for. */
@@ -8500,6 +8825,8 @@ export interface components {
             key?: string;
             /** @description Whether the VirtualTagConfig can override a provider-supplied tag on a matching Cost. */
             overridable?: boolean | null;
+            /** @description Whether to backfill historical costs for this update. Omit to use the account's automatic-backfill setting. True requests backfill only when the configuration changes, respecting eligibility, date ranges, retention, and provider month locks. False saves without requesting backfill; later refreshes or other backfills may still apply the configuration to unlocked historical costs. backfill_until controls the earliest eligible month, not whether backfill runs. */
+            backfill?: boolean | null;
             /**
              * Format: date
              * @description The earliest month the VirtualTagConfig should be backfilled to.
@@ -8588,6 +8915,8 @@ export interface components {
             key?: string;
             /** @description Whether the VirtualTagConfig can override a provider-supplied tag on a matching Cost. */
             overridable?: boolean | null;
+            /** @description Whether to backfill historical costs for this update. Omit to use the account's automatic-backfill setting. True requests backfill only when the configuration changes, respecting eligibility, date ranges, retention, and provider month locks. False saves without requesting backfill; later refreshes or other backfills may still apply the configuration to unlocked historical costs. backfill_until controls the earliest eligible month, not whether backfill runs. */
+            backfill?: boolean | null;
             /**
              * Format: date
              * @description The earliest month the VirtualTagConfig should be backfilled to.
@@ -8766,7 +9095,7 @@ export interface components {
         /** @description DataImportLocks model */
         DataImportLocks: {
             links?: components["schemas"]["Links"];
-            data_import_locks: components["schemas"]["DataImportLock"][];
+            data_import_locks: (components["schemas"]["DataImportLock"])[];
         };
         /** @description DataImportLock model */
         DataImportLock: {
@@ -11627,11 +11956,11 @@ export interface operations {
     deleteBusinessMetricValues: {
         parameters: {
             query?: {
-                /** @description Inclusive lower bound (ISO 8601 date or datetime, UTC). Date-only values start at 00:00:00 UTC that day. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit start_date to delete all values of the selected type. */
                 start_date?: string;
-                /** @description Inclusive upper bound (ISO 8601 date or datetime, UTC). Date-only values include the full calendar day through 23:59:59.999999999 UTC. */
+                /** @description Unsupported for deletes. Date bounds return 422; omit end_date to delete all values of the selected type. */
                 end_date?: string;
-                /** @description When present in the query string (including as an empty value), only unit metrics with this exact label are deleted. Omit the parameter to delete all labels in range. */
+                /** @description Unsupported for deletes. Supplying label, including an empty value, returns 422; omit it to delete all values of the selected type. */
                 label?: string;
                 /** @description When true, deletes forecasted unit metrics instead of historical ones. */
                 forecasted?: boolean;
@@ -12477,6 +12806,7 @@ export interface operations {
                      *       "cost_reports": [
                      *         {
                      *           "token": "rprt_6f2c7d330c05636f",
+                     *           "custom_calculation_tokens": [],
                      *           "title": "Untitled",
                      *           "folder_token": null,
                      *           "saved_filter_tokens": [
@@ -12544,6 +12874,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_299359872859a568",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "New Cost Report",
                      *       "folder_token": "fldr_736175272c30b820",
                      *       "saved_filter_tokens": [
@@ -12636,6 +12967,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_5db7a73cf4d09998",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "Untitled",
                      *       "folder_token": null,
                      *       "saved_filter_tokens": [
@@ -12712,6 +13044,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "token": "rprt_1e692ea6b3eddf6b",
+                     *       "custom_calculation_tokens": [],
                      *       "title": "Updated Cost Report",
                      *       "folder_token": "fldr_86dec25791dca5ce",
                      *       "saved_filter_tokens": [
@@ -12956,7 +13289,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -13100,7 +13433,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14037,7 +14370,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14123,6 +14456,155 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["EnrichmentSource"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getEnrichmentSourceCostIntegrations: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                enrichment_source_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return associated cost integrations, including those with errors and excluding disabled associations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_5976ebd11302daa2/cost_integrations",
+                     *         "first": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_5976ebd11302daa2/cost_integrations?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_5976ebd11302daa2/cost_integrations?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "cost_integrations": [
+                     *         {
+                     *           "token": "accss_crdntl_51cc69c51624caf4",
+                     *           "provider": "aws",
+                     *           "account_identifier": "606441991586",
+                     *           "status": "pending",
+                     *           "last_updated": null,
+                     *           "workspace_tokens": [
+                     *             "wrkspc_5019ac56ac17dd58"
+                     *           ],
+                     *           "created_at": "2026-11-10T22:13:57Z",
+                     *           "managed_account_tokens": [],
+                     *           "enriched_by": [
+                     *             "srvc_data_intgrtn_1e315a6237dfd2e1",
+                     *             "srvc_data_intgrtn_5976ebd11302daa2",
+                     *             "srvc_data_intgrtn_60a40c37820efd44",
+                     *             "srvc_data_intgrtn_8a0519d49bf04d02"
+                     *           ]
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CostIntegrations"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getEnrichmentSourceIngestTokens: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. Defaults to 1000; the maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                enrichment_source_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List ingest token metadata for this enrichment source. Secret credentials are never returned. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_93d9727e64d4327e/ingest_tokens",
+                     *         "first": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_93d9727e64d4327e/ingest_tokens?page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/enrichment_sources/srvc_data_intgrtn_93d9727e64d4327e/ingest_tokens?page=1",
+                     *         "prev": null
+                     *       },
+                     *       "tokens": [
+                     *         {
+                     *           "token": "tlm_tok_08dacbf0109f9235",
+                     *           "feed_token": "srvc_data_intgrtn_93d9727e64d4327e",
+                     *           "provider": "bifrost",
+                     *           "name": "Production",
+                     *           "last4": "zkDQ",
+                     *           "retention_days": 30,
+                     *           "issued_at": "2026-11-11T12:00:00Z",
+                     *           "expires_at": "2027-01-11T12:00:00Z",
+                     *           "revoked_at": null,
+                     *           "created_by": "usr_729dc9281dcb3c73"
+                     *         },
+                     *         {
+                     *           "token": "tlm_tok_1b7a123749150ee4",
+                     *           "feed_token": "srvc_data_intgrtn_93d9727e64d4327e",
+                     *           "provider": "bifrost",
+                     *           "name": null,
+                     *           "last4": "9MDA",
+                     *           "retention_days": null,
+                     *           "issued_at": "2026-11-11T12:00:00Z",
+                     *           "expires_at": "2028-05-11T12:00:00Z",
+                     *           "revoked_at": null,
+                     *           "created_by": "usr_729dc9281dcb3c73"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IngestTokens"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
                 };
             };
             /** @description NotFound */
@@ -14612,7 +15094,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -14917,6 +15399,199 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Folder"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getIngestTokens: {
+        parameters: {
+            query: {
+                /** @description The public token of an existing telemetry feed. */
+                feed_token: string;
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The number of results to return. Defaults to 1000; the maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List ingest token metadata for an existing telemetry feed. Secret credentials are never returned. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/ingest_tokens?feed_token=srvc_data_intgrtn_93d9727e64d4327e",
+                     *         "first": "https://api.vantage.sh/v2/ingest_tokens?feed_token=srvc_data_intgrtn_93d9727e64d4327e&page=1",
+                     *         "next": null,
+                     *         "last": "https://api.vantage.sh/v2/ingest_tokens?feed_token=srvc_data_intgrtn_93d9727e64d4327e&page=1",
+                     *         "prev": null
+                     *       },
+                     *       "tokens": [
+                     *         {
+                     *           "token": "tlm_tok_08dacbf0109f9235",
+                     *           "feed_token": "srvc_data_intgrtn_93d9727e64d4327e",
+                     *           "provider": "bifrost",
+                     *           "name": "Production",
+                     *           "last4": "zkDQ",
+                     *           "retention_days": 30,
+                     *           "issued_at": "2026-11-11T12:00:00Z",
+                     *           "expires_at": "2027-01-11T12:00:00Z",
+                     *           "revoked_at": null,
+                     *           "created_by": "usr_729dc9281dcb3c73"
+                     *         },
+                     *         {
+                     *           "token": "tlm_tok_1b7a123749150ee4",
+                     *           "feed_token": "srvc_data_intgrtn_93d9727e64d4327e",
+                     *           "provider": "bifrost",
+                     *           "name": null,
+                     *           "last4": "9MDA",
+                     *           "retention_days": null,
+                     *           "issued_at": "2026-11-11T12:00:00Z",
+                     *           "expires_at": "2028-05-11T12:00:00Z",
+                     *           "revoked_at": null,
+                     *           "created_by": "usr_729dc9281dcb3c73"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IngestTokens"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createIngestToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createIngestToken"];
+            };
+        };
+        responses: {
+            /** @description Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "tlm_tok_08dacbf0109f9235",
+                     *       "feed_token": "srvc_data_intgrtn_93d9727e64d4327e",
+                     *       "provider": "bifrost",
+                     *       "name": "Production",
+                     *       "last4": "zkDQ",
+                     *       "retention_days": 30,
+                     *       "issued_at": "2026-11-11T12:00:00Z",
+                     *       "expires_at": "2027-01-11T12:00:00Z",
+                     *       "revoked_at": null,
+                     *       "created_by": "usr_729dc9281dcb3c73",
+                     *       "plaintext_token": "vntg_ti_REDACTED"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IngestTokenCreation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description The feed is stopped. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngestToken"];
+                };
+            };
+        };
+    };
+    revokeIngestToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Revoke an ingest token while preserving its metadata. Repeated revocation has no additional effect. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "tlm_tok_b10bef544f7f324b",
+                     *       "feed_token": "srvc_data_intgrtn_db12bf82d85fa6ca",
+                     *       "provider": "bifrost",
+                     *       "name": null,
+                     *       "last4": "HKAw",
+                     *       "retention_days": null,
+                     *       "issued_at": "2026-11-11T12:00:00Z",
+                     *       "expires_at": "2028-05-11T12:00:00Z",
+                     *       "revoked_at": "2026-11-11T12:00:00Z",
+                     *       "created_by": "usr_68164c550d677188"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IngestToken"];
                 };
             };
             /** @description NotFound */
@@ -15483,6 +16158,222 @@ export interface operations {
             };
             /** @description BadRequest */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenAIIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenAIIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_c5c4ab6733b94daf",
+                     *       "provider": "open_ai",
+                     *       "account_identifier": "OpenAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createAnthropicIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createAnthropicIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_59bf4b8615e4f794",
+                     *       "provider": "anthropic",
+                     *       "account_identifier": "org-12345",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createOpenrouterIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createOpenrouterIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_3bdaf712475edece",
+                     *       "provider": "openrouter",
+                     *       "account_identifier": "OpenRouter production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:01Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createXaiIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createXaiIntegration"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "accss_crdntl_966773f4159e4a48",
+                     *       "provider": "xai",
+                     *       "account_identifier": "SpaceXAI production",
+                     *       "status": "pending",
+                     *       "last_updated": null,
+                     *       "workspace_tokens": [],
+                     *       "created_at": "2026-10-29T16:48:23Z",
+                     *       "managed_account_tokens": [],
+                     *       "enriched_by": []
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Integration"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16505,7 +17396,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -17099,7 +17990,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -19234,7 +20125,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20818,7 +21709,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
@@ -20932,7 +21823,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Errors"];
+                    "application/json": components["schemas"]["PaymentRequiredErrors"];
                 };
             };
             /** @description NotFound */
