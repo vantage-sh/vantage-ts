@@ -457,7 +457,7 @@ export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_prov
  */
 export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
 export type GetCostProviderAccountsRequest = RequestBodyForPathAndMethod<"/v2/cost_provider_accounts", "GET">;
 /**
@@ -625,6 +625,22 @@ export type GetEnrichmentSourcesResponse = ResponseBodyForPathAndMethod<"/v2/enr
  */
 export type GetEnrichmentSourceResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}`, "GET">;
 /**
+ * Return associated cost integrations, including those with errors and excluding disabled associations.
+ */
+export type GetEnrichmentSourceCostIntegrationsRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/cost_integrations`, "GET">;
+/**
+ * Response type for Get associated cost integrations
+ */
+export type GetEnrichmentSourceCostIntegrationsResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/cost_integrations`, "GET">;
+/**
+ * List ingest token metadata for this enrichment source. Secret credentials are never returned.
+ */
+export type GetEnrichmentSourceIngestTokensRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/ingest_tokens`, "GET">;
+/**
+ * Response type for List enrichment source ingest tokens
+ */
+export type GetEnrichmentSourceIngestTokensResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/ingest_tokens`, "GET">;
+/**
  * Return enrichment statistics.
  */
 export type GetEnrichmentStatisticsRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/statistics`, "GET">;
@@ -729,6 +745,26 @@ export type UpdateFolderResponse = ResponseBodyForPathAndMethod<`/v2/folders/${N
  */
 export type DeleteFolderResponse = ResponseBodyForPathAndMethod<`/v2/folders/${NoSlashString}`, "DELETE">;
 /**
+ * List ingest token metadata for an existing telemetry feed. Secret credentials are never returned.
+ */
+export type GetIngestTokensRequest = RequestBodyForPathAndMethod<"/v2/ingest_tokens", "GET">;
+/**
+ * Response type for List ingest tokens
+ */
+export type GetIngestTokensResponse = ResponseBodyForPathAndMethod<"/v2/ingest_tokens", "GET">;
+/**
+ * Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once.
+ */
+export type CreateIngestTokenRequest = RequestBodyForPathAndMethod<"/v2/ingest_tokens", "POST">;
+/**
+ * Response type for Create ingest token
+ */
+export type CreateIngestTokenResponse = ResponseBodyForPathAndMethod<"/v2/ingest_tokens", "POST">;
+/**
+ * Response type for Revoke ingest token
+ */
+export type RevokeIngestTokenResponse = ResponseBodyForPathAndMethod<`/v2/ingest_tokens/${NoSlashString}/revoke`, "POST">;
+/**
  * Return all Integrations.
  */
 export type GetIntegrationsRequest = RequestBodyForPathAndMethod<"/v2/integrations", "GET">;
@@ -800,6 +836,38 @@ export type CreateTwilioIntegrationRequest = RequestBodyForPathAndMethod<"/v2/in
  * Response type for Create Twilio integration
  */
 export type CreateTwilioIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/twilio", "POST">;
+/**
+ * Create an OpenAI Integration
+ */
+export type CreateOpenAIIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Response type for Create OpenAI integration
+ */
+export type CreateOpenAIIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/open_ai", "POST">;
+/**
+ * Create an Anthropic Integration
+ */
+export type CreateAnthropicIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Response type for Create Anthropic integration
+ */
+export type CreateAnthropicIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/anthropic", "POST">;
+/**
+ * Create an OpenRouter Integration
+ */
+export type CreateOpenrouterIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Response type for Create OpenRouter integration
+ */
+export type CreateOpenrouterIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/openrouter", "POST">;
+/**
+ * Create a SpaceXAI Integration
+ */
+export type CreateXaiIntegrationRequest = RequestBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
+/**
+ * Response type for Create SpaceXAI integration
+ */
+export type CreateXaiIntegrationResponse = ResponseBodyForPathAndMethod<"/v2/integrations/xai", "POST">;
 /**
  * Return all DataImportLocks for the current account. The current calendar month cannot be locked. The previous calendar month can be locked on or after the 15th of the current month.
  */
@@ -1623,6 +1691,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _financialCommitmentReports?: FinancialCommitmentReportsApi<NeverThrow>;
     private _financialCommitments?: FinancialCommitmentsApi<NeverThrow>;
     private _folders?: FoldersApi<NeverThrow>;
+    private _ingestTokens?: IngestTokensApi<NeverThrow>;
     private _integrations?: IntegrationsApi<NeverThrow>;
     private _dataImportLocks?: DataImportLocksApi<NeverThrow>;
     private _invoices?: InvoicesApi<NeverThrow>;
@@ -1837,6 +1906,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._folders = new FoldersApi(this);
         }
         return this._folders;
+    }
+
+    get ingestTokens(): IngestTokensApi<NeverThrow> {
+        if (!this._ingestTokens) {
+            this._ingestTokens = new IngestTokensApi(this);
+        }
+        return this._ingestTokens;
     }
 
     get integrations(): IntegrationsApi<NeverThrow> {
@@ -2812,7 +2888,7 @@ class CostProviderAccountsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
- * List CostProviderAccounts available in a given Workspace.
+ * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
     list(body?: GetCostProviderAccountsRequest) {
         return this.client.request(
@@ -3138,6 +3214,28 @@ class EnrichmentSourcesApi<NeverThrow extends boolean> {
     }
 
 /**
+ * Return associated cost integrations, including those with errors and excluding disabled associations.
+ */
+    getCostIntegrations(enrichmentSourceToken: string, body?: GetEnrichmentSourceCostIntegrationsRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}/cost_integrations`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * List ingest token metadata for this enrichment source. Secret credentials are never returned.
+ */
+    getIngestTokens(enrichmentSourceToken: string, body?: GetEnrichmentSourceIngestTokensRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}/ingest_tokens`,
+            "GET",
+            body,
+        );
+    }
+
+/**
  * Return enrichment statistics.
  */
     getEnrichmentStatistics(enrichmentSourceToken: string, body?: GetEnrichmentStatisticsRequest) {
@@ -3324,6 +3422,44 @@ class FoldersApi<NeverThrow extends boolean> {
 
 }
 
+class IngestTokensApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * List ingest token metadata for an existing telemetry feed. Secret credentials are never returned.
+ */
+    list(body?: GetIngestTokensRequest) {
+        return this.client.request(
+            `/v2/ingest_tokens`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once.
+ */
+    create(body: CreateIngestTokenRequest) {
+        return this.client.request(
+            `/v2/ingest_tokens`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Revoke an ingest token while preserving its metadata. Repeated revocation has no additional effect.
+ */
+    revokeIngestToken(tokenId: string) {
+        return this.client.request(
+            `/v2/ingest_tokens/${pathEncode(tokenId)}/revoke`,
+            "POST",
+            {},
+        );
+    }
+
+}
+
 class IntegrationsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
@@ -3443,6 +3579,50 @@ class IntegrationsApi<NeverThrow extends boolean> {
     createTwilioIntegration(body: CreateTwilioIntegrationRequest) {
         return this.client.request(
             `/v2/integrations/twilio`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenAI Integration
+ */
+    createOpenAIIntegration(body: CreateOpenAIIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/open_ai`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an Anthropic Integration
+ */
+    createAnthropicIntegration(body: CreateAnthropicIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/anthropic`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create an OpenRouter Integration
+ */
+    createOpenrouterIntegration(body: CreateOpenrouterIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/openrouter`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Create a SpaceXAI Integration
+ */
+    createXaiIntegration(body: CreateXaiIntegrationRequest) {
+        return this.client.request(
+            `/v2/integrations/xai`,
             "POST",
             body,
         );
