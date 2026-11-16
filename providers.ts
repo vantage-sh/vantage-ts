@@ -53,6 +53,7 @@ export const VANTAGE_PROVIDERS = [
   "sentry_billing",
   "ramp",
   "dynatrace",
+  "cockroachdb_cloud",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];

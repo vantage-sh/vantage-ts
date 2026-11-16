@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { BaseClient } from "./BaseClient";
+import { APIV2Client, type CreateCustomCalculationRequest } from "./dist";
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -130,4 +131,72 @@ test("Multipart request passes params as FormData", async () => {
 
   const formData = options.body as FormData;
   expect(formData.get("csv")).toBe(csvContent);
+});
+
+const apiClient = new APIV2Client("test-token", false, "https://example.invalid");
+
+function mockResponse(body: unknown) {
+  mockFetch.mockReset().mockResolvedValue({ ok: true, status: 200, text: async () => JSON.stringify(body) });
+}
+
+test("calculation CRUD uses typed bodies, pagination, and encoded tokens", async () => {
+  const calculation = { token: "cstm_clcltn_123", description: null };
+  const body: CreateCustomCalculationRequest = {
+    title: "Usage ratio",
+    description: "Two usage units",
+    operation: "division",
+    filter: {
+      filter_numerator: "costs.provider = 'aws'",
+      filter_denominator: "costs.provider = 'aws'",
+      usage_unit: ["hours", "requests"],
+      usage_unit_numerator: ["hours", "seconds"],
+      usage_unit_denominator: ["GB", "bytes"],
+    },
+  };
+  mockResponse({ custom_calculations: [calculation], links: { next: "page2" } });
+  expect(await apiClient.customCalculations.list({ page: 2, limit: 10 })).toEqual({
+    custom_calculations: [calculation],
+    links: { next: "page2" },
+  });
+  expect(mockFetch.mock.calls[0][0]).toBe("https://example.invalid/v2/custom_calculations?page=2&limit=10");
+  expect(mockFetch.mock.calls[0][1].body).toBeUndefined();
+
+  mockResponse(calculation);
+  expect(await apiClient.customCalculations.create(body)).toEqual(calculation);
+  expect(mockFetch.mock.calls[0][1]).toMatchObject({ method: "POST", body: JSON.stringify(body) });
+
+  await apiClient.customCalculations.get("token/with space");
+  await apiClient.customCalculations.update("token/with space", { description: null, cost_report_tokens: [] });
+  mockFetch.mockResolvedValueOnce({ ok: true, status: 204, text: async () => "" });
+  expect(await apiClient.customCalculations.delete("token/with space")).toBeUndefined();
+  expect(mockFetch.mock.calls.slice(1).map(([url, options]) => [url, options.method])).toEqual([
+    ["https://example.invalid/v2/custom_calculations/token%2Fwith%20space", "GET"],
+    ["https://example.invalid/v2/custom_calculations/token%2Fwith%20space", "PUT"],
+    ["https://example.invalid/v2/custom_calculations/token%2Fwith%20space", "DELETE"],
+  ]);
+  expect(JSON.parse(mockFetch.mock.calls[2][1].body)).toEqual({ description: null, cost_report_tokens: [] });
+});
+
+test("attachment omission, null, empty, and populated arrays survive JSON serialization", async () => {
+  mockResponse({});
+  // Null is accepted on the wire; strict declaration validation records Core's missing array nullability.
+  for (const value of [undefined, null, [], ["resource_token"]]) {
+    await apiClient.customCalculations.update("calculation", { cost_report_tokens: value });
+    await apiClient.costReports.update("report", { custom_calculation_tokens: value });
+    const expected = value === undefined ? {} : { cost_report_tokens: value };
+    expect(JSON.parse(mockFetch.mock.calls[mockFetch.mock.calls.length - 2][1].body)).toEqual(expected);
+    expect(JSON.parse(mockFetch.mock.calls[mockFetch.mock.calls.length - 1][1].body)).toEqual(
+      value === undefined ? {} : { custom_calculation_tokens: value }
+    );
+  }
+});
+
+test("description omission, null, empty, and text preserve their wire values", async () => {
+  mockResponse({});
+  for (const description of [undefined, null, "", "new description"]) {
+    await apiClient.customCalculations.update("calculation", { description });
+    expect(JSON.parse(mockFetch.mock.calls[mockFetch.mock.calls.length - 1][1].body)).toEqual(
+      description === undefined ? {} : { description }
+    );
+  }
 });

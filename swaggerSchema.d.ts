@@ -3278,6 +3278,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/custom_calculations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all custom calculations
+         * @description Return all CustomCalculations that the current API token has access to.
+         */
+        get: operations["getCustomCalculations"];
+        put?: never;
+        /**
+         * Create a custom calculation
+         * @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+         */
+        post: operations["createCustomCalculation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/custom_calculations/{custom_calculation_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a custom calculation
+         * @description Return a CustomCalculation by its token.
+         */
+        get: operations["getCustomCalculation"];
+        /**
+         * Update a custom calculation
+         * @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+         */
+        put: operations["updateCustomCalculation"];
+        post?: never;
+        /**
+         * Delete a custom calculation
+         * @description Delete a CustomCalculation. Read-only calculations cannot be deleted.
+         */
+        delete: operations["deleteCustomCalculation"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, any>;
 export interface components {
@@ -5234,7 +5286,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -5661,7 +5713,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -9200,6 +9252,98 @@ export interface components {
              */
             exchange_rate_date?: "daily_rate" | "end_of_billing_period_rate";
         };
+        /** @description CustomCalculations model */
+        CustomCalculations: {
+            links?: components["schemas"]["Links"];
+            custom_calculations: (components["schemas"]["CustomCalculation"])[];
+        };
+        /** @description CustomCalculation model */
+        CustomCalculation: {
+            /**
+             * @description The token of the CustomCalculation.
+             * @example cstm_clcltn_1234
+             */
+            token: string;
+            /** @description The title of the Custom Calculation. */
+            title: string;
+            /** @description The description of the calculation, or null when blank. */
+            description: string | null;
+            /**
+             * @description The operation applied to the filtered cost or usage data.
+             * @enum {string}
+             */
+            operation: "sum" | "average" | "division" | "min" | "max";
+            /** @description The VQL filters and usage units used by the calculation. A usage unit is a string, a non-empty array of equivalent unit names, or null for costs. Arrays sum usage without converting units. */
+            filter: Record<string, any>;
+            /**
+             * @description The display format of the calculation.
+             * @enum {string}
+             */
+            display_as: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation.
+             */
+            unit_scale: number;
+            /** @description Whether the calculation is read only. */
+            is_read_only: boolean;
+            /** @description The tokens of the attached CostReports visible to the caller. */
+            cost_report_tokens: (string)[];
+            /** @description When the calculation was created, in ISO 8601 format. */
+            created_at: string;
+            /** @description When the calculation was last updated, in ISO 8601 format. */
+            updated_at: string;
+        };
+        /** @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set. */
+        createCustomCalculation: {
+            /** @description The title of the Custom Calculation. */
+            title: string;
+            /** @description The VQL filters and usage units used by the calculation. A usage unit is a string, a non-empty array of equivalent unit names, or null for costs. Arrays sum usage without converting units. */
+            filter: Record<string, any>;
+            /** @description An optional description, up to 10000 characters. Send null or an empty string to clear; omit on update to leave unchanged. */
+            description?: string | null;
+            /**
+             * @description The operation applied to the filtered cost or usage data. Defaults to sum when creating a calculation.
+             * @enum {string}
+             */
+            operation?: "sum" | "average" | "division" | "min" | "max";
+            /**
+             * @description The display format of the calculation. Defaults to ratio when creating a calculation.
+             * @enum {string}
+             */
+            display_as?: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation. Send null to reset to 1. Defaults to 1 on create; omit on update to leave unchanged.
+             */
+            unit_scale?: number | null;
+        };
+        /** @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed. */
+        updateCustomCalculation: {
+            /** @description The title of the Custom Calculation. */
+            title?: string;
+            /** @description The complete replacement VQL filters and usage units used by the calculation. A usage unit is a string, a non-empty array of equivalent unit names, or null for costs. Arrays sum usage without converting units. */
+            filter?: Record<string, any>;
+            /** @description An optional description, up to 10000 characters. Send null or an empty string to clear; omit on update to leave unchanged. */
+            description?: string | null;
+            /**
+             * @description The operation applied to the filtered cost or usage data. Defaults to sum when creating a calculation.
+             * @enum {string}
+             */
+            operation?: "sum" | "average" | "division" | "min" | "max";
+            /**
+             * @description The display format of the calculation. Defaults to ratio when creating a calculation.
+             * @enum {string}
+             */
+            display_as?: "ratio" | "percent" | "per-n";
+            /**
+             * Format: int32
+             * @description The integer unit scale of the calculation. Send null to reset to 1. Defaults to 1 on create; omit on update to leave unchanged.
+             */
+            unit_scale?: number | null;
+            /** @description The complete replacement set of CostReport tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. Replacement requires access to every currently attached CostReport. */
+            cost_report_tokens?: (string)[];
+        };
     };
     responses: never;
     parameters: never;
@@ -12726,7 +12870,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -13160,7 +13304,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -14629,7 +14773,7 @@ export interface operations {
                  * @description Filter statistics to costs for a specific provider key.
                  * @example aws
                  */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud";
             };
             header?: never;
             path: {
@@ -15609,7 +15753,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -20991,7 +21135,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -21129,7 +21273,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
@@ -23027,6 +23171,355 @@ export interface operations {
             };
             /** @description UnprocessableEntity */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCustomCalculations: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all CustomCalculations that the current API token has access to. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=1",
+                     *         "first": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=1",
+                     *         "next": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=2",
+                     *         "last": "https://api.vantage.sh/v2/custom_calculations?limit=2&page=2",
+                     *         "prev": null
+                     *       },
+                     *       "custom_calculations": [
+                     *         {
+                     *           "token": "cstm_clcltn_95e93dd9f164b6ac",
+                     *           "title": "Custom Calculation",
+                     *           "description": null,
+                     *           "operation": "sum",
+                     *           "filter": {
+                     *             "type": "sum",
+                     *             "filter": "costs.provider = 'aws'",
+                     *             "usage_unit": null
+                     *           },
+                     *           "display_as": "ratio",
+                     *           "unit_scale": 1,
+                     *           "is_read_only": false,
+                     *           "cost_report_tokens": [],
+                     *           "created_at": "2026-10-22T12:00:00Z",
+                     *           "updated_at": "2026-10-22T12:00:00Z"
+                     *         },
+                     *         {
+                     *           "token": "cstm_clcltn_ceb61bb0b47a557b",
+                     *           "title": "Second",
+                     *           "description": null,
+                     *           "operation": "sum",
+                     *           "filter": {
+                     *             "type": "sum",
+                     *             "filter": "costs.provider = 'aws'",
+                     *             "usage_unit": null
+                     *           },
+                     *           "display_as": "ratio",
+                     *           "unit_scale": 1,
+                     *           "is_read_only": false,
+                     *           "cost_report_tokens": [],
+                     *           "created_at": "2026-10-22T12:00:00Z",
+                     *           "updated_at": "2026-10-22T12:00:00Z"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculations"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    createCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["createCustomCalculation"];
+            };
+        };
+        responses: {
+            /** @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_b76fd809bc724320",
+                     *       "title": "AWS usage",
+                     *       "description": null,
+                     *       "operation": "sum",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "ratio",
+                     *       "unit_scale": 1,
+                     *       "is_read_only": false,
+                     *       "cost_report_tokens": [],
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return a CustomCalculation by its token. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_2ea45b95be3630c5",
+                     *       "title": "Custom Calculation",
+                     *       "description": null,
+                     *       "operation": "sum",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "ratio",
+                     *       "unit_scale": 1,
+                     *       "is_read_only": false,
+                     *       "cost_report_tokens": [],
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateCustomCalculation"];
+            };
+        };
+        responses: {
+            /** @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "token": "cstm_clcltn_57392aa904ac64ba",
+                     *       "title": "Updated calculation",
+                     *       "description": null,
+                     *       "operation": "average",
+                     *       "filter": {
+                     *         "type": "sum",
+                     *         "filter": "costs.provider = 'aws'",
+                     *         "usage_unit": null
+                     *       },
+                     *       "display_as": "per-n",
+                     *       "unit_scale": 1000,
+                     *       "is_read_only": false,
+                     *       "cost_report_tokens": [],
+                     *       "created_at": "2026-10-22T12:00:00Z",
+                     *       "updated_at": "2026-10-22T12:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    deleteCustomCalculation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                custom_calculation_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete a CustomCalculation. Read-only calculations cannot be deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomCalculation"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
