@@ -657,6 +657,22 @@ export type GetEnrichmentSourcesResponse = ResponseBodyForPathAndMethod<"/v2/enr
  */
 export type GetEnrichmentSourceResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}`, "GET">;
 /**
+ * Return associated cost integrations, including those with errors and excluding disabled associations.
+ */
+export type GetEnrichmentSourceCostIntegrationsRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/cost_integrations`, "GET">;
+/**
+ * Response type for Get associated cost integrations
+ */
+export type GetEnrichmentSourceCostIntegrationsResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/cost_integrations`, "GET">;
+/**
+ * List ingest token metadata for this enrichment source. Secret credentials are never returned.
+ */
+export type GetEnrichmentSourceIngestTokensRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/ingest_tokens`, "GET">;
+/**
+ * Response type for List enrichment source ingest tokens
+ */
+export type GetEnrichmentSourceIngestTokensResponse = ResponseBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/ingest_tokens`, "GET">;
+/**
  * Return enrichment statistics.
  */
 export type GetEnrichmentStatisticsRequest = RequestBodyForPathAndMethod<`/v2/enrichment_sources/${NoSlashString}/statistics`, "GET">;
@@ -760,6 +776,26 @@ export type UpdateFolderResponse = ResponseBodyForPathAndMethod<`/v2/folders/${N
  * Response type for Delete folder
  */
 export type DeleteFolderResponse = ResponseBodyForPathAndMethod<`/v2/folders/${NoSlashString}`, "DELETE">;
+/**
+ * List ingest token metadata for an existing telemetry feed. Secret credentials are never returned.
+ */
+export type GetIngestTokensRequest = RequestBodyForPathAndMethod<"/v2/ingest_tokens", "GET">;
+/**
+ * Response type for List ingest tokens
+ */
+export type GetIngestTokensResponse = ResponseBodyForPathAndMethod<"/v2/ingest_tokens", "GET">;
+/**
+ * Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once.
+ */
+export type CreateIngestTokenRequest = RequestBodyForPathAndMethod<"/v2/ingest_tokens", "POST">;
+/**
+ * Response type for Create ingest token
+ */
+export type CreateIngestTokenResponse = ResponseBodyForPathAndMethod<"/v2/ingest_tokens", "POST">;
+/**
+ * Response type for Revoke ingest token
+ */
+export type RevokeIngestTokenResponse = ResponseBodyForPathAndMethod<`/v2/ingest_tokens/${NoSlashString}/revoke`, "POST">;
 /**
  * Return all Integrations.
  */
@@ -1688,6 +1724,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _financialCommitmentReports?: FinancialCommitmentReportsApi<NeverThrow>;
     private _financialCommitments?: FinancialCommitmentsApi<NeverThrow>;
     private _folders?: FoldersApi<NeverThrow>;
+    private _ingestTokens?: IngestTokensApi<NeverThrow>;
     private _integrations?: IntegrationsApi<NeverThrow>;
     private _dataImportLocks?: DataImportLocksApi<NeverThrow>;
     private _invoices?: InvoicesApi<NeverThrow>;
@@ -1909,6 +1946,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._folders = new FoldersApi(this);
         }
         return this._folders;
+    }
+
+    get ingestTokens(): IngestTokensApi<NeverThrow> {
+        if (!this._ingestTokens) {
+            this._ingestTokens = new IngestTokensApi(this);
+        }
+        return this._ingestTokens;
     }
 
     get integrations(): IntegrationsApi<NeverThrow> {
@@ -3270,6 +3314,28 @@ class EnrichmentSourcesApi<NeverThrow extends boolean> {
     }
 
 /**
+ * Return associated cost integrations, including those with errors and excluding disabled associations.
+ */
+    getCostIntegrations(enrichmentSourceToken: string, body?: GetEnrichmentSourceCostIntegrationsRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}/cost_integrations`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * List ingest token metadata for this enrichment source. Secret credentials are never returned.
+ */
+    getIngestTokens(enrichmentSourceToken: string, body?: GetEnrichmentSourceIngestTokensRequest) {
+        return this.client.request(
+            `/v2/enrichment_sources/${pathEncode(enrichmentSourceToken)}/ingest_tokens`,
+            "GET",
+            body,
+        );
+    }
+
+/**
  * Return enrichment statistics.
  */
     getEnrichmentStatistics(enrichmentSourceToken: string, body?: GetEnrichmentStatisticsRequest) {
@@ -3450,6 +3516,44 @@ class FoldersApi<NeverThrow extends boolean> {
         return this.client.request(
             `/v2/folders/${pathEncode(folderToken)}`,
             "DELETE",
+            {},
+        );
+    }
+
+}
+
+class IngestTokensApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * List ingest token metadata for an existing telemetry feed. Secret credentials are never returned.
+ */
+    list(body?: GetIngestTokensRequest) {
+        return this.client.request(
+            `/v2/ingest_tokens`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create an ingest token for an existing telemetry feed. Save plaintext_token securely; it is returned only once.
+ */
+    create(body: CreateIngestTokenRequest) {
+        return this.client.request(
+            `/v2/ingest_tokens`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Revoke an ingest token while preserving its metadata. Repeated revocation has no additional effect.
+ */
+    revokeIngestToken(tokenId: string) {
+        return this.client.request(
+            `/v2/ingest_tokens/${pathEncode(tokenId)}/revoke`,
+            "POST",
             {},
         );
     }
