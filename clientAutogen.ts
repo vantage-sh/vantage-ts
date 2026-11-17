@@ -1478,6 +1478,62 @@ export type UpdateTeamResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSla
  */
 export type DeleteTeamResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}`, "DELETE">;
 /**
+ * Return the accessible Workspaces associated with a Team, including each Workspace's name, creation time, and the Team's role.
+ */
+export type GetTeamWorkspacesRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "GET">;
+/**
+ * Response type for Get team workspaces
+ */
+export type GetTeamWorkspacesResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "GET">;
+/**
+ * Associate a Workspace with a Team.
+ */
+export type AddTeamWorkspaceRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "POST">;
+/**
+ * Response type for Add team workspace
+ */
+export type AddTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "POST">;
+/**
+ * Change the Team's role in an associated Workspace.
+ */
+export type UpdateTeamWorkspaceRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update team workspace
+ */
+export type UpdateTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Remove team workspace
+ */
+export type RemoveTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "DELETE">;
+/**
+ * Return the Managed Accounts a Team has been explicitly allowed or denied access to, including each Managed Account's name and creation time.
+ */
+export type GetTeamManagedAccountsRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "GET">;
+/**
+ * Response type for Get team managed accounts
+ */
+export type GetTeamManagedAccountsResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "GET">;
+/**
+ * Allow or deny a Team access to a Managed Account.
+ */
+export type AddTeamManagedAccountRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "POST">;
+/**
+ * Response type for Add team managed account
+ */
+export type AddTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "POST">;
+/**
+ * Change whether a Team is allowed or denied access to a Managed Account.
+ */
+export type UpdateTeamManagedAccountRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update team managed account
+ */
+export type UpdateTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Remove team managed account
+ */
+export type RemoveTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "DELETE">;
+/**
  * Return all members of a Team.
  */
 export type GetTeamMembersRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/members`, "GET">;
@@ -4735,6 +4791,94 @@ class TeamsApi<NeverThrow extends boolean> {
     delete(teamToken: string) {
         return this.client.request(
             `/v2/teams/${pathEncode(teamToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
+ * Return the accessible Workspaces associated with a Team, including each Workspace's name, creation time, and the Team's role.
+ */
+    getWorkspaces(teamToken: string, body?: GetTeamWorkspacesRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Associate a Workspace with a Team.
+ */
+    addTeamWorkspace(teamToken: string, body: AddTeamWorkspaceRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Change the Team's role in an associated Workspace.
+ */
+    updateWorkspace(teamToken: string, workspaceToken: string, body: UpdateTeamWorkspaceRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces/${pathEncode(workspaceToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Remove a Workspace association from a Team.
+ */
+    removeTeamWorkspace(teamToken: string, workspaceToken: string) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces/${pathEncode(workspaceToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
+ * Return the Managed Accounts a Team has been explicitly allowed or denied access to, including each Managed Account's name and creation time.
+ */
+    getManagedAccounts(teamToken: string, body?: GetTeamManagedAccountsRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Allow or deny a Team access to a Managed Account.
+ */
+    addTeamManagedAccount(teamToken: string, body: AddTeamManagedAccountRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Change whether a Team is allowed or denied access to a Managed Account.
+ */
+    updateManagedAccount(teamToken: string, managedAccountToken: string, body: UpdateTeamManagedAccountRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts/${pathEncode(managedAccountToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Remove a Team's explicit access setting for a Managed Account, returning it to the default.
+ */
+    removeTeamManagedAccount(teamToken: string, managedAccountToken: string) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts/${pathEncode(managedAccountToken)}`,
             "DELETE",
             {},
         );
