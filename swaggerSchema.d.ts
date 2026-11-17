@@ -2918,6 +2918,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/teams/{team_token}/workspaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get team workspaces
+         * @description Return the accessible Workspaces associated with a Team, including each Workspace's name, creation time, and the Team's role.
+         */
+        get: operations["getTeamWorkspaces"];
+        put?: never;
+        /**
+         * Add team workspace
+         * @description Associate a Workspace with a Team.
+         */
+        post: operations["addTeamWorkspace"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams/{team_token}/workspaces/{workspace_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update team workspace
+         * @description Change the Team's role in an associated Workspace.
+         */
+        put: operations["updateTeamWorkspace"];
+        post?: never;
+        /**
+         * Remove team workspace
+         * @description Remove a Workspace association from a Team.
+         */
+        delete: operations["removeTeamWorkspace"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams/{team_token}/managed_accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get team managed accounts
+         * @description Return the Managed Accounts a Team has been explicitly allowed or denied access to, including each Managed Account's name and creation time.
+         */
+        get: operations["getTeamManagedAccounts"];
+        put?: never;
+        /**
+         * Add team managed account
+         * @description Allow or deny a Team access to a Managed Account.
+         */
+        post: operations["addTeamManagedAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams/{team_token}/managed_accounts/{managed_account_token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update team managed account
+         * @description Change whether a Team is allowed or denied access to a Managed Account.
+         */
+        put: operations["updateTeamManagedAccount"];
+        post?: never;
+        /**
+         * Remove team managed account
+         * @description Remove a Team's explicit access setting for a Managed Account, returning it to the default.
+         */
+        delete: operations["removeTeamManagedAccount"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/teams/{team_token}/members": {
         parameters: {
             query?: never;
@@ -4440,7 +4536,7 @@ export interface components {
              * @example datadog_metrics
              * @enum {string|null}
              */
-            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "rippling_metrics" | "csv" | null;
+            import_type: "datadog_metrics" | "cloudwatch" | "clickhouse_metrics" | "gcp_bigquery_metrics" | "snowflake_metrics" | "metronome_metrics" | "rippling_metrics" | "anthropic_activity_metrics" | "csv" | null;
             /** @description The Integration token used to import the BusinessMetric. */
             integration_token: string | null;
             cloudwatch_fields?: components["schemas"]["CloudwatchFields"];
@@ -5234,7 +5330,7 @@ export interface components {
              * @example aws
              * @enum {string}
              */
-            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "all";
+            provider: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx" | "all";
             /**
              * @description The service for the forecasted cost. Will be 'all' for all combined services
              * @example Amazon Elastic Compute Cloud - Compute
@@ -5661,7 +5757,7 @@ export interface components {
              * @example aws
              * @enum {string|null}
              */
-            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | null;
+            provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx" | null;
             /**
              * @description The cost provider's billing account id that incurred the cost.
              * @example 9109237192
@@ -7788,13 +7884,15 @@ export interface components {
             regions?: (string)[] | null;
             /** @description Filter by one or more recommendation type slugs. */
             types?: (string)[] | null;
+            /** @description Complete tag selections. Values within each key match any value; selections match together. Use tags without tag_key or tag_value in requests. */
+            tags: (components["schemas"]["RecommendationViewTagFilter"])[];
             /**
-             * @description Filter by tag key (must be used with tag_value).
+             * @description Legacy tag key for the first selection. For complete selections, use tags. Do not combine these formats in requests.
              * @example environment
              */
             tag_key?: string | null;
             /**
-             * @description Filter by tag value (requires tag_key).
+             * @description Legacy first value of the first selection. For complete selections, use tags. Do not combine these formats in requests.
              * @example production
              */
             tag_value?: string | null;
@@ -7812,12 +7910,25 @@ export interface components {
             /** @description The token for the Creator of this RecommendationView. */
             created_by?: string | null;
         };
+        RecommendationViewTagFilter: {
+            /** @description The tag key. */
+            key: string;
+            /** @description Alternative values for this tag key. */
+            values: (string)[];
+        };
         /** @description Create a RecommendationView. */
         createRecommendationView: {
             /** @description The title of the RecommendationView. */
             title: string;
             /** @description The Workspace to associate the RecommendationView with. */
             workspace_token: string;
+            /** @description Tag selections. Values within a key match any value; selections match together. Use an empty array to clear selections; null leaves selections unchanged on update. Non-null selections cannot be combined with tag_key or tag_value. */
+            tags?: ({
+                /** @description The tag key. */
+                key: string;
+                /** @description One or more nonblank tag values to match. */
+                values: (string)[];
+            })[];
             /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
             provider_ids?: (string)[];
             /** @description Filter by billing account identifiers. */
@@ -7829,23 +7940,30 @@ export interface components {
             /** @description Filter by one or more recommendation type slugs. */
             types?: (string)[];
             /** @description Filter by tag key (must be used with tag_value). */
-            tag_key?: string;
+            tag_key?: string | null;
             /** @description Filter by tag value (requires tag_key). */
-            tag_value?: string;
+            tag_value?: string | null;
             /** @description Filter recommendations created on/after this YYYY-MM-DD date. */
-            start_date?: string;
+            start_date?: string | null;
             /** @description Filter recommendations created on/before this YYYY-MM-DD date. */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * Format: float
              * @description Filter recommendations with at least this amount of potential savings.
              */
-            min_savings?: number;
+            min_savings?: number | null;
         };
         /** @description Update a RecommendationView. */
         updateRecommendationView: {
             /** @description The title of the RecommendationView. */
             title?: string;
+            /** @description Tag selections. Values within a key match any value; selections match together. Use an empty array to clear selections; null leaves selections unchanged on update. Non-null selections cannot be combined with tag_key or tag_value. */
+            tags?: ({
+                /** @description The tag key. */
+                key: string;
+                /** @description One or more nonblank tag values to match. */
+                values: (string)[];
+            })[];
             /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
             provider_ids?: (string)[];
             /** @description Filter by billing account identifiers. */
@@ -7857,18 +7975,18 @@ export interface components {
             /** @description Filter by one or more recommendation type slugs. */
             types?: (string)[];
             /** @description Filter by tag key (must be used with tag_value). */
-            tag_key?: string;
+            tag_key?: string | null;
             /** @description Filter by tag value (requires tag_key). */
-            tag_value?: string;
+            tag_value?: string | null;
             /** @description Filter recommendations created on/after this YYYY-MM-DD date. */
-            start_date?: string;
+            start_date?: string | null;
             /** @description Filter recommendations created on/before this YYYY-MM-DD date. */
-            end_date?: string;
+            end_date?: string | null;
             /**
              * Format: float
              * @description Filter recommendations with at least this amount of potential savings.
              */
-            min_savings?: number;
+            min_savings?: number | null;
         };
         /** @description ReportNotifications model */
         ReportNotifications: {
@@ -8402,7 +8520,7 @@ export interface components {
             name: string;
             /** @description The description of the Team. */
             description?: string;
-            /** @description The Workspace tokens to associate to the Team. */
+            /** @description Replaces the Team's Workspace associations. New associations default to editor; retained Workspaces keep their existing roles. Omit to leave unchanged. Sending null or an empty array removes all Workspace associations. Use /teams/{team_token}/workspaces to set the Team's role in a Workspace or to change a single Workspace association. */
             workspace_tokens?: (string)[];
             /** @description The User tokens to associate to the Team. */
             user_tokens?: (string)[];
@@ -8422,7 +8540,7 @@ export interface components {
             name?: string;
             /** @description The description of the Team. */
             description?: string;
-            /** @description The Workspace tokens to associate to the Team. */
+            /** @description Replaces the Team's Workspace associations. New associations default to editor; retained Workspaces keep their existing roles. Omit to leave unchanged. Sending null or an empty array removes all Workspace associations. Use /teams/{team_token}/workspaces to set the Team's role in a Workspace or to change a single Workspace association. */
             workspace_tokens?: (string)[];
             /** @description The User tokens to associate to the Team. */
             user_tokens?: (string)[];
@@ -8435,6 +8553,100 @@ export interface components {
             role?: "owner" | "editor" | "viewer";
             /** @description The token of a Dashboard to set as the Team default. Send null to clear. */
             default_dashboard_token?: string | null;
+        };
+        /** @description TeamWorkspaceList model */
+        TeamWorkspaceList: {
+            links?: components["schemas"]["Links"];
+            workspaces: (components["schemas"]["TeamWorkspace"])[];
+        };
+        /** @description TeamWorkspace model */
+        TeamWorkspace: {
+            /**
+             * @description The Workspace token.
+             * @example wrkspc_abcd1234
+             */
+            workspace_token: string;
+            /**
+             * @description The name of the Workspace.
+             * @example Acme Corp.
+             */
+            name: string;
+            /**
+             * @description The date and time, in UTC, the Workspace was created. ISO 8601 Formatted.
+             * @example 2023-08-04T00:00:00Z
+             */
+            created_at: string;
+            /**
+             * @description The Team's role in the Workspace: editor (Can Edit) or viewer (Can View).
+             * @example editor
+             * @enum {string}
+             */
+            role: "editor" | "viewer";
+        };
+        /** @description Associate a Workspace with a Team. */
+        addTeamWorkspace: {
+            /** @description The Workspace token. */
+            workspace_token: string;
+            /**
+             * @description The Team's role in the Workspace: editor (Can Edit) or viewer (Can View).
+             * @enum {string}
+             */
+            role: "editor" | "viewer";
+        };
+        /** @description Change the Team's role in an associated Workspace. */
+        updateTeamWorkspace: {
+            /**
+             * @description The Team's role in the Workspace: editor (Can Edit) or viewer (Can View).
+             * @enum {string}
+             */
+            role: "editor" | "viewer";
+        };
+        /** @description TeamManagedAccountList model */
+        TeamManagedAccountList: {
+            links?: components["schemas"]["Links"];
+            managed_accounts: (components["schemas"]["TeamManagedAccount"])[];
+        };
+        /** @description TeamManagedAccount model */
+        TeamManagedAccount: {
+            /**
+             * @description The Managed Account token.
+             * @example acct_abcd1234
+             */
+            managed_account_token: string;
+            /**
+             * @description The name of the Managed Account.
+             * @example Acme Corp.
+             */
+            name: string;
+            /**
+             * @description The date and time, in UTC, the Managed Account was created. ISO 8601 Formatted.
+             * @example 2023-08-04T00:00:00Z
+             */
+            created_at: string;
+            /**
+             * @description Whether the Team is allowed or denied access to the Managed Account.
+             * @example allowed
+             * @enum {string}
+             */
+            access: "allowed" | "denied";
+        };
+        /** @description Allow or deny a Team access to a Managed Account. */
+        addTeamManagedAccount: {
+            /** @description The Managed Account token. */
+            managed_account_token: string;
+            /**
+             * @description Whether the Team is allowed or denied access to the Managed Account.
+             * @enum {string}
+             */
+            access: "allowed" | "denied";
+        };
+        /** @description Change whether a Team is allowed or denied access to a Managed Account. */
+        updateTeamManagedAccount: {
+            /**
+             * @description Whether the Team is allowed or denied access to the Managed Account.
+             * @enum {string}
+             */
+            access: "allowed" | "denied";
         };
         /** @description TeamMembers model */
         TeamMembers: {
@@ -10404,7 +10616,7 @@ export interface operations {
                 /** @description Filter by source. */
                 source?: "console" | "api" | "finops_agent";
                 /** @description Filter by object type. */
-                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment" | "segment" | "access_policy";
+                object_type?: "virtual_tag" | "cost_report" | "recommendation_commitment" | "segment" | "access_policy" | "custom_calculation";
                 /** @description Filter by audit log token. */
                 token?: string;
                 /** @description Filter by object token (auditable_token). */
@@ -11826,6 +12038,15 @@ export interface operations {
                     "application/json": components["schemas"]["Errors"];
                 };
             };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
         };
     };
     getBusinessMetricLabels: {
@@ -12726,7 +12947,7 @@ export interface operations {
                 /** @description The token of the Workspace to list CostProviderAccounts for. Required if the API token is associated with multiple Workspaces. */
                 workspace_token?: string;
                 /** @description Filter by provider type. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx";
                 /** @description Filter by provider account identifier. */
                 account_id?: string;
                 /** @description Filter by account name (exact match). */
@@ -13160,7 +13381,7 @@ export interface operations {
                 /** @description Last date you would like to filter forecasted costs from. ISO 8601 formatted. */
                 end_date?: string;
                 /** @description Limit the forecasted costs to a specific provider. 'all' is accepted to filter to overall forecast. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "all";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx" | "all";
                 /** @description Limit the forecasted costs to a specific service. 'all' is accepted to filter to overall forecast. e.g. 'Amazon ElastiCache'. */
                 service?: string;
                 /** @description The page of results to return. */
@@ -13318,9 +13539,9 @@ export interface operations {
                 end_date?: string;
                 /** @description Group the results by specific field(s). When omitted with cost_report_token, the report's saved groupings are used; otherwise defaults to provider, service, account_id. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
                 groupings?: (string)[];
-                /** @description Whether to order costs by date in ascending or descending order. Defaults to desc. */
+                /** @description Whether to order costs by date in ascending or descending order. Defaults to desc. When sorting by amount or usage_amount, this orders the rows within each grouping. */
                 order?: "asc" | "desc";
-                /** @description Sort results by one of the fields in groupings. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. Defaults to sorting by date. */
+                /** @description Sort by one of the selected groupings, amount, or usage_amount. amount orders each grouping by its total cost over the requested start and end dates, then orders that grouping's rows by date. usage_amount does the same for usage and requires settings[aggregate_by]=usage. Sorting by amount or usage_amount is rejected when settings[aggregate_by] is count. settings[show_previous_period] does not change this ordering, because this response only includes the requested dates. sort_direction defaults to asc. The order parameter still chooses ascending or descending dates within a grouping. Groupings with the same total stay in ascending grouping order so later pages continue the same ranking. Pagination counts date-by-grouping rows, not whole groupings; a grouping can continue onto the next page. usage_amount sorting is not supported for segment reports. When sort_column is omitted, results are ordered by date. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. */
                 sort_column?: string;
                 /** @description Sort direction for sort_column. Defaults to asc. Requires sort_column. */
                 sort_direction?: "asc" | "desc";
@@ -14629,7 +14850,7 @@ export interface operations {
                  * @description Filter statistics to costs for a specific provider key.
                  * @example aws
                  */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx";
             };
             header?: never;
             path: {
@@ -15609,7 +15830,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Query by provider name to list all Integrations for a specific provider. */
-                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace";
+                provider?: "aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx";
                 /** @description Query by account identifier to list all Integrations that match a specific account. For Azure, this is the subscription ID. Must include provider when using this parameter. */
                 account_identifier?: string;
                 /** @description The page of results to return. */
@@ -18528,6 +18749,15 @@ export interface operations {
     getRecommendations: {
         parameters: {
             query?: {
+                /**
+                 * @description A JSON array of tag selections, each with a key and values array. Values within a key match any value; selections match together. Requires workspace_token. Cannot be combined with tag_key or tag_value.
+                 * @example [{"key":"env","values":["prod","staging"]}]
+                 */
+                tags?: string;
+                /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
+                tag_key?: string;
+                /** @description Filter by tag value (requires tag_key). Requires workspace_token. */
+                tag_value?: string;
                 /** @description Filter by one or more providers. Requires workspace_token. */
                 provider_ids?: ("aws" | "gcp" | "azure" | "kubernetes" | "datadog")[];
                 /** @description Filter by billing account identifiers. Requires workspace_token. */
@@ -18536,10 +18766,6 @@ export interface operations {
                 account_ids?: (string)[];
                 /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). Requires workspace_token. */
                 regions?: (string)[];
-                /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
-                tag_key?: string;
-                /** @description Filter by tag value (requires tag_key). Requires workspace_token. */
-                tag_value?: string;
                 /** @description Filter recommendations created on/after this YYYY-MM-DD date. Requires workspace_token. */
                 start_date?: string;
                 /** @description Filter recommendations created on/before this YYYY-MM-DD date. Requires workspace_token. */
@@ -18757,6 +18983,15 @@ export interface operations {
     getRecommendationTypeResources: {
         parameters: {
             query: {
+                /**
+                 * @description A JSON array of tag selections, each with a key and values array. Values within a key match any value; selections match together. Requires workspace_token. Cannot be combined with tag_key or tag_value.
+                 * @example [{"key":"env","values":["prod","staging"]}]
+                 */
+                tags?: string;
+                /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
+                tag_key?: string;
+                /** @description Filter by tag value (requires tag_key). Requires workspace_token. */
+                tag_value?: string;
                 /** @description Filter by one or more providers. Requires workspace_token. */
                 provider_ids?: ("aws" | "gcp" | "azure" | "kubernetes" | "datadog")[];
                 /** @description Filter by billing account identifiers. Requires workspace_token. */
@@ -18765,10 +19000,6 @@ export interface operations {
                 account_ids?: (string)[];
                 /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). Requires workspace_token. */
                 regions?: (string)[];
-                /** @description Filter by tag key (must be used with tag_value). Requires workspace_token. */
-                tag_key?: string;
-                /** @description Filter by tag value (requires tag_key). Requires workspace_token. */
-                tag_value?: string;
                 /** @description Filter recommendations created on/after this YYYY-MM-DD date. Requires workspace_token. */
                 start_date?: string;
                 /** @description Filter recommendations created on/before this YYYY-MM-DD date. Requires workspace_token. */
@@ -18867,27 +19098,22 @@ export interface operations {
                      *       },
                      *       "recommendation_views": [
                      *         {
-                     *           "token": "rec_vw_3dffc0458f7a2487",
-                     *           "title": "Production Recommendations",
-                     *           "workspace_token": "wrkspc_914dcb0959497507",
-                     *           "start_date": "2024-01-01",
-                     *           "end_date": "2024-12-31",
-                     *           "provider_ids": [
-                     *             "aws",
-                     *             "gcp"
-                     *           ],
+                     *           "token": "rec_vw_5cd33adb888928e1",
+                     *           "title": "My Recommendation View",
+                     *           "workspace_token": "wrkspc_aba7ba44ff82deee",
+                     *           "start_date": null,
+                     *           "end_date": null,
+                     *           "provider_ids": [],
                      *           "billing_account_ids": [],
-                     *           "account_ids": [
-                     *             "123456789012"
-                     *           ],
-                     *           "regions": [
-                     *             "us-east-1",
-                     *             "us-west-2"
-                     *           ],
-                     *           "tag_key": "environment",
-                     *           "tag_value": "production",
-                     *           "created_at": "2024-07-15T16:08:53Z",
-                     *           "created_by": "usr_95fac32734bdceab"
+                     *           "account_ids": [],
+                     *           "regions": [],
+                     *           "types": [],
+                     *           "tags": [],
+                     *           "tag_key": null,
+                     *           "tag_value": null,
+                     *           "min_savings": null,
+                     *           "created_at": "2026-11-13T17:15:17Z",
+                     *           "created_by": "team_310832fc09611700"
                      *         }
                      *       ]
                      *     }
@@ -18917,21 +19143,32 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rec_vw_a1b2c3d4e5f67890",
-                     *       "title": "Staging Recommendations",
-                     *       "workspace_token": "wrkspc_be6568a301b1d06c",
-                     *       "start_date": "2024-01-01",
-                     *       "end_date": "2024-06-30",
+                     *       "token": "rec_vw_18ce8236cafb5712",
+                     *       "title": "New Recommendation View",
+                     *       "workspace_token": "wrkspc_b94ccb446a3a80f0",
+                     *       "start_date": null,
+                     *       "end_date": null,
                      *       "provider_ids": [
-                     *         "aws"
+                     *         "aws",
+                     *         "gcp"
                      *       ],
                      *       "billing_account_ids": [],
                      *       "account_ids": [],
                      *       "regions": [],
+                     *       "types": [],
+                     *       "tags": [
+                     *         {
+                     *           "key": "environment",
+                     *           "values": [
+                     *             "production"
+                     *           ]
+                     *         }
+                     *       ],
                      *       "tag_key": "environment",
-                     *       "tag_value": "staging",
-                     *       "created_at": "2024-07-15T16:10:00Z",
-                     *       "created_by": "usr_95fac32734bdceab"
+                     *       "tag_value": "production",
+                     *       "min_savings": null,
+                     *       "created_at": "2026-11-13T17:15:13Z",
+                     *       "created_by": "usr_2d0c3918b3205c1a"
                      *     }
                      */
                     "application/json": components["schemas"]["RecommendationView"];
@@ -18975,27 +19212,22 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rec_vw_be3f24eb1b5aabf6",
-                     *       "title": "Production Recommendations",
-                     *       "workspace_token": "wrkspc_be6568a301b1d06c",
-                     *       "start_date": "2024-01-01",
-                     *       "end_date": "2024-12-31",
-                     *       "provider_ids": [
-                     *         "aws",
-                     *         "gcp"
-                     *       ],
+                     *       "token": "rec_vw_96ceda8b646bcda0",
+                     *       "title": "My Recommendation View",
+                     *       "workspace_token": "wrkspc_3acfad89f277fc71",
+                     *       "start_date": null,
+                     *       "end_date": null,
+                     *       "provider_ids": [],
                      *       "billing_account_ids": [],
-                     *       "account_ids": [
-                     *         "123456789012"
-                     *       ],
-                     *       "regions": [
-                     *         "us-east-1",
-                     *         "us-west-2"
-                     *       ],
-                     *       "tag_key": "environment",
-                     *       "tag_value": "production",
-                     *       "created_at": "2024-07-15T16:08:54Z",
-                     *       "created_by": "team_73f6001f98e9012b"
+                     *       "account_ids": [],
+                     *       "regions": [],
+                     *       "types": [],
+                     *       "tags": [],
+                     *       "tag_key": null,
+                     *       "tag_value": null,
+                     *       "min_savings": null,
+                     *       "created_at": "2026-11-13T17:15:11Z",
+                     *       "created_by": "usr_c2492cab052d8d03"
                      *     }
                      */
                     "application/json": components["schemas"]["RecommendationView"];
@@ -19034,30 +19266,27 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "rec_vw_be3f24eb1b5aabf6",
-                     *       "title": "Updated Recommendations View",
-                     *       "workspace_token": "wrkspc_be6568a301b1d06c",
+                     *       "token": "rec_vw_7d2c223b202360af",
+                     *       "title": "Updated Recommendation View",
+                     *       "workspace_token": "wrkspc_84b92ca4f0489b4a",
                      *       "start_date": "2024-01-01",
-                     *       "end_date": "2024-12-31",
+                     *       "end_date": "2024-06-30",
                      *       "provider_ids": [
                      *         "aws",
-                     *         "gcp",
-                     *         "azure"
+                     *         "gcp"
                      *       ],
                      *       "billing_account_ids": [],
-                     *       "account_ids": [
-                     *         "123456789012",
-                     *         "987654321098"
+                     *       "account_ids": [],
+                     *       "regions": [],
+                     *       "types": [
+                     *         "aws:ebs:unattached-volume"
                      *       ],
-                     *       "regions": [
-                     *         "us-east-1",
-                     *         "us-west-2",
-                     *         "ap-northeast-2"
-                     *       ],
-                     *       "tag_key": "environment",
-                     *       "tag_value": "production",
-                     *       "created_at": "2024-07-15T16:08:54Z",
-                     *       "created_by": "team_73f6001f98e9012b"
+                     *       "tags": [],
+                     *       "tag_key": null,
+                     *       "tag_value": null,
+                     *       "min_savings": 100,
+                     *       "created_at": "2026-11-13T17:15:18Z",
+                     *       "created_by": null
                      *     }
                      */
                     "application/json": components["schemas"]["RecommendationView"];
@@ -20991,7 +21220,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope Tags by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx")[];
                 /** @description A search query to filter Tags by tag key. */
                 search_query?: string;
                 /** @description The direction in which you would like to sort the data by. Defaults to 'asc'. */
@@ -21129,7 +21358,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description An array of providers to scope TagValues by. */
-                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace")[];
+                providers?: ("aws" | "azure" | "gcp" | "snowflake" | "databricks" | "mongo" | "datadog" | "fastly" | "new_relic" | "opencost" | "open_ai" | "oracle" | "confluent" | "planetscale" | "coralogix" | "kubernetes" | "custom_provider" | "github" | "linode" | "grafana" | "clickhouse" | "temporal" | "twilio" | "azure_csp" | "kubernetes_agent" | "anthropic" | "anyscale" | "cursor" | "elastic" | "vercel" | "redis_cloud" | "circle_ci" | "modal" | "eleven_labs" | "baseten" | "cloudflare" | "fireworks_ai" | "cartesia" | "depot" | "xai" | "digital_ocean" | "together_ai" | "coreweave" | "devin" | "openrouter" | "deepgram" | "crusoe" | "sentry_billing" | "ramp" | "dynatrace" | "cockroachdb_cloud" | "telnyx")[];
                 /** @description The direction in which to sort the TagValues. Defaults to 'asc'. */
                 sort_direction?: "asc" | "desc";
                 /** @description A search query to filter TagValues by the value name. */
@@ -21230,14 +21459,34 @@ export interface operations {
                      *       },
                      *       "teams": [
                      *         {
-                     *           "token": "team_2d4733920ec4385e",
-                     *           "name": "Prod Team",
-                     *           "description": "Handles all production deployments",
+                     *           "token": "team_e31019f62d83fefb",
+                     *           "name": "Everyone",
+                     *           "description": "Doloremque architecto.",
                      *           "workspace_tokens": [
-                     *             "wrkspc_08026aa5fb4c90f8"
+                     *             "wrkspc_215ddb6656f4f16e"
+                     *           ],
+                     *           "user_emails": [
+                     *             "nestor_smith@ward.name",
+                     *             "padberg.berna@pouros.info"
                      *           ],
                      *           "user_tokens": [
-                     *             "usr_c59398553e838116"
+                     *             "usr_2d0b281ebf0b2566",
+                     *             "usr_ed36954bd3f61497"
+                     *           ],
+                     *           "default_dashboard_token": null
+                     *         },
+                     *         {
+                     *           "token": "team_777bd05a36743d53",
+                     *           "name": "Florida ogres",
+                     *           "description": "Aliquam nesciunt.",
+                     *           "workspace_tokens": [
+                     *             "wrkspc_215ddb6656f4f16e"
+                     *           ],
+                     *           "user_emails": [
+                     *             "nestor_smith@ward.name"
+                     *           ],
+                     *           "user_tokens": [
+                     *             "usr_2d0b281ebf0b2566"
                      *           ],
                      *           "default_dashboard_token": null
                      *         }
@@ -21269,14 +21518,17 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "team_8467157535a30221",
+                     *       "token": "team_209fddd0dc3940a2",
                      *       "name": "New Team",
                      *       "description": "New Team Description",
                      *       "workspace_tokens": [
-                     *         "wrkspc_52b6e5e663b4cde1"
+                     *         "wrkspc_10f4702fa7498b7b"
+                     *       ],
+                     *       "user_emails": [
+                     *         "francisco.daugherty.mr@medhurst.info"
                      *       ],
                      *       "user_tokens": [
-                     *         "usr_a00e614b5843c234"
+                     *         "usr_dcd9b4c5ec97341f"
                      *       ],
                      *       "default_dashboard_token": null
                      *     }
@@ -21340,14 +21592,17 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "team_081e09bbb812d369",
-                     *       "name": "Prod Team",
-                     *       "description": "Handles all production deployments.",
+                     *       "token": "team_225761f4180b2f74",
+                     *       "name": "Hawaii lycanthropes",
+                     *       "description": "Dolor quo.",
                      *       "workspace_tokens": [
-                     *         "wrkspc_ddc003a2f0171bf8"
+                     *         "wrkspc_7f818e8fcdab571d"
+                     *       ],
+                     *       "user_emails": [
+                     *         "nestor.smith@von.org"
                      *       ],
                      *       "user_tokens": [
-                     *         "usr_7c309915e847cfc6"
+                     *         "usr_3718e2aba9e30394"
                      *       ],
                      *       "default_dashboard_token": null
                      *     }
@@ -21388,14 +21643,17 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "token": "team_d617e73dcc6b57c5",
+                     *       "token": "team_b2f3439e59b41118",
                      *       "name": "Updated Team",
                      *       "description": "Updated Team Description",
                      *       "workspace_tokens": [
-                     *         "wrkspc_efc4284a56772481"
+                     *         "wrkspc_ca3c58152c62fe6b"
+                     *       ],
+                     *       "user_emails": [
+                     *         "bednar_reid@smith.com"
                      *       ],
                      *       "user_tokens": [
-                     *         "usr_d268561e520c7aac"
+                     *         "usr_cab898bf63c8437f"
                      *       ],
                      *       "default_dashboard_token": null
                      *     }
@@ -21489,6 +21747,499 @@ export interface operations {
             };
             /** @description UnprocessableEntity */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getTeamWorkspaces: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                team_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/teams/team_61626c79e6069823/workspaces?page=1&limit=1",
+                     *         "first": "https://api.vantage.sh/v2/teams/team_61626c79e6069823/workspaces?page=1&limit=1",
+                     *         "next": "https://api.vantage.sh/v2/teams/team_61626c79e6069823/workspaces?page=2&limit=1",
+                     *         "last": "https://api.vantage.sh/v2/teams/team_61626c79e6069823/workspaces?page=2&limit=1",
+                     *         "prev": null
+                     *       },
+                     *       "workspaces": [
+                     *         {
+                     *           "workspace_token": "wrkspc_c98b9ac0d2c61dbd",
+                     *           "name": "Engineering",
+                     *           "created_at": "2023-08-04T00:00:00Z",
+                     *           "role": "editor"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamWorkspaceList"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    addTeamWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["addTeamWorkspace"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "workspace_token": "wrkspc_2b5e0fd11cab6f4d",
+                     *       "name": "Bernhard Inc dbd2a56c",
+                     *       "created_at": "2026-11-17T00:51:55Z",
+                     *       "role": "viewer"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamWorkspace"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description The Workspace is already associated with this Team. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateTeamWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+                workspace_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateTeamWorkspace"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "workspace_token": "wrkspc_f39679dd612f5ab7",
+                     *       "name": "Nikolaus, Quigley and Dooley aa348b40",
+                     *       "created_at": "2026-11-17T00:51:54Z",
+                     *       "role": "viewer"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamWorkspace"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    removeTeamWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+                workspace_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workspace"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    getTeamManagedAccounts: {
+        parameters: {
+            query?: {
+                /** @description The page of results to return. */
+                page?: number;
+                /** @description The amount of results to return. The maximum is 1000. */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                team_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "links": {
+                     *         "self": "https://api.vantage.sh/v2/teams/team_4137d7dac080265f/managed_accounts?page=1&limit=1",
+                     *         "first": "https://api.vantage.sh/v2/teams/team_4137d7dac080265f/managed_accounts?page=1&limit=1",
+                     *         "next": "https://api.vantage.sh/v2/teams/team_4137d7dac080265f/managed_accounts?page=2&limit=1",
+                     *         "last": "https://api.vantage.sh/v2/teams/team_4137d7dac080265f/managed_accounts?page=2&limit=1",
+                     *         "prev": null
+                     *       },
+                     *       "managed_accounts": [
+                     *         {
+                     *           "managed_account_token": "acct_43505354fd558a02",
+                     *           "name": "Acme Corp.",
+                     *           "created_at": "2023-08-04T00:00:00Z",
+                     *           "access": "allowed"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamManagedAccountList"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    addTeamManagedAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["addTeamManagedAccount"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "managed_account_token": "acct_db7225312e19be0e",
+                     *       "name": "Acme Corp.",
+                     *       "created_at": "2023-08-04T00:00:00Z",
+                     *       "access": "denied"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamManagedAccount"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Access to the Managed Account is already set for this Team. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    updateTeamManagedAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+                managed_account_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateTeamManagedAccount"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "managed_account_token": "acct_db7225312e19be0e",
+                     *       "name": "Acme Corp.",
+                     *       "created_at": "2023-08-04T00:00:00Z",
+                     *       "access": "denied"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["TeamManagedAccount"];
+                };
+            };
+            /** @description BadRequest */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description UnprocessableEntity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+        };
+    };
+    removeTeamManagedAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_token: string;
+                managed_account_token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagedAccount"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Errors"];
+                };
+            };
+            /** @description NotFound */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
