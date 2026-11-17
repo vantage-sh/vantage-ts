@@ -33,3 +33,12 @@ test("generated grouping types preserve fixed and dynamic values", () => {
   expectTypeOf<"label:app">().not.toMatchTypeOf<KubernetesEfficiencyGrouping>();
   expectTypeOf<"tag:app">().not.toMatchTypeOf<KubernetesEfficiencyGrouping>();
 });
+
+test("dashboard filters preserve nullable request and response types", () => {
+  type Create = components["schemas"]["createDashboard"];
+  type Update = components["schemas"]["updateDashboard"];
+  type Dashboard = components["schemas"]["Dashboard"];
+  expectTypeOf<Create["filter"]>().toEqualTypeOf<string | null | undefined>();
+  expectTypeOf<Update["filter"]>().toEqualTypeOf<string | null | undefined>();
+  expectTypeOf<Dashboard["filter"]>().toEqualTypeOf<string | null | undefined>();
+});
