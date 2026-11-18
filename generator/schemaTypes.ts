@@ -33,6 +33,7 @@ export class UnsupportedOpenAPIFeatureError extends Error {
 
 const METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"] as const;
 const LOCATIONS = ["query", "header", "path", "cookie"] as const;
+const SCHEMA_TYPES = ["string", "number", "integer", "boolean", "object", "array"];
 const METADATA = ["title", "description", "example", "default", "format", "deprecated", "nullable"];
 const SCHEMA_KEYS = [
   ...METADATA,
@@ -97,18 +98,30 @@ function grouping(schema: ObjectValue): { values: string[]; prefix: string } | u
   return { values: fixed.enum, prefix: GROUPING_PATTERNS[dynamic.pattern] };
 }
 
-function stringOrStringArray(schema: ObjectValue): ObjectValue[] | undefined {
+function oneOfBranchAllowsNull(schema: ObjectValue): boolean {
+  // The supported enums contain only strings, so their enum constraint excludes null.
+  return schema.nullable === true && !own(schema, "enum");
+}
+
+/** The branches must be distinguishable by their JSON types. */
+function hasDistinctOneOfTypes(schema: ObjectValue): boolean {
   const variants = schema.oneOf;
-  if (schema.type !== undefined && schema.type !== "object") return;
-  if (!Array.isArray(variants) || variants.length !== 2 || !variants.every(isObject)) return;
-  if (Object.keys(schema).some((key) => ![...METADATA, "type", "oneOf"].includes(key) && !key.startsWith("x-"))) return;
-  const scalar = variants.find((variant) => variant.type === "string");
-  const array = variants.find((variant) => variant.type === "array");
-  if (!scalar || !array || !isObject(array.items) || array.items.type !== "string") return;
-  if ([scalar, array, array.items].some((variant) => ["$ref", "oneOf"].some((key) => own(variant, key)))) return;
-  // Null must belong to only one alternative for oneOf to accept it.
-  if (scalar.nullable && array.nullable) return;
-  return variants;
+  if (!Array.isArray(variants) || variants.length < 2) return false;
+  if (Object.keys(schema).some((key) => key !== "oneOf" && !METADATA.includes(key) && !key.startsWith("x-")))
+    return false;
+
+  const types = new Set<string>();
+  let hasNullableBranch = false;
+  for (const variant of variants) {
+    if (!isObject(variant) || !SCHEMA_TYPES.includes(variant.type) || own(variant, "$ref") || own(variant, "oneOf"))
+      return false;
+    const type = variant.type === "integer" ? "number" : variant.type;
+    const nullable = oneOfBranchAllowsNull(variant);
+    if (types.has(type) || (hasNullableBranch && nullable)) return false;
+    types.add(type);
+    hasNullableBranch ||= nullable;
+  }
+  return true;
 }
 
 /** Validate independently of rendering: every branch is visited even after an unsupported feature. */
@@ -206,7 +219,7 @@ class Validator {
         if (key !== "$ref" && !METADATA.includes(key) && !key.startsWith("x-"))
           this.issue(`$ref sibling ${key}`, path, schema);
     }
-    if (own(schema, "type") && !["string", "number", "integer", "boolean", "object", "array"].includes(schema.type))
+    if (own(schema, "type") && !SCHEMA_TYPES.includes(schema.type))
       this.issue("type (expected an OpenAPI 3.0 scalar type)", path, schema);
     if (
       !own(schema, "$ref") &&
@@ -257,8 +270,12 @@ class Validator {
       }
     }
     if (own(schema, "oneOf")) {
-      if (!(groupingItem && grouping(schema)) && !stringOrStringArray(schema))
-        this.issue("oneOf (only grouping array items and string/string-array unions are supported)", path, schema);
+      if (!(groupingItem && grouping(schema)) && !hasDistinctOneOfTypes(schema))
+        this.issue(
+          "oneOf (expected an untyped wrapper and inline branches with distinct JSON types, at most one accepting null)",
+          path,
+          schema
+        );
       this.array(schema.oneOf, pointer(path, "oneOf"), (child, childPath) => this.schema(child, childPath));
     }
     // Visit children of unsupported compositions too, to collect all schema issues in the document.
@@ -560,8 +577,10 @@ function schemaType(schema: ObjectValue, depth: number, property = false): strin
     // Reference siblings are ignored in OpenAPI 3.0, as they were by openapi-typescript.
     type = `components["schemas"][${quote(name)}]`;
   } else {
-    const stringArrayVariants = stringOrStringArray(schema);
-    if (stringArrayVariants) type = stringArrayVariants.map((variant) => schemaType(variant, depth)).join(" | ");
+    if (schema.oneOf)
+      type = schema.oneOf
+        .map((variant: ObjectValue) => schemaType({ ...variant, nullable: oneOfBranchAllowsNull(variant) }, depth))
+        .join(" | ");
     else if (schema.enum) type = [...new Set<string>(schema.enum.map(quote))].join(" | ");
     else if (schema.type === "string") type = "string";
     else if (schema.type === "integer" || schema.type === "number") type = "number";
@@ -592,7 +611,8 @@ function schemaType(schema: ObjectValue, depth: number, property = false): strin
       type = properties.length ? object(properties, depth) : (index ?? "Record<string, any>");
       if (properties.length && index) type = `(${type} & ${index})`;
     }
-    if (schema.nullable) type += " | null";
+    // The untyped oneOf wrapper gets its nullability from its branches.
+    if (schema.nullable && !schema.oneOf) type += " | null";
   }
   if (property && schema["x-nullable"] === true) type += " | null";
   return type;
