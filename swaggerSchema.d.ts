@@ -5395,6 +5395,8 @@ export interface components {
             title: string;
             /** @description The token of the Workspace to add the Cost Report to. Ignored if 'folder_token' is set. Required if the API token is associated with multiple Workspaces. */
             workspace_token?: string;
+            /** @description The CustomCalculation tokens to attach to the new CostReport. Omission, null, or an empty array creates a report without attachments. */
+            custom_calculation_tokens?: (string)[] | null;
             /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
@@ -5486,9 +5488,9 @@ export interface components {
                  * @description Report will restrict date ranges to completed periods only.
                  * @default false
                  */
-                complete_period?: boolean;
-                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
-                table_column_order?: (string)[];
+                complete_period?: boolean | null;
+                /** @description Ordered list of CostReport table column keys. Send an empty array or null to use the default order. */
+                table_column_order?: (string)[] | null;
             };
             /** @description The previous period start date of the CostReport. ISO 8601 Formatted. */
             previous_period_start_date?: string;
@@ -5531,7 +5533,7 @@ export interface components {
             /** @description The title of the CostReport. */
             title?: string;
             /** @description The complete replacement set of CustomCalculation tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. */
-            custom_calculation_tokens?: (string)[];
+            custom_calculation_tokens?: (string)[] | null;
             /** @description Grouping values for aggregating costs on the report. Valid groupings: account_id, billing_account_id, charge_type, cost_category, cost_subcategory, provider, region, resource_id, service, tagged, usage_unit, tag:<tag_value>. If providing multiple groupings, join as comma separated values: groupings=provider,service,region */
             groupings?: string;
             /** @description The filter query language to apply to the CostReport. Additional documentation available at https://docs.vantage.sh/vql. */
@@ -5608,9 +5610,9 @@ export interface components {
                 /** @description Report will show previous period cost, usage, or count comparison. */
                 show_previous_period?: boolean | null;
                 /** @description Report will restrict date ranges to completed periods only. */
-                complete_period?: boolean;
-                /** @description Ordered list of CostReport table column keys. Send an empty array to reset to the default order. */
-                table_column_order?: (string)[];
+                complete_period?: boolean | null;
+                /** @description Ordered list of CostReport table column keys. Send an empty array or null to reset to the default order; omit to leave unchanged. */
+                table_column_order?: (string)[] | null;
             };
             /** @description Report chart settings. */
             chart_settings?: {
@@ -5930,11 +5932,11 @@ export interface components {
             /** @description The VQL filter for the denominator of a division calculation. */
             filter_denominator?: string | null;
             /** @description A usage unit, a non-empty array of equivalent unit names, or null for costs. Omission also selects costs. Arrays sum usage without converting units. */
-            usage_unit?: string | null | (string)[] | null;
+            usage_unit?: string | null | (string)[];
             /** @description A usage unit, a non-empty array of equivalent unit names, or null for costs. Omission also selects costs. Arrays sum usage without converting units. */
-            usage_unit_numerator?: string | null | (string)[] | null;
+            usage_unit_numerator?: string | null | (string)[];
             /** @description A usage unit, a non-empty array of equivalent unit names, or null for costs. Omission also selects costs. Arrays sum usage without converting units. */
-            usage_unit_denominator?: string | null | (string)[] | null;
+            usage_unit_denominator?: string | null | (string)[];
         };
         /** @description Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set. */
         createCustomCalculation: {
@@ -5945,19 +5947,24 @@ export interface components {
             description?: string | null;
             /**
              * @description The operation applied to the filtered cost or usage data. Defaults to sum when creating a calculation.
+             * @default sum
              * @enum {string}
              */
             operation?: "sum" | "average" | "division" | "min" | "max";
             /**
              * @description The display format of the calculation. Defaults to ratio when creating a calculation.
+             * @default ratio
              * @enum {string}
              */
             display_as?: "ratio" | "percent" | "per-n";
             /**
              * Format: int32
              * @description The integer unit scale of the calculation. Send null to reset to 1. Defaults to 1 on create; omit on update to leave unchanged.
+             * @default 1
              */
             unit_scale?: number | null;
+            /** @description The CostReport tokens to attach. Omission, null, or an empty array creates the calculation without attachments. */
+            cost_report_tokens?: (string)[] | null;
         };
         /** @description Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed. */
         updateCustomCalculation: {
@@ -5982,7 +5989,7 @@ export interface components {
              */
             unit_scale?: number | null;
             /** @description The complete replacement set of CostReport tokens to attach. An empty array clears all attachments; omission or null leaves them unchanged. Replacement requires access to every currently attached CostReport. */
-            cost_report_tokens?: (string)[];
+            cost_report_tokens?: (string)[] | null;
         };
         /** @description DashboardNotifications model */
         DashboardNotifications: {
@@ -8092,16 +8099,16 @@ export interface components {
                 /** @description One or more nonblank tag values to match. */
                 values: (string)[];
             })[];
-            /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
-            provider_ids?: (string)[];
-            /** @description Filter by billing account identifiers. */
-            billing_account_ids?: (string)[];
-            /** @description Filter by cloud account identifiers. */
-            account_ids?: (string)[];
-            /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
-            regions?: (string)[];
-            /** @description Filter by one or more recommendation type slugs. */
-            types?: (string)[];
+            /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). On update, omission preserves the filter; an empty array or null clears it. */
+            provider_ids?: (string)[] | null;
+            /** @description Filter by billing account identifiers. On update, omission preserves the filter; an empty array or null clears it. */
+            billing_account_ids?: (string)[] | null;
+            /** @description Filter by cloud account identifiers. On update, omission preserves the filter; an empty array or null clears it. */
+            account_ids?: (string)[] | null;
+            /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). On update, omission preserves the filter; an empty array or null clears it. */
+            regions?: (string)[] | null;
+            /** @description Filter by one or more recommendation type slugs. On update, omission preserves the filter; an empty array or null clears it. */
+            types?: (string)[] | null;
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string | null;
             /** @description Filter by tag value (requires tag_key). */
@@ -8127,16 +8134,16 @@ export interface components {
                 /** @description One or more nonblank tag values to match. */
                 values: (string)[];
             })[];
-            /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). */
-            provider_ids?: (string)[];
-            /** @description Filter by billing account identifiers. */
-            billing_account_ids?: (string)[];
-            /** @description Filter by cloud account identifiers. */
-            account_ids?: (string)[];
-            /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). */
-            regions?: (string)[];
-            /** @description Filter by one or more recommendation type slugs. */
-            types?: (string)[];
+            /** @description Filter by one or more providers (e.g. aws, gcp, azure, kubernetes, datadog). On update, omission preserves the filter; an empty array or null clears it. */
+            provider_ids?: (string)[] | null;
+            /** @description Filter by billing account identifiers. On update, omission preserves the filter; an empty array or null clears it. */
+            billing_account_ids?: (string)[] | null;
+            /** @description Filter by cloud account identifiers. On update, omission preserves the filter; an empty array or null clears it. */
+            account_ids?: (string)[] | null;
+            /** @description Filter by region slugs (e.g. us-east-1, eastus, asia-east1). On update, omission preserves the filter; an empty array or null clears it. */
+            regions?: (string)[] | null;
+            /** @description Filter by one or more recommendation type slugs. On update, omission preserves the filter; an empty array or null clears it. */
+            types?: (string)[] | null;
             /** @description Filter by tag key (must be used with tag_value). */
             tag_key?: string | null;
             /** @description Filter by tag value (requires tag_key). */
