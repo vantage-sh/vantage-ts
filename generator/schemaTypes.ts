@@ -97,20 +97,6 @@ function grouping(schema: ObjectValue): { values: string[]; prefix: string } | u
   return { values: fixed.enum, prefix: GROUPING_PATTERNS[dynamic.pattern] };
 }
 
-function stringOrStringArray(schema: ObjectValue): ObjectValue[] | undefined {
-  const variants = schema.oneOf;
-  if (schema.type !== undefined && schema.type !== "object") return;
-  if (!Array.isArray(variants) || variants.length !== 2 || !variants.every(isObject)) return;
-  if (Object.keys(schema).some((key) => ![...METADATA, "type", "oneOf"].includes(key) && !key.startsWith("x-"))) return;
-  const scalar = variants.find((variant) => variant.type === "string");
-  const array = variants.find((variant) => variant.type === "array");
-  if (!scalar || !array || !isObject(array.items) || array.items.type !== "string") return;
-  if ([scalar, array, array.items].some((variant) => ["$ref", "oneOf"].some((key) => own(variant, key)))) return;
-  // Null must belong to only one alternative for oneOf to accept it.
-  if (scalar.nullable && array.nullable) return;
-  return variants;
-}
-
 /** Validate independently of rendering: every branch is visited even after an unsupported feature. */
 class Validator {
   issues: UnsupportedOpenAPIFeatureIssue[] = [];
@@ -257,8 +243,8 @@ class Validator {
       }
     }
     if (own(schema, "oneOf")) {
-      if (!(groupingItem && grouping(schema)) && !stringOrStringArray(schema))
-        this.issue("oneOf (only grouping array items and string/string-array unions are supported)", path, schema);
+      if (!groupingItem || !grouping(schema))
+        this.issue("oneOf (only grouping enum/pattern array items are supported)", path, schema);
       this.array(schema.oneOf, pointer(path, "oneOf"), (child, childPath) => this.schema(child, childPath));
     }
     // Visit children of unsupported compositions too, to collect all schema issues in the document.
@@ -560,9 +546,7 @@ function schemaType(schema: ObjectValue, depth: number, property = false): strin
     // Reference siblings are ignored in OpenAPI 3.0, as they were by openapi-typescript.
     type = `components["schemas"][${quote(name)}]`;
   } else {
-    const stringArrayVariants = stringOrStringArray(schema);
-    if (stringArrayVariants) type = stringArrayVariants.map((variant) => schemaType(variant, depth)).join(" | ");
-    else if (schema.enum) type = [...new Set<string>(schema.enum.map(quote))].join(" | ");
+    if (schema.enum) type = [...new Set<string>(schema.enum.map(quote))].join(" | ");
     else if (schema.type === "string") type = "string";
     else if (schema.type === "integer" || schema.type === "number") type = "number";
     else if (schema.type === "boolean") type = "boolean";
