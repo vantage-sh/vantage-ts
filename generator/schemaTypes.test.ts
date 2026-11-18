@@ -59,6 +59,21 @@ const fixture = () => {
       EscapedRef: { $ref: "#/components/schemas/Slash~1~0" },
       Strings: { type: "string", enum: ["a", "b", "a"], nullable: true },
       Array: { type: "array", items: { type: "string", nullable: true }, nullable: true },
+      UsageUnit: {
+        type: "object",
+        nullable: true,
+        oneOf: [
+          { type: "string", nullable: true },
+          { type: "array", items: { type: "string", pattern: "\\S" }, minItems: 1 },
+        ],
+      },
+      RequiredUsageUnit: {
+        oneOf: [{ type: "array", items: { type: "string" } }, { type: "string" }],
+      },
+      NullableUsageUnitBranch: {
+        oneOf: [{ type: "string" }, { type: "array", nullable: true, items: { type: "string" } }],
+      },
+      UsageUnits: { type: "array", items: { $ref: "#/components/schemas/UsageUnit" } },
       NestedArray: { type: "array", items: { type: "array", items: { type: "integer" } } },
       ObjectArray: { type: "array", items: { $ref: "#/components/schemas/Target" } },
       Tags: group(tagPattern),
@@ -190,6 +205,10 @@ type RefNull = Assert<Equal<S["Fields"]["nullRef"], S["Target"] | null>>;
 type Ref = Assert<Equal<S["EscapedRef"], S["Slash/~"]>>;
 type Enum = Assert<Equal<S["Strings"], "a" | "b" | null>>;
 type Array = Assert<Equal<S["Array"], (string | null)[] | null>>;
+type UsageUnit = Assert<Equal<S["UsageUnit"], string | string[] | null>>;
+type RequiredUsageUnit = Assert<Equal<S["RequiredUsageUnit"], string | string[]>>;
+type NullableUsageUnitBranch = Assert<Equal<S["NullableUsageUnitBranch"], string | string[] | null>>;
+type UsageUnits = Assert<Equal<S["UsageUnits"], (string | string[] | null)[]>>;
 type NestedArray = Assert<Equal<S["NestedArray"], number[][]>>;
 type ObjectArray = Assert<Equal<S["ObjectArray"], S["Target"][]>>;
 type Dictionary = Assert<Equal<S["Dictionary"], { [key: string]: number[] }>>;
@@ -367,6 +386,24 @@ describe("unsupported constructs", () => {
     ["type", { type: ["string", "null"] }],
     ["type", { type: "surprise" }],
     ["oneOf", { type: "string", oneOf: [{ type: "string", enum: ["a"] }, { type: "integer" }] }],
+    ["oneOf", { oneOf: [{ type: "string" }, { type: "array", items: { type: "number" } }] }],
+    [
+      "oneOf",
+      {
+        type: "object",
+        properties: { extra: { type: "boolean" } },
+        oneOf: [{ type: "string" }, { type: "array", items: { type: "string" } }],
+      },
+    ],
+    [
+      "oneOf",
+      {
+        oneOf: [
+          { type: "string", nullable: true },
+          { type: "array", nullable: true, items: { type: "string" } },
+        ],
+      },
+    ],
     ["enum", { type: "integer", enum: [1, 2] }],
     ["items", { type: "array" }],
   ])("rejects %s with a schema pointer", (feature, schema) => {
