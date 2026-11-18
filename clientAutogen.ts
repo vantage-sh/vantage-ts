@@ -529,6 +529,38 @@ export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_servi
  */
 export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
 /**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+export type GetCustomCalculationsRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Response type for Get all custom calculations
+ */
+export type GetCustomCalculationsResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+export type CreateCustomCalculationRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Create a custom calculation
+ */
+export type CreateCustomCalculationResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Get a custom calculation
+ */
+export type GetCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "GET">;
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+export type UpdateCustomCalculationRequest = RequestBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update a custom calculation
+ */
+export type UpdateCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete a custom calculation
+ */
+export type DeleteCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "DELETE">;
+/**
  * Return all DashboardNotifications.
  */
 export type GetDashboardNotificationsRequest = RequestBodyForPathAndMethod<"/v2/dashboard_notifications", "GET">;
@@ -1738,6 +1770,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
     private _costServices?: CostServicesApi<NeverThrow>;
+    private _customCalculations?: CustomCalculationsApi<NeverThrow>;
     private _dashboardNotifications?: DashboardNotificationsApi<NeverThrow>;
     private _widgets?: WidgetsApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
@@ -1899,6 +1932,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costServices = new CostServicesApi(this);
         }
         return this._costServices;
+    }
+
+    get customCalculations(): CustomCalculationsApi<NeverThrow> {
+        if (!this._customCalculations) {
+            this._customCalculations = new CustomCalculationsApi(this);
+        }
+        return this._customCalculations;
     }
 
     get dashboardNotifications(): DashboardNotificationsApi<NeverThrow> {
@@ -3065,6 +3105,66 @@ class CostServicesApi<NeverThrow extends boolean> {
             `/v2/cost_services`,
             "GET",
             body,
+        );
+    }
+
+}
+
+class CustomCalculationsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+    list(body?: GetCustomCalculationsRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+    create(body: CreateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a CustomCalculation by its token.
+ */
+    get(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+    update(customCalculationToken: string, body: UpdateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a CustomCalculation. Read-only calculations cannot be deleted.
+ */
+    delete(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "DELETE",
+            {},
         );
     }
 
