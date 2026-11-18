@@ -91,6 +91,7 @@ export const VANTAGE_AUDIT_LOG_OBJECT_TYPES = [
   "recommendation_commitment",
   "segment",
   "access_policy",
+  "custom_calculation",
 ] as const;
 
 export type VantageAuditLogObjectType = (typeof VANTAGE_AUDIT_LOG_OBJECT_TYPES)[number];
