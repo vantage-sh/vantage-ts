@@ -54,6 +54,7 @@ export const VANTAGE_PROVIDERS = [
   "ramp",
   "dynatrace",
   "cockroachdb_cloud",
+  "telnyx",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];

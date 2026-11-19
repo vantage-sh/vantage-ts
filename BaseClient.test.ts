@@ -179,7 +179,6 @@ test("calculation CRUD uses typed bodies, pagination, and encoded tokens", async
 
 test("attachment omission, null, empty, and populated arrays survive JSON serialization", async () => {
   mockResponse({});
-  // Null is accepted on the wire; strict declaration validation records Core's missing array nullability.
   for (const value of [undefined, null, [], ["resource_token"]]) {
     await apiClient.customCalculations.update("calculation", { cost_report_tokens: value });
     await apiClient.costReports.update("report", { custom_calculation_tokens: value });

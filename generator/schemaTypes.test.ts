@@ -59,6 +59,30 @@ const fixture = () => {
       EscapedRef: { $ref: "#/components/schemas/Slash~1~0" },
       Strings: { type: "string", enum: ["a", "b", "a"], nullable: true },
       Array: { type: "array", items: { type: "string", nullable: true }, nullable: true },
+      UsageUnit: {
+        nullable: true,
+        oneOf: [
+          { type: "string", nullable: true },
+          { type: "array", items: { type: "string", pattern: "\\S" }, minItems: 1 },
+        ],
+      },
+      RequiredUsageUnit: {
+        oneOf: [{ type: "array", items: { type: "string" } }, { type: "string" }],
+      },
+      NullableUsageUnitBranch: {
+        oneOf: [{ type: "string" }, { type: "array", nullable: true, items: { type: "string" } }],
+      },
+      UsageUnits: { type: "array", items: { $ref: "#/components/schemas/UsageUnit" } },
+      AccountSelector: {
+        nullable: true,
+        oneOf: [{ type: "string" }, { type: "array", items: { type: "integer" } }],
+      },
+      ThresholdOverrides: {
+        type: "array",
+        items: {
+          oneOf: [{ type: "string", enum: ["inherit"], nullable: true }, { type: "boolean" }, { type: "number" }],
+        },
+      },
       NestedArray: { type: "array", items: { type: "array", items: { type: "integer" } } },
       ObjectArray: { type: "array", items: { $ref: "#/components/schemas/Target" } },
       Tags: group(tagPattern),
@@ -127,7 +151,18 @@ const fixture = () => {
         },
         patch: {
           operationId: "patchThing",
-          requestBody: { content: { "application/json": { schema: { type: "string" } } } },
+          requestBody: {
+            content: {
+              "application/json": {
+                schema: {
+                  oneOf: [
+                    { type: "object", required: ["value"], properties: { value: { type: "string" } } },
+                    { type: "array", items: { $ref: "#/components/schemas/Target" } },
+                  ],
+                },
+              },
+            },
+          },
           responses: { "204": { description: "Done" } },
         },
       },
@@ -190,6 +225,12 @@ type RefNull = Assert<Equal<S["Fields"]["nullRef"], S["Target"] | null>>;
 type Ref = Assert<Equal<S["EscapedRef"], S["Slash/~"]>>;
 type Enum = Assert<Equal<S["Strings"], "a" | "b" | null>>;
 type Array = Assert<Equal<S["Array"], (string | null)[] | null>>;
+type UsageUnit = Assert<Equal<S["UsageUnit"], string | string[] | null>>;
+type RequiredUsageUnit = Assert<Equal<S["RequiredUsageUnit"], string | string[]>>;
+type NullableUsageUnitBranch = Assert<Equal<S["NullableUsageUnitBranch"], string | string[] | null>>;
+type UsageUnits = Assert<Equal<S["UsageUnits"], (string | string[] | null)[]>>;
+type AccountSelector = Assert<Equal<S["AccountSelector"], string | number[]>>;
+type ThresholdOverrides = Assert<Equal<S["ThresholdOverrides"], ("inherit" | boolean | number)[]>>;
 type NestedArray = Assert<Equal<S["NestedArray"], number[][]>>;
 type ObjectArray = Assert<Equal<S["ObjectArray"], S["Target"][]>>;
 type Dictionary = Assert<Equal<S["Dictionary"], { [key: string]: number[] }>>;
@@ -208,6 +249,8 @@ type OptionalQuery = Assert<Optional<operations["optional"]["parameters"], "quer
 type RequiredQuery = Assert<Equal<Optional<operations["getThing"]["parameters"], "query">, false>>;
 type RequiredBody = Assert<Equal<Optional<operations["postThing"], "requestBody">, false>>;
 type OptionalBody = Assert<Optional<operations["patchThing"], "requestBody">>;
+type PatchBody = NonNullable<operations["patchThing"]["requestBody"]>["content"]["application/json"];
+type SingleOrBatchBody = Assert<Equal<PatchBody, {value: string} | S["Target"][]>>;
 type JsonBody = Assert<Equal<operations["postThing"]["requestBody"]["content"]["application/json"], S["Fields"]>>;
 type FormBody = Assert<Equal<operations["postThing"]["requestBody"]["content"]["application/x-www-form-urlencoded"], { name?: string }>>;
 type Binary = Assert<Equal<operations["postThing"]["requestBody"]["content"]["multipart/form-data"], { file?: string }>>;
@@ -366,7 +409,6 @@ describe("unsupported constructs", () => {
     ["unknownKeyword", { type: "string", unknownKeyword: true }],
     ["type", { type: ["string", "null"] }],
     ["type", { type: "surprise" }],
-    ["oneOf", { type: "string", oneOf: [{ type: "string", enum: ["a"] }, { type: "integer" }] }],
     ["enum", { type: "integer", enum: [1, 2] }],
     ["items", { type: "array" }],
   ])("rejects %s with a schema pointer", (feature, schema) => {
@@ -382,6 +424,43 @@ describe("unsupported constructs", () => {
     expect(error.message).toContain("generator/schemaTypes.ts");
     expect(error.message).toContain("generator/schemaTypes.test.ts");
     expect(error.message).toContain("npm run generate");
+  });
+
+  test.each([
+    ["a wrapper type", { type: "object", oneOf: [{ type: "string" }, { type: "array", items: { type: "string" } }] }],
+    [
+      "constraints on the wrapper",
+      { properties: { extra: { type: "boolean" } }, oneOf: [{ type: "object" }, { type: "boolean" }] },
+    ],
+    ["overlapping numeric branches", { oneOf: [{ type: "integer" }, { type: "number" }] }],
+    [
+      "two array branches",
+      {
+        oneOf: [
+          { type: "array", items: { type: "string" } },
+          { type: "array", items: { type: "number" } },
+        ],
+      },
+    ],
+    [
+      "two nullable branches",
+      {
+        oneOf: [
+          { type: "string", nullable: true },
+          { type: "boolean", nullable: true },
+        ],
+      },
+    ],
+    ["a reference branch", { oneOf: [{ $ref: "#/components/schemas/Target" }, { type: "boolean" }] }],
+    ["a single branch", { oneOf: [{ type: "string" }] }],
+  ])("rejects oneOf with %s at the union's pointer", (_name, schema) => {
+    const error = unsupported(spec({ Value: schema, Target: { type: "string" } }));
+    expect(error.issues).toContainEqual(
+      expect.objectContaining({
+        feature: expect.stringContaining("oneOf"),
+        pointer: "#/components/schemas/Value",
+      })
+    );
   });
 
   test.each(["header", "cookie"])("rejects %s parameters with escaped path pointers", (location) => {

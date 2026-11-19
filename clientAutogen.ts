@@ -529,6 +529,38 @@ export type GetCostServicesRequest = RequestBodyForPathAndMethod<"/v2/cost_servi
  */
 export type GetCostServicesResponse = ResponseBodyForPathAndMethod<"/v2/cost_services", "GET">;
 /**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+export type GetCustomCalculationsRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Response type for Get all custom calculations
+ */
+export type GetCustomCalculationsResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+export type CreateCustomCalculationRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Create a custom calculation
+ */
+export type CreateCustomCalculationResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
+/**
+ * Response type for Get a custom calculation
+ */
+export type GetCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "GET">;
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+export type UpdateCustomCalculationRequest = RequestBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update a custom calculation
+ */
+export type UpdateCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Delete a custom calculation
+ */
+export type DeleteCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "DELETE">;
+/**
  * Return all DashboardNotifications.
  */
 export type GetDashboardNotificationsRequest = RequestBodyForPathAndMethod<"/v2/dashboard_notifications", "GET">;
@@ -1478,6 +1510,62 @@ export type UpdateTeamResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSla
  */
 export type DeleteTeamResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}`, "DELETE">;
 /**
+ * Return the accessible Workspaces associated with a Team, including each Workspace's name, creation time, and the Team's role.
+ */
+export type GetTeamWorkspacesRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "GET">;
+/**
+ * Response type for Get team workspaces
+ */
+export type GetTeamWorkspacesResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "GET">;
+/**
+ * Associate a Workspace with a Team.
+ */
+export type AddTeamWorkspaceRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "POST">;
+/**
+ * Response type for Add team workspace
+ */
+export type AddTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces`, "POST">;
+/**
+ * Change the Team's role in an associated Workspace.
+ */
+export type UpdateTeamWorkspaceRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update team workspace
+ */
+export type UpdateTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Remove team workspace
+ */
+export type RemoveTeamWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/workspaces/${NoSlashString}`, "DELETE">;
+/**
+ * Return the Managed Accounts a Team has been explicitly allowed or denied access to, including each Managed Account's name and creation time.
+ */
+export type GetTeamManagedAccountsRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "GET">;
+/**
+ * Response type for Get team managed accounts
+ */
+export type GetTeamManagedAccountsResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "GET">;
+/**
+ * Allow or deny a Team access to a Managed Account.
+ */
+export type AddTeamManagedAccountRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "POST">;
+/**
+ * Response type for Add team managed account
+ */
+export type AddTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts`, "POST">;
+/**
+ * Change whether a Team is allowed or denied access to a Managed Account.
+ */
+export type UpdateTeamManagedAccountRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Update team managed account
+ */
+export type UpdateTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "PUT">;
+/**
+ * Response type for Remove team managed account
+ */
+export type RemoveTeamManagedAccountResponse = ResponseBodyForPathAndMethod<`/v2/teams/${NoSlashString}/managed_accounts/${NoSlashString}`, "DELETE">;
+/**
  * Return all members of a Team.
  */
 export type GetTeamMembersRequest = RequestBodyForPathAndMethod<`/v2/teams/${NoSlashString}/members`, "GET">;
@@ -1645,38 +1733,6 @@ export type UpdateWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspac
  * Response type for Delete workspace
  */
 export type DeleteWorkspaceResponse = ResponseBodyForPathAndMethod<`/v2/workspaces/${NoSlashString}`, "DELETE">;
-/**
- * Return all CustomCalculations that the current API token has access to.
- */
-export type GetCustomCalculationsRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
-/**
- * Response type for Get all custom calculations
- */
-export type GetCustomCalculationsResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "GET">;
-/**
- * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
- */
-export type CreateCustomCalculationRequest = RequestBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
-/**
- * Response type for Create a custom calculation
- */
-export type CreateCustomCalculationResponse = ResponseBodyForPathAndMethod<"/v2/custom_calculations", "POST">;
-/**
- * Response type for Get a custom calculation
- */
-export type GetCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "GET">;
-/**
- * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
- */
-export type UpdateCustomCalculationRequest = RequestBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
-/**
- * Response type for Update a custom calculation
- */
-export type UpdateCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "PUT">;
-/**
- * Response type for Delete a custom calculation
- */
-export type DeleteCustomCalculationResponse = ResponseBodyForPathAndMethod<`/v2/custom_calculations/${NoSlashString}`, "DELETE">;
 
 /** Vantage API Client with typed methods */
 export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<NeverThrow> {
@@ -1714,6 +1770,7 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _costReports?: CostReportsApi<NeverThrow>;
     private _costs?: CostsApi<NeverThrow>;
     private _costServices?: CostServicesApi<NeverThrow>;
+    private _customCalculations?: CustomCalculationsApi<NeverThrow>;
     private _dashboardNotifications?: DashboardNotificationsApi<NeverThrow>;
     private _widgets?: WidgetsApi<NeverThrow>;
     private _dashboards?: DashboardsApi<NeverThrow>;
@@ -1750,7 +1807,6 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
     private _users?: UsersApi<NeverThrow>;
     private _virtualTagConfigs?: VirtualTagConfigsApi<NeverThrow>;
     private _workspaces?: WorkspacesApi<NeverThrow>;
-    private _customCalculations?: CustomCalculationsApi<NeverThrow>;
 
     get accessGrants(): AccessGrantsApi<NeverThrow> {
         if (!this._accessGrants) {
@@ -1876,6 +1932,13 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._costServices = new CostServicesApi(this);
         }
         return this._costServices;
+    }
+
+    get customCalculations(): CustomCalculationsApi<NeverThrow> {
+        if (!this._customCalculations) {
+            this._customCalculations = new CustomCalculationsApi(this);
+        }
+        return this._customCalculations;
     }
 
     get dashboardNotifications(): DashboardNotificationsApi<NeverThrow> {
@@ -2128,13 +2191,6 @@ export class APIV2Client<NeverThrow extends boolean = false> extends BaseClient<
             this._workspaces = new WorkspacesApi(this);
         }
         return this._workspaces;
-    }
-
-    get customCalculations(): CustomCalculationsApi<NeverThrow> {
-        if (!this._customCalculations) {
-            this._customCalculations = new CustomCalculationsApi(this);
-        }
-        return this._customCalculations;
     }
 
 }
@@ -3049,6 +3105,66 @@ class CostServicesApi<NeverThrow extends boolean> {
             `/v2/cost_services`,
             "GET",
             body,
+        );
+    }
+
+}
+
+class CustomCalculationsApi<NeverThrow extends boolean> {
+    constructor(private client: BaseClient<NeverThrow>) {}
+
+/**
+ * Return all CustomCalculations that the current API token has access to.
+ */
+    list(body?: GetCustomCalculationsRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
+ */
+    create(body: CreateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Return a CustomCalculation by its token.
+ */
+    get(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "GET",
+            {},
+        );
+    }
+
+/**
+ * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
+ */
+    update(customCalculationToken: string, body: UpdateCustomCalculationRequest) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Delete a CustomCalculation. Read-only calculations cannot be deleted.
+ */
+    delete(customCalculationToken: string) {
+        return this.client.request(
+            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
+            "DELETE",
+            {},
         );
     }
 
@@ -4781,6 +4897,94 @@ class TeamsApi<NeverThrow extends boolean> {
     }
 
 /**
+ * Return the accessible Workspaces associated with a Team, including each Workspace's name, creation time, and the Team's role.
+ */
+    getWorkspaces(teamToken: string, body?: GetTeamWorkspacesRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Associate a Workspace with a Team.
+ */
+    addTeamWorkspace(teamToken: string, body: AddTeamWorkspaceRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Change the Team's role in an associated Workspace.
+ */
+    updateWorkspace(teamToken: string, workspaceToken: string, body: UpdateTeamWorkspaceRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces/${pathEncode(workspaceToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Remove a Workspace association from a Team.
+ */
+    removeTeamWorkspace(teamToken: string, workspaceToken: string) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/workspaces/${pathEncode(workspaceToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
+ * Return the Managed Accounts a Team has been explicitly allowed or denied access to, including each Managed Account's name and creation time.
+ */
+    getManagedAccounts(teamToken: string, body?: GetTeamManagedAccountsRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts`,
+            "GET",
+            body,
+        );
+    }
+
+/**
+ * Allow or deny a Team access to a Managed Account.
+ */
+    addTeamManagedAccount(teamToken: string, body: AddTeamManagedAccountRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts`,
+            "POST",
+            body,
+        );
+    }
+
+/**
+ * Change whether a Team is allowed or denied access to a Managed Account.
+ */
+    updateManagedAccount(teamToken: string, managedAccountToken: string, body: UpdateTeamManagedAccountRequest) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts/${pathEncode(managedAccountToken)}`,
+            "PUT",
+            body,
+        );
+    }
+
+/**
+ * Remove a Team's explicit access setting for a Managed Account, returning it to the default.
+ */
+    removeTeamManagedAccount(teamToken: string, managedAccountToken: string) {
+        return this.client.request(
+            `/v2/teams/${pathEncode(teamToken)}/managed_accounts/${pathEncode(managedAccountToken)}`,
+            "DELETE",
+            {},
+        );
+    }
+
+/**
  * Return all members of a Team.
  */
     getMembers(teamToken: string, body?: GetTeamMembersRequest) {
@@ -5086,66 +5290,6 @@ class WorkspacesApi<NeverThrow extends boolean> {
     delete(workspaceToken: string) {
         return this.client.request(
             `/v2/workspaces/${pathEncode(workspaceToken)}`,
-            "DELETE",
-            {},
-        );
-    }
-
-}
-
-class CustomCalculationsApi<NeverThrow extends boolean> {
-    constructor(private client: BaseClient<NeverThrow>) {}
-
-/**
- * Return all CustomCalculations that the current API token has access to.
- */
-    list(body?: GetCustomCalculationsRequest) {
-        return this.client.request(
-            `/v2/custom_calculations`,
-            "GET",
-            body,
-        );
-    }
-
-/**
- * Create a CustomCalculation. Customer-created calculations are always editable; is_read_only cannot be set.
- */
-    create(body: CreateCustomCalculationRequest) {
-        return this.client.request(
-            `/v2/custom_calculations`,
-            "POST",
-            body,
-        );
-    }
-
-/**
- * Return a CustomCalculation by its token.
- */
-    get(customCalculationToken: string) {
-        return this.client.request(
-            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
-            "GET",
-            {},
-        );
-    }
-
-/**
- * Update a CustomCalculation. Read-only calculations allow attachment changes only; is_read_only cannot be changed.
- */
-    update(customCalculationToken: string, body: UpdateCustomCalculationRequest) {
-        return this.client.request(
-            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
-            "PUT",
-            body,
-        );
-    }
-
-/**
- * Delete a CustomCalculation. Read-only calculations cannot be deleted.
- */
-    delete(customCalculationToken: string) {
-        return this.client.request(
-            `/v2/custom_calculations/${pathEncode(customCalculationToken)}`,
             "DELETE",
             {},
         );
