@@ -457,7 +457,7 @@ export type GetCostProvidersRequest = RequestBodyForPathAndMethod<"/v2/cost_prov
  */
 export type GetCostProvidersResponse = ResponseBodyForPathAndMethod<"/v2/cost_providers", "GET">;
 /**
- * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
+ * List CostProviderAccounts available in a given Workspace. Callers with restricted cost access only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
 export type GetCostProviderAccountsRequest = RequestBodyForPathAndMethod<"/v2/cost_provider_accounts", "GET">;
 /**
@@ -2984,7 +2984,7 @@ class CostProviderAccountsApi<NeverThrow extends boolean> {
     constructor(private client: BaseClient<NeverThrow>) {}
 
 /**
- * List CostProviderAccounts available in a given Workspace. When policy-based filtering is enabled, restricted callers only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
+ * List CostProviderAccounts available in a given Workspace. Callers with restricted cost access only see accounts with policy-visible imported cost data from the first day of the previous calendar month through today, inclusive.
  */
     list(body?: GetCostProviderAccountsRequest) {
         return this.client.request(
