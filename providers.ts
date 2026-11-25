@@ -55,6 +55,11 @@ export const VANTAGE_PROVIDERS = [
   "dynatrace",
   "cockroachdb_cloud",
   "telnyx",
+  "zilliz",
+  "heroku",
+  "launchdarkly",
+  "gitlab",
+  "scaleway",
 ] as const;
 
 export type VantageProvider = (typeof VANTAGE_PROVIDERS)[number];
